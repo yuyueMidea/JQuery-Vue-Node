@@ -1,0 +1,168 @@
+Knockoutjs是一个JavaScript实现的MVVM框架.
+主要有如下几个功能1. Declarative bindings2. Observables and dependency tracking3. Templating,需要了解的朋友可以参考下
+1. Declarative bindings
+2. Observables and dependency tracking
+3. Templating
+它对于分离前台的业务逻辑和视图简化数据绑定过程有显著的作用。闲言少叙，直接看例子，如何下载也不说了，如果用VS开发的话用Nuget就可以一键搞定。
+
+1.基本绑定和依赖跟踪 
+首先需要定义一个ViewModel:
+
+复制代码代码如下:
+
+<script type="text/javascript"> 
+function ViewModel() { 
+this.firstName = "Zixin"; 
+this.lastName = "Yin"; 
+} 
+</script>
+
+然后是一个用来显示这个ViewModel的View：
+复制代码代码如下:
+
+<div> 
+<p data-bind="text: firstName"></p> 
+<p data-bind="text: firstName"></p> 
+<input data-bind="value: firstName"/> 
+<input data-bind="value: lastName"/> 
+</div>
+
+从这个view中可以看到声明式绑定的含义，只需要在标签上使用data-bind属性，就可以将数据的值绑定到相应的地方。有了View和ViewModel还需要代码将这两者关联起来：
+复制代码代码如下:
+
+ko.applyBindings(new ViewModel());
+
+将他们放到一起，注意，applyBinding那代码必须在页面全部加载完之后执行。页面显示为:
+image
+
+下面再看observables，这个功能不是与生俱来的，必须要把View Model设置为observable，方法如下:
+
+复制代码代码如下:
+
+function ViewModel() { 
+this.firstName = ko.observable("Zixin"); 
+this.lastName = ko.observable("Yin"); 
+}
+
+其他都不需要改变，这时候，如果改变输入框中的值，当焦点离开的时候，可以发现p中的值也跟着改变了：
+image
+
+下面再看dependency tracking,也就是如果一个值依赖多各值,其中任何一个值发生变化,它都会自动发生变化. 这是通过computed方法实现的,代码如下:
+
+复制代码代码如下:
+
+function ViewModel() { 
+this.firstName = ko.observable("Zixin"); 
+this.lastName = ko.observable("Yin"); 
+this.fullName = ko.computed(function () { return this.lastName() + " " + this.firstName(); },this); 
+} 
+
+注意获得一个observable的值是一个函数调用。这样当first 或者last name发生变更的时候fullName也会自动跟着变更。
+image
+
+也可以通过代码改变observable的值，页面会自动刷新：
+
+复制代码代码如下:
+
+function ViewModel() { 
+//……… 
+this.capitalizeLastName = function () { 
+this.lastName(this.lastName().toUpperCase()); 
+} 
+} 
+
+在页面上添加一个按钮:
+复制代码代码如下:
+
+<button data-bind="click: capitalizeLastName">Caps</button>
+点击按钮之后便会出发viewmodel的capitalizeLastName方法，要改变一个observable的值的方法就是将新值作为函数调用的参数。点击之后：
+
+image 
+
+2. 列表绑定
+加入我们有如下的订单ViewModel,使用observableArray来跟踪数组的变化。
+
+复制代码代码如下:
+
+var products=[{name:"Thinkpad X1",price:9000}, 
+{name:"Hp ProBook",price:5555}, 
+{name:"Mouse",price:45} ]; 
+
+function Order() { 
+var self = this; 
+self.items = ko.observableArray([ 
+//This data should load from server 
+new Item(products[0], 1), 
+new Item(products[1],2)]); 
+self.price = ko.computed(function () { 
+var p=0; 
+for (var i = 0; i < self.items().length; i++) { 
+var item = self.items()[i]; 
+p += item.product.price * item.amount(); 
+} 
+return p; 
+}, self); 
+}
+
+Order里面的Item实际上应该是从服务器获得的，Item定义如下:
+复制代码代码如下:
+
+function Item(product, amount) { 
+var self = this; 
+this.product = product; 
+this.amount = ko.observable(amount); 
+this.subTotal = ko.computed(function () { 
+return self.amount() * self.product.price; 
+}, self); 
+}
+
+ViewModel准备好之后，就可以实现View。这次需要使用foreach绑定，如下:
+复制代码代码如下:
+
+<table> 
+<thead> 
+<tr> 
+<td>Name</td> 
+<td>Amount</td> 
+<td>Price</td> 
+</tr> 
+</thead> 
+<tbody data-bind="foreach: items"> 
+<tr> 
+<td data-bind="text: product.name"></td> 
+<td><select data-bind="options:[1,2,3,4,5,6],value: amount"></select></td> 
+<td data-bind="text: subTotal"></td> 
+</tr> 
+</tbody> 
+</table> 
+<h3>Order Price:<span data-bind="text: price"></span></h3> 
+
+这样一个基本的订单页面就好了，能够选择数量，价格会自动更新：
+image
+
+下面给订单加上增删产品的功能,先给Order加上如下的方法:
+
+复制代码代码如下:
+
+function Order() { 
+//…… 
+self.remove = function (item) { 
+self.items.remove(item); 
+} 
+
+self.addMouse = function () { 
+self.items.push(new Item(products[2],1)); 
+} 
+}
+
+给表格加上一列删除按钮：
+复制代码代码如下:
+
+<td><a href="#" data-bind="click: $root.remove">Remove</a></td>
+
+再在表格底部加上一个增加产品的按钮:
+复制代码代码如下:
+
+<button data-bind="click: addMouse">Add a Mouse</button> 
+
+这时候，observableArray的功能就体现了，当你点击删除按钮或者底部的按钮的时候，页面节点会跟着变化，而不需要手动更新DOM节点，这使得前端的JS大大简化。
