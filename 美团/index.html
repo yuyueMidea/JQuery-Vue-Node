@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <title>mobile</title>
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <style>
+        * {
+            padding:0;
+            margin:0;
+        }
+        ul li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        input{
+            outline: none;
+        }
+        html{
+            width: 100%;font-size: 10px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+
+        @media only screen and (max-width: 320px){
+            html{
+                width: 100%;font-size: 8.5px;
+            }
+        }
+        .header #backtop{
+            width:4rem;height: 4rem;background: #06c1a1;line-height: 4rem;
+            text-align: center;border-radius: 50%;font-size: 3rem;color: #fff;
+            position: fixed;bottom: 7.5rem;right: 1.5rem;
+            z-index: 10;
+        }
+
+        .header{
+            width:100%;height: 5rem;line-height: 5rem;font-size: 1.6rem;
+            text-align: center;background: #06c1a1;color: #fff;
+            display: flex;
+        }
+        .header a{
+            color: #fff;
+        }
+        .header .site{
+            width:6.5rem;height: 5rem;line-height: 5rem;
+            float: left;
+        }
+        .header .site .array{
+            width: 8px;height: 8px;display: inline-block;
+            border-right: 2px solid #fff;border-bottom: 2px solid #fff;
+            transform: rotate(45deg);
+        }
+        .header .my{
+            width:5rem;height: 5rem;
+            float: right;
+        }
+        .header .my a{
+            width:5rem;height: 3rem;display: block;margin-top: 1rem;
+            font-size: 0.8rem;line-height: 6rem;
+            background: url(foods-images/index2.png) no-repeat center top;
+        }
+        .header input{
+            height: 3rem;background: #05a494;
+            border-radius: 0.5rem;
+            border: none;line-height: 3rem;padding-left: 2rem;margin-top: 1rem;
+            flex: 1;
+        }
+
+        .main{
+            width:100%;font-size: 1.6rem;
+            background: #f0efed;color: #333;
+        }
+        .main .banner{
+            height: 5rem;
+        }
+        .main .banner a{
+            height: 5rem;width: 100%;display: block;
+            background: url(images/2017-08-26_banner.png) no-repeat center;
+        }
+
+        .swiper-container{
+            width:100%;height: 19rem;
+        }
+        .swiper-slide{
+            box-sizing: border-box;
+            width:100%;height: 30rem;line-height: 30rem;
+        }
+        .main #list{
+            margin: auto;background: #fff;
+            padding-bottom: 2rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .main #list li{
+            width:20%; height:8rem;float: left;
+            box-sizing: border-box;
+            /*border-right: 1px solid #ccc; border-bottom: 1px solid #ccc;*/
+            position: relative;z-index: 1;
+            font-size: 1.2rem;
+        }
+
+        .main #list li a{
+            display: block;margin: 1.2rem auto;
+            width:6rem;height: 6rem;line-height: 10.5rem;
+            text-align: center;color: #666;
+        }
+        .main .tea{
+             background: #fff;
+             display: flex;flex-wrap: wrap;justify-content: space-around;
+         }
+        .main .tea li{
+            flex: 1;
+            height:12.5rem;float: left;
+            box-sizing: border-box;
+            border-right: 1px solid #eee;
+        }
+        .main .tea li a{
+            display: block;
+            height: 12rem;
+            /*width: 12rem;*/
+        }
+
+        .main .like{
+            margin:0 auto;background: #fff;margin-top: 1rem;border-top: 1px solid #ddd;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+            padding-left: 1rem;
+
+        }
+        .main .like li{
+            width:100%; height:10.2rem;
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2rem;
+            /*line-height: 9rem;*/
+
+        }
+        .main .like li:first-child{
+            height:4.2rem;  font-size: 1.6rem;line-height: 4.2rem; text-align: left;
+        }
+        .main .like li:last-child{
+            height:4rem;  font-size: 1.6rem;line-height: 4rem;
+            border: none;
+        }
+        .main .like li a{
+            display: block;width:100%; height:8rem;margin: 1rem auto;
+            color: #333;
+        }
+        .main .like li a>span{
+            display: inline-block;height: 8rem;line-height: 2.0rem;
+            padding-left: 10rem;
+            position: relative;
+        }
+        .main .like li a p:first-child{
+            font-size: 1.4rem;
+        }
+        .main .like li a p:last-child{
+            position: absolute;bottom: 0;
+        }
+        .main .like li a p>span{
+            font-size: 1.4rem;color: #06c1a1;
+        }
+        .main .like li:last-child>a{
+            color: #06c1a1;height: 4rem;line-height: 4rem;
+        }
+        .main .like li:last-child .arr{
+            width: 10px;height: 10px;display: inline-block;
+            border-right: 2px solid #06c1a1;border-top: 2px solid #06c1a1;
+            transform: rotate(45deg);
+        }
+        .footer{
+            width:100%;height: 18rem;font-size: 1.2rem;
+            text-align: center;background: #f0efed;
+            padding-bottom: 7rem;
+        }
+        .footer a{
+            color: #06c1a1;
+        }
+        .footer .btn{
+            width: 100%;height: 5rem;line-height: 5rem;padding-top: 1.5rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .btn input{
+            width: 6rem;height: 3rem;border: 1px solid #06c1a1;
+            border-radius: 0.5rem;color: #06c1a1;background: #f0efed;
+            margin-left: 0.5rem;
+        }
+        .footer .btn span{
+            width: 5rem;height: 3rem;line-height: 3rem;
+        }
+        .footer .bot{
+            margin:0 auto;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .bot li{
+            width:20%; height:1.2rem;float: left;
+            box-sizing: border-box;
+            border-right: 1px solid #06c1a1;
+            line-height: 1.2rem;
+        }
+        .footer .bot li:last-child{
+            border-right: 0px solid deepskyblue;
+        }
+        .footer .friend{
+            width: 90%;margin: auto;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .friend li{
+            width:25%; height:6rem;float: left;
+            box-sizing: border-box;
+            line-height: 6rem;
+        }
+        .footer .copy{
+            line-height: 4rem;color: #aaa;
+        }
+        .download{
+            width: 100%;height: 7rem;background: #333 url(foods-images/client.png) no-repeat 2rem center / 18rem 5rem;
+            opacity: 0.8;line-height: 7rem;
+            position: fixed;bottom: 0;z-index: 3;text-align: right;
+        }
+        .download input{
+            width: 8rem;height: 4rem;border: 1px solid #06c1a1;
+            border-radius: 0.5rem;color: #06c1a1;
+            margin-right: 1rem;background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="site">
+            <a href="#">深圳 <span class="array"></span></a>
+        </div>
+        <input type="text" placeholder="输入商家/品类/商圈" >
+        <div class="my">
+            <a href="#">我的</a>
+        </div>
+        <div id="backtop">⇧</div>
+
+    </div>
+    <div class="main">
+        <div class="banner">
+            <a href="#"></a>
+        </div>
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <ul id="list">
+                        <li><a href="foods.html" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+
+                    </ul>
+                </div>
+                <div class="swiper-slide">
+                    <ul id="list">
+                        <li><a href="foods.html" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+                        <li><a href="#" style="background: url(images/images_05.jpg) no-repeat center top">猫眼电影</a></li>
+                        <li><a href="#" style="background: url(images/images_13.jpg) no-repeat center top">酒店</a></li>
+                        <li><a href="#" style="background: url(images/images_03.jpg) no-repeat center top">美食</a></li>
+
+                    </ul>
+                </div>
+            </div>
+            <!-- 如果需要分页器 -->
+            <div class="swiper-pagination" style="bottom: 2rem"></div>
+
+        </div>
+
+        <ul class="tea">
+            <li><a href="#" style="background: url(images/image_03.jpg) no-repeat center"></a></li>
+            <li><a href="#" style="background: url(images/image_05.jpg) no-repeat center"></a></li>
+            <li><a href="#" style="background: url(images/image_07.jpg) no-repeat center"></a></li>
+
+        </ul>
+
+        <ul class="like">
+            <li>猜你喜欢</li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>艾署</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p><span>36元</span> 门市价：102元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/44.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>艾署</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/55.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/66.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p><span>36元</span> 门市价：102元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/77.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>艾署</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/88.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/99.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p><span>36元</span> 门市价：102元</p>
+                </span>
+            </a></li>
+            <li>10</li>
+            <li>11</li>
+            <li>12</li>
+            <li>13</li>
+            <li>14</li>
+            <li>15</li>
+            <li>16</li>
+            <li>17</li>
+            <li>18</li>
+            <li>19</li>
+            <li>20</li>
+            <li>21</li>
+            <li>22</li>
+            <li>23</li>
+            <li>24</li>
+            <li>25</li>
+            <li>26</li>
+            <li>27</li>
+            <li>28</li>
+            <li>29</li>
+            <li>30</li>
+            <li>
+                <a href="#" style="line-height: 2rem">查看全部团购<div class="arr"></div></a>
+            </li>
+
+        </ul>
+    </div>
+    <div class="footer">
+        <div class="btn">
+            <input type="button" value="登录"><input type="button" value="注册">
+            <span>城市：</span><input type="button" value="深圳" style="width: 8rem;margin-right: 0.5rem">
+        </div>
+
+        <ul class="bot">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">我的</a></li>
+            <li><a href="#">美团下载</a></li>
+            <li><a href="#">电脑版</a></li>
+            <li><a href="#">帮助</a></li>
+        </ul>
+
+        <ul class="friend">
+            <li>友情链接：</li>
+            <li><a href="#">猫眼电影</a></li>
+            <li><a href="#">大众点评</a></li>
+            <li><a href="#">大众点评下载</a></li>
+        </ul>
+        <p class="copy">&copy;2017 美团网 京ICP证070791号</p>
+    </div>
+
+    <div class="download">
+        <input type="button" value="点击下载">
+    </div>
+
+</body>
+</html>
+<script src="js/swiper.min.js"></script>
+<script>
+    onload = function () {
+
+        var backtop = document.getElementById("backtop");
+        backtop.onclick = function () {
+
+            var timer = setInterval(function () {
+                var current = document.documentElement.scrollTop=document.body.scrollTop;
+                var speed = (0 - current)/4;
+                speed = Math.floor(speed);
+                if(current ==0){
+                    clearInterval(timer);
+                    return;
+                }
+                document.documentElement.scrollTop =current + speed;
+                document.body.scrollTop =current + speed;
+
+            },30)
+
+        }
+        //
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: true,
+            // 如果需要分页器
+            pagination: '.swiper-pagination',
+
+        })
+
+
+    }
+</script>
+

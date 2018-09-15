@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <title>details</title>
+    <style>
+        * {
+            padding:0;
+            margin:0;
+        }
+        ul li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        input{
+            outline: none;
+        }
+        html{
+            width: 100%;font-size: 10px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+
+        .header #backtop{
+            width:4rem;height: 4rem;background: #06c1a1;line-height: 4rem;
+            text-align: center;border-radius: 50%;font-size: 3rem;color: #fff;
+            position: fixed;bottom: 7.5rem;right: 1.5rem;
+            z-index: 10;
+        }
+
+        .header{
+            width:100%;height: 5rem;line-height: 5rem;font-size: 1.6rem;
+            text-align: center;background: #06c1ae;color: #fff;
+            display: flex;
+        }
+        .header a{
+            color: #fff;
+        }
+        .header .site{
+            width:5rem;height: 5rem;line-height: 5rem;
+            float: left;
+        }
+        .header .site .array{
+            width: 16px;height: 16px;display: inline-block;
+            border-left: 2px solid #fff;border-bottom: 2px solid #fff;
+            transform: rotate(45deg);
+        }
+        .header .my{
+            width:10rem;height: 5rem;line-height: 5rem;
+            float: right;background: url(foods-images/nav.png) no-repeat center;
+            position: relative;
+        }
+        .header .my #drop{
+            width: 5rem;height: 5rem;float: right;background: transparent;border: none;
+            outline: none;
+        }
+        .header .my #tanchu{
+            width: 10rem;height: 8.4rem;
+            position: absolute;top: 5.2rem;right: 2px;
+            display: none;
+        }
+        .header .my #tanchu li{
+            width: 10rem;height: 4.2rem;line-height: 4.2rem;
+            box-sizing: border-box;
+            background: #06c1ae;opacity: 0.6;
+            text-align: center;
+        }
+        .header .my #tanchu li a{
+            color: #fff;font-size: 1.2rem;
+        }
+        .header span{
+            height: 3rem;
+            border-radius: 0.5rem;font-size: 1.8rem;
+            border: none;line-height: 3rem;padding-left: 2rem;margin-top: 1rem;
+            flex: 1;
+        }
+
+        .main{
+            width:100%;font-size: 1.6rem;
+            background: #f0efed;color: #333;
+        }
+        .main .banner{
+            height: 16rem;
+            background: url(foods-images/2017-08-26_11.png) no-repeat center/ 100% 100%;
+        }
+
+        .main .box1{
+            margin: auto;background: #fff;
+            margin-bottom: 1rem;padding-left: 1rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .main .box1 li{
+            width:100%; height:6.5rem;line-height: 6.5rem;
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+            font-size: 1.4rem;
+        }
+        .main .box1 li:last-child{
+            border-bottom: 0px solid #ccc;
+        }
+        .main .box1 li:nth-child(1){
+            font-size: 1.6rem;
+        }
+        .main .box1 li>a{
+            color: #333;
+        }
+
+
+        .main .more{
+            margin:0 auto;background: #fff;margin-top: 1rem;border-top: 1px solid #ddd;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+            padding-left: 1rem;
+
+        }
+        .main .more li{
+            width:100%; height:10.2rem;
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2rem;
+        }
+        .main .more li:first-child{
+            height:4.2rem;  font-size: 1.6rem;line-height: 4.2rem; text-align: left;
+        }
+
+        .main .more li a{
+            display: block;width:100%; height:8rem;margin: 1rem auto;
+            color: #333;
+
+        }
+        .main .more li a>span{
+            display: inline-block;height: 8rem;line-height: 2.0rem;
+            padding-left: 10rem;width: 100%;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .main .more li a p:first-child{
+            font-size: 1.5rem;color: #333;
+        }
+        .main .more li a p:last-child{
+            position: absolute;bottom: 0;color: #666;
+        }
+        .main .more li a p>span:nth-child(1){
+            font-size: 1.4rem;color: #06c1a1;font-weight: 700;
+        }
+        .main .more li .details p span{
+            border: 1px solid orange;padding: 5px;border-radius: 5px;margin: 3px;
+        }
+        .main .more li .details{
+            line-height: 3rem;font-size: 1.4rem;color: #f90;
+        }
+        .main .more li .details p:first-child{
+            line-height: 3rem;font-size: 1.4rem;color: #f90;
+            padding-top: 0.5rem;
+        }
+
+
+
+        .footer{
+            width:100%;height: 20rem;font-size: 1.2rem;
+            text-align: center;background: #f0efed;
+        }
+        .footer a{
+            color: #06c1a1;
+        }
+        .footer .btn{
+            width: 100%;height: 5rem;line-height: 3rem;padding-top: 1.5rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .where{
+            width: 100%;height: 2rem;line-height: 3rem;color: #06c1a1;
+
+        }
+        .footer .btn input{
+            width: 6rem;height: 3rem;border: 1px solid #06c1a1;
+            border-radius: 0.5rem;color: #06c1a1;background: #f0efed;
+            margin-left: 0.5rem;
+        }
+        .footer .btn span{
+            width: 5rem;height: 3rem;line-height: 3rem;
+        }
+        .footer .bot{
+            margin:0 auto;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .bot li{
+            width:20%; height:1.2rem;float: left;
+            box-sizing: border-box;
+            border-right: 1px solid #06c1a1;
+            line-height: 1.2rem;
+        }
+
+        .footer .bot li:last-child{
+            border-right: 0px solid deepskyblue;
+        }
+
+        .footer .friend{
+            width: 90%;margin: auto;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .friend li{
+            width:100%; height:6rem;float: left;
+            box-sizing: border-box;
+            line-height: 6rem;
+        }
+        .footer .copy{
+            line-height: 4rem;color: #aaa;
+        }
+        .download{
+            width: 100%;height: 7rem;background: #333 url(foods-images/client.png) no-repeat 2rem center / 18rem 5rem;
+            opacity: 0.8;line-height: 7rem;
+            position: fixed;bottom: 0;z-index: 3;text-align: right;
+        }
+        .download input{
+            width: 8rem;height: 4rem;border: 1px solid #06c1a1;
+            border-radius: 0.5rem;color: #06c1a1;
+            margin-right: 1rem;background: transparent;
+        }
+
+        @media only screen and (max-width: 320px){
+            html{
+                width: 100%;font-size: 8.5px;
+            }
+            .main .more li .details p:first-child{
+                line-height: 1rem;font-size: 1.4rem;color: #f90;
+                padding-top: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="site">
+            <a href="foods.html" class="array"></a>
+        </div>
+        <span>商家详情</span>
+        <div class="my">
+            <button id="drop"></button>
+            <ul id="tanchu">
+                <li style="border-bottom: 1px solid #666"><a href="#">首页</a></li>
+                <li><a href="#">我的</a></li>
+            </ul>
+        </div>
+        <div id="backtop">⇧</div>
+
+    </div>
+    <div class="main">
+        <div class="banner"></div>
+
+        <ul class="box1">
+            <li  style="background: url(foods-images/stars.png) no-repeat left bottom">
+                <a href="#">康师傅私房牛肉面（中心城店）</a></li>
+            <li style="background: url(foods-images/phone.png) no-repeat right">
+                <a href="#" style="background: url(foods-images/dizhi.png) no-repeat left;
+                    padding-left: 2rem;padding-right: 2rem;border-right: 1px solid #ccc;
+                    overflow: hidden">福田区福华路地下一层连城新天地商业街C区</a>
+            </li>
+        </ul>
+        <ul class="box1">
+            <li>App专享<a href="#"><span style="float: right;padding-right: 1rem;color: #06c1a1">美团客户端></span></a></li>
+            <li><a href="#" style="background: url(foods-images/waimai.png) no-repeat left;padding-left: 2rem">外卖</a></li>
+        </ul>
+        <ul class="box1">
+            <li><a href="#" style="background: url(foods-images/19.png) no-repeat left/ 1.6rem 1.6rem;padding-left: 2rem">代金券(1)</a></li>
+            <li><a href="#">50元代金券</a></li>
+        </ul>
+
+        <ul class="more">
+            <li style="background: url(foods-images/20.png) no-repeat left/ 1.6rem 1.6rem;padding-left: 2rem">团购(5)</li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>单人餐</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元　　<span>已售236</span></p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>单人下午茶A</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>单人下午茶B</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p><span>36元</span> 门市价：102元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>单人下午茶C</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>菜品2选1</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+
+        </ul>
+        <ul class="more">
+            <li>推荐菜</li>
+            <li>
+                <span class="detail" style="line-height: 3.5rem;font-size: 1.4rem">
+                    <p>牛肉汤　凉拌木耳　翠玉黄瓜　招牌麻辣牛肉面</p>
+                    <p>金牌私房红烧牛肉　黄瓜　一品酸菜拌卤味</p>
+                    <p>香烤麻辣鸡翅　柠檬冰茶　川香水煮肥牛面</p>
+                </span>
+            </li>
+        </ul>
+        <ul class="more">
+            <li  style="background: url(foods-images/stars.png) no-repeat left center;text-align: right;padding-right: 1rem">2458条评价</li>
+            <li>
+                <span class="details">
+                    <p><span>上菜快81</span><span>回头客78</span><span>牛肉赞42</span><span>干净卫生20</span> 　　　</p>
+                    <p><span>主食赞12</span><span>点心好14</span><span>交通便利3</span></p>
+                    <p style="color: #999"><span>朋友聚餐</span><span>不推荐</span></p>
+                </span>
+            </li>
+            <li>
+                <span class="detail" style="line-height: 2.5rem;font-size: 1.4rem">
+                    <p style="background: url(foods-images/stars.png) no-repeat left top;text-indent: 10rem">蛋炒饭：在地图上找了一大圈才找到这个点的客人比较少
+                        上的速度特别快因为是一个人在等人
+                        所以点的饼跟玉米汁没有吃面饼的皮略硬
+                        在厦门吃过对这家店印象还不错以后也会光顾</p>
+                </span>
+            </li>
+            <li style="height:4.2rem; font-size: 1.6rem;line-height: 4.2rem;">
+                <a href="#" style="color: #06c1ae">查看全部2458条评价 &gt;</a>
+            </li>
+        </ul>
+
+        <ul class="more">
+            <li>商家概述</li>
+            <li>
+                <span class="detail" style="line-height: 3.2rem;font-size: 1.4rem">
+                    <p style="border-bottom: 1px solid #eee">WIFI　　　支持WIFI</p>
+                    <p style="border-bottom: 1px solid #eee">营业时间　周一至周日10:00-22:00</p>
+                    <p>停车位　　无</p>
+                </span>
+            </li>
+        </ul>
+        <ul class="more">
+            <li>附近推荐</li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>康师傅私房牛肉面</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>来到普宁肠粉</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p><span>36元</span> 门市价：257元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>小蹄大作</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p><span>36元</span> 门市价：102元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>老碗会BiangBiang面</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p><span>36元</span> 门市价：36元</p>
+                </span>
+            </a></li>
+        </ul>
+
+        <ul class="more">
+            <li>更多商家<span style="float: right;padding-right: 1rem;color: #aaa">广告</span></li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>康师傅私房牛肉面(深北店)</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p>小吃快餐</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>汕头八合里海记牛肉店(卓越中心店)</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>火锅</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>小橙都古法冒菜(会展中心分店)</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p>小吃快餐</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>辣咖麻咖麻辣烫</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p>小吃快餐</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>渔语鱼酸菜鱼专门店(皇庭广场店)</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>川菜</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>香港新发烧腊茶餐厅(水围店)</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p>粤菜</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/11.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>鮨鱼屋</p>
+                    <p>[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                    <p>日本菜</p>
+                </span>
+            </a></li>
+
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /9rem 9rem">
+                <span class="detail">
+                    <p>高原姑娘牛肉面(深圳书城店)</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>西北菜</p>
+                </span>
+            </a></li>
+
+        </ul>
+    </div>
+    <div class="footer">
+        <div class="where">
+            <p>当前位置：深圳团购>康师傅私房牛肉面（中心城店）团购</p>
+        </div>
+        <div class="btn">
+            <input type="button" value="登录"><input type="button" value="注册">
+            <span>城市：</span><input type="button" value="深圳" style="width: 8rem;margin-right: 0.5rem">
+        </div>
+
+        <ul class="bot">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">我的</a></li>
+            <li><a href="#">美团下载</a></li>
+            <li><a href="#">电脑版</a></li>
+            <li><a href="#">帮助</a></li>
+        </ul>
+
+        <ul class="friend">
+            <li>友情链接：<a href="#">猫眼电影</a></li>
+        </ul>
+        <p class="copy">&copy;2017 美团网 京ICP证070791号</p>
+    </div>
+
+    <div class="download">
+        <input type="button" value="点击下载">
+    </div>
+
+</body>
+</html>
+<script src="js/jquery-1.12.3.js"></script>
+<script src="js/swiper.min.js"></script>
+<script>
+    onload = function () {
+        var backtop = document.getElementById("backtop");
+        backtop.onclick = function () {
+            var timer = setInterval(function () {
+                var current = document.documentElement.scrollTop=document.body.scrollTop;
+                var speed = (0 - current)/4;
+                speed = Math.floor(speed);
+                if(current ==0){
+                    clearInterval(timer);
+                    return;
+                }
+                document.documentElement.scrollTop =current + speed;
+                document.body.scrollTop =current + speed;
+
+            },30)
+
+        }
+        //
+        var flag = false;
+        $("#drop").click(function () {
+            if(flag){
+                flag = false;
+                $("#tanchu").slideUp(100)
+            }else{
+                flag = true;
+                $("#tanchu").slideDown(100)
+            }
+        })
+
+    }
+</script>
+

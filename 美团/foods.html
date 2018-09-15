@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <title>delicious foods</title>
+    <script src="js/jquery-1.12.3.js"></script>
+    
+    <style>
+        ::-webkit-scrollbar{width:0.2rem;}
+        ::-webkit-scrollbar-track{background-color:#bee1eb;}
+        ::-webkit-scrollbar-thumb{background-color:#00aff0;}
+        ::-webkit-scrollbar-thumb:hover {background-color:#9c3}
+        ::-webkit-scrollbar-thumb:active {background-color:#00aff0}
+
+        * {
+            padding:0;  margin:0;
+        }
+        ul li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        hr{
+            border: none;height: 1px;background: #eee;
+        }
+        input{
+            outline: none;
+        }
+        html{
+            width: 100%;font-size: 10px;
+        }
+        @media only screen and (max-width: 320px){
+            html{
+                width: 100%;font-size: 8.5px;
+            }
+        }
+        .header #backtop{
+            width:4rem;height: 4rem;background: #06c1a1;line-height: 4rem;color: #fff;
+            text-align: center;border-radius: 50%;font-size: 3rem;
+            position: fixed;bottom: 6.5rem;right: 1rem;display: none;
+            z-index: 10;
+        }
+        .header{
+            width:100%;height: 4.5rem;line-height: 4.5rem;font-size: 1.6rem;
+            text-align: center;background: #fafafa;color: #06c1ae;
+            position: fixed;top: 0; z-index: 10;
+            display: flex;
+        }
+        .header a{
+            color: #06c1ae;
+        }
+        .header .site{
+            width:5rem;height: 4.5rem;line-height: 4.5rem;   float: left;
+        }
+        .header .site .array{
+            width: 10px;height: 10px;display: inline-block;
+            border-left: 2px solid #06c1ae;border-bottom: 2px solid #06c1ae;
+            transform: rotate(45deg);
+        }
+        .header .my{
+            width:5rem;height: 4.5rem;line-height: 4.5rem; float: right;
+        }
+        .header .my a{
+            width:5rem;height: 4.5rem;display: block;
+            background: url(foods-images/shou.png) no-repeat center;
+        }
+        .header input{
+            height: 3rem;background: #ebeced;color: #68dbce;border-radius: 1.5rem;
+            border: none;line-height: 3rem;margin-top: 0.7rem;text-align: center;
+            flex: 1;
+        }
+
+        .main{
+            width:100%;font-size: 1.2rem;
+            text-align: left;background: #f0efed;color: #333;
+            padding-top: 4.5rem;
+        }
+
+        .main #list{
+            background: #fff;margin-bottom: 1rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .main #list li{
+            width:25%; height:9rem;float: left;
+            box-sizing: border-box;
+        }
+        .main #list li a{
+            display: block;margin: 1.5rem auto;
+            width:6rem;height: 6rem;line-height: 12rem;
+            text-align: center;color: #666;
+        }
+        /*filter*/
+        .main #filter{
+            height:4rem; font-size: 1.4rem;line-height: 4rem;
+            background: #fff;text-align: center;width: 100%;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+            border-bottom: 1px solid #eee;
+            z-index: 6;
+        }
+        .filterClass{
+            position: fixed;top: 4.5rem;left: 0rem;
+        }
+        .main #filter>li{
+            width: 25%;float: left;height: 4rem;
+
+        }
+
+        .main #filter>li .tri{
+            width: 0;height: 0;border-top: 0;display: inline-block;
+            border-left: 0.5rem solid transparent;
+            border-right: 0.5rem solid transparent;
+            border-top: 0.8rem solid #b7b7b7;
+        }
+
+        .main #box{
+            z-index:5;position: relative;
+        }
+        .main #box #bg{
+            z-index:4;
+            width:100%;height: 80rem;
+            position: absolute;top: 27.6rem;left: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+        }
+        .main #item{ height: 54rem; }
+        .main #near{ height: 45rem; }
+        .main #smart{ height: 27rem; }
+        .main #sizer{ height: 35rem; }
+
+        .main #item,.main #near,.main #smart,.main #sizer{
+            width:100%;overflow-y: auto;
+            display: none;
+            background: #fff;
+        }
+        .main #item>li,.main #near>li,.main #smart>li,.main #sizer>li{
+            width:100%;height: 4.5rem;line-height: 4.5rem;font-size: 1.4rem;
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+        }
+        .main #item>li a,.main #near>li a,.main #smart>li a,.main #sizer>li p{
+            color: #666;padding-left: 5rem;
+        }
+        .main #near>li{
+            position: relative;
+            box-sizing: border-box;
+        }
+        .main #near>li>p{
+            display: block;width: 40%;padding-left: 2rem;
+        }
+        .main #near>li ul{
+            width:60%;height: 45rem;overflow-y: auto;
+            z-index: 10;
+            position: absolute;display: none;
+            right:0;top: 0;background: #eee;
+        }
+        .main #near>li ul li{
+            height: 4.5rem;line-height: 4.5rem;font-size: 1.4rem;
+            box-sizing: border-box;padding-left: 2rem;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .main #near #tab{
+            text-align: center;
+        }
+        .main #near #tab span{
+            display: inline-block;width: 50%;
+            box-sizing: border-box;
+        }
+        .spanClass{
+            border-bottom: 3px solid #06c1a1;z-index: 10;
+        }
+
+        .main .like{
+            margin:0 auto;background: #fff;
+            display: flex;flex-wrap: wrap;justify-content: space-around;padding-left: 1rem;
+        }
+        .main .like>li{
+            width:100%; height:15rem;float: left;
+            box-sizing: border-box;
+            border-bottom: 1px solid #eee;
+        }
+        .main .like li a{
+            display: block;width:100%; height:8rem;margin: 1rem auto;
+            color: #333;
+        }
+        .main .like li a>span{
+            display: inline-block;height: 14rem;line-height: 2.2rem;
+            padding-left: 9rem;
+        }
+        .main .like li a p:first-child{
+            font-size: 1.4rem;
+        }
+
+        .main .like li a p>span{
+            font-size: 1.2rem;color: #06c1a1;
+        }
+
+        .main .like>li:last-child{
+            height:4rem;  font-size: 1.6rem;line-height: 4rem; text-align: left;
+            border: none;
+        }
+        .main .like>li:last-child>a{
+            color: #06c1a1;
+        }
+        .main .like>li:last-child .arr{
+            width: 10px;height: 10px;display: inline-block;
+            border-right: 2px solid #06c1a1;border-top: 2px solid #06c1a1;
+            transform: rotate(45deg);
+        }
+        .main .like .detail p:last-child{
+            background: url(foods-images/20.png) no-repeat left center / 1.6rem 1.6rem;
+        }
+
+        .footer{
+            width:100%;height: 14rem;font-size: 1.2rem;
+            text-align: center;background: #f0efed;
+        }
+        .footer a{
+            color: #06c1a1;
+        }
+        .btn{
+            width: 100%;height: 5rem;line-height: 5rem;padding-top: 1rem;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .btn input{
+            width: 5rem;height: 2.4rem;border: 1px solid #06c1a1;
+            border-radius: 0.5rem;color: #06c1a1;
+            margin-left: 0.5rem;
+        }
+        .footer .btn span{
+            width: 5rem;height: 2.4rem;line-height: 2.4rem;
+        }
+        .footer .bot{
+            margin:0 auto;
+            display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .footer .bot li{
+            width:20%; height:1.4rem;float: left;
+            box-sizing: border-box;
+            border-right: 1px solid #06c1a1;
+            line-height: 1.4rem;
+        }
+
+        .footer .bot li:last-child{
+            border-right: 0px solid deepskyblue;
+        }
+
+        .footer .friend{
+            line-height: 3rem;color: #aaa;
+        }
+        .footer .copy{
+            line-height: 2rem;color: #aaa;
+        }
+        .download{
+            width: 100%;height: 40rem;background: #000;opacity: 0.8;line-height: 7rem;
+            position: fixed;bottom: 0;z-index: 3;display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="site">
+            <a href="index.html" class="array"></a>
+        </div>
+        <input type="text" placeholder="输入商家/品类/商圈">
+        <div class="my">
+            <a href="#"></a>
+        </div>
+        <div id="backtop">⇧</div>
+
+    </div>
+    <div class="main">
+
+        <ul id="list">
+            <li><a href="#" style="background: url(foods-images/15.png) no-repeat center top / 4.5rem 4.5rem">猫眼电影</a></li>
+            <li><a href="#" style="background: url(foods-images/18.png) no-repeat center top / 4.5rem 4.5rem">甜点饮品</a></li>
+            <li><a href="#" style="background: url(foods-images/16.png) no-repeat center top / 4.5rem 4.5rem">自助餐</a></li>
+            <li><a href="#" style="background: url(foods-images/13.png) no-repeat center top / 4.5rem 4.5rem">小吃快餐</a></li>
+            <li><a href="#" style="background: url(foods-images/11.png) no-repeat center top / 4.5rem 4.5rem">西餐</a></li>
+            <li><a href="#" style="background: url(foods-images/12.png) no-repeat center top / 4.5rem 4.5rem">烧烤烤肉</a></li>
+            <li><a href="#" style="background: url(foods-images/17.png) no-repeat center top / 4.5rem 4.5rem">香锅烤鱼</a></li>
+            <li><a href="#" style="background: url(foods-images/14.png) no-repeat center top / 4.5rem 4.5rem">海鲜</a></li>
+
+        </ul>
+
+        <ul id="filter">
+            <li>全部 <span class="tri"></span></li>
+            <li>智能排序 <span class="tri"></span></li>
+            <li>筛选 <span class="tri"></span></li>
+            <li>宝安区<span class="tri"></span></li>
+        </ul>
+        <div id="box">
+            <ul id="item">
+                <li><a href="#">甜点饮品</a></li>
+                <li><a href="#">生日蛋糕</a></li>
+                <li><a href="#">火锅</a></li>
+                <li><a href="#">自助餐</a></li>
+                <li><a href="#">小吃快餐</a></li>
+                <li><a href="#">日韩料理</a></li>
+                <li><a href="#">西餐</a></li>
+                <li><a href="#">聚餐宴请</a></li>
+                <li><a href="#">烧烤烤肉</a></li>
+                <li><a href="#">川湘菜</a></li>
+                <li><a href="#">江浙菜</a></li>
+                <li><a href="#">香锅烤鱼</a></li>
+                <li><a href="#">粤菜</a></li>
+                <li><a href="#">中式烤串</a></li>
+                <li><a href="#">西北菜</a></li>
+                <li><a href="#">京菜</a></li>
+                <li><a href="#">鲁菜</a></li>
+                <li><a href="#">东北菜</a></li>
+                <li><a href="#">生鲜蔬果</a></li>
+                <li><a href="#">云贵菜</a></li>
+                <li><a href="#">东南亚菜</a></li>
+                <li><a href="#">客家菜</a></li>
+                <li><a href="#">咖啡酒吧</a></li>
+                <li><a href="#">蒙餐</a></li>
+                <li><a href="#">新疆菜</a></li>
+                <li><a href="#">素食</a></li>
+                <li><a href="#">创意菜</a></li>
+                <li><a href="#">其他美食</a></li>
+            </ul>
+            <ul id="smart">
+                <li><a href="#">离我最近</a></li>
+                <li><a href="#">好评最多</a></li>
+                <li><a href="#">人气最高</a></li>
+            </ul>
+            <ul id="sizer">
+                
+                <li><p>只看免预约 <input type="checkbox"></p></li>
+                <li><p>节假日可用 <input type="checkbox"></p></li>
+
+                <li style="line-height: 2rem;height: 14rem">
+                    <p>用餐时段</p>
+                    <p>不　　限：<input type="radio" name="kitchen"></p>
+                    <p>早　　餐：<input type="radio" name="kitchen"></p>
+                    <p>午　　餐：<input type="radio" name="kitchen"></p>
+                    <p>下午　茶：<input type="radio" name="kitchen"></p>
+                    <p>晚　　餐：<input type="radio" name="kitchen"></p>
+                    <p>夜　　宵：<input type="radio" name="kitchen"></p>
+                </li>
+                <li style="line-height: 2rem;height: 14rem">
+                    <p>餐厅服务</p>
+                    <p>不　　限：<input type="radio" name="kitchen2"></p>
+                    <p>买　　单：<input type="radio" name="kitchen2"></p>
+                    <p>在线点菜：<input type="radio" name="kitchen2"></p>
+                    <p>外卖送餐：<input type="radio" name="kitchen2"></p>
+                    <p>预　　定：<input type="radio" name="kitchen2"></p>
+                    <p>在线排队：<input type="radio" name="kitchen2"></p>
+                </li>
+                <li style="line-height: 2rem;height: 14rem">
+                    <p>用餐人数</p>
+                    <p>不　　　限：<input type="radio" name="kitchen3"></p>
+                    <p>单　人　餐：<input type="radio" name="kitchen3"></p>
+                    <p>双　人　餐：<input type="radio" name="kitchen3"></p>
+                    <p>３～４人餐：<input type="radio" name="kitchen3"></p>
+                    <p>５～10人餐：<input type="radio" name="kitchen3"></p>
+                    <p>10人　以上：<input type="radio" name="kitchen3"></p>
+                </li>
+            </ul>
+            <ul id="near">
+                <li id="tab"><span class="spanClass">商圈</span><span>地铁</span></li>
+                <li><p>宝安区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>海雅缤纷城</li>
+                        <li>宝安中心区</li>
+                        <li>西乡</li>
+                        <li>新安</li>
+                        <li>石岩</li>
+                        <li>港隆城</li>
+                        <li>沙井</li>
+                        <li>福永</li>
+                        <li>松岗</li>
+                        <li>公明</li>
+                        <li>固戍</li>
+                        <li>桃源居</li>
+                        <li>时代城</li>
+                        <li>罗田、燕川</li>
+                        <li>西田</li>
+                        <li>圳美</li>
+                        <li>田寮</li>
+                    </ul>
+                </li>
+                <li><p>南山区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>南山中心区</li>
+                        <li>南油</li>
+                        <li>南头</li>
+                        <li>科技园</li>
+                        <li>西丽</li>
+                        <li>华侨城</li>
+                        <li>蛇口</li>
+                        <li>海岸城、保利</li>
+                        <li>前海</li>
+                        <li>白石洲</li>
+                        <li>欢乐海岸</li>
+                        <li>太古城</li>
+                        <li>花园城</li>
+                        <li>海上世界</li>
+                        <li>世界之窗</li>
+                    </ul>
+                </li>
+                <li><p>福田区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>CBD中心区</li>
+                        <li>香蜜湖</li>
+                        <li>梅林</li>
+                        <li>上沙、下沙</li>
+                        <li>华强南</li>
+                        <li>八卦岭</li>
+                        <li>新城市广场</li>
+                        <li>华强北</li>
+                        <li>皇岗</li>
+                        <li>水围</li>
+                        <li>车公庙</li>
+                        <li>景田</li>
+                        <li>新洲、石厦</li>
+                        <li>竹子林</li>
+                        <li>市民中心</li>
+                        <li>连城、中心城</li>
+                        <li>会展中心</li>
+                        <li>岗厦</li>
+                    </ul>
+                </li>
+                <li><p>盐田区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>大小梅沙</li>
+                        <li>盐田区政府</li>
+                        <li>沙头角</li>
+                        <li>东部华侨城</li>
+                        <li>盐田海鲜食街</li>
+                        <li>壹海城</li>
+
+                    </ul>
+                </li>
+                <li><p>罗湖区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>罗湖区政府</li>
+                        <li>万象城</li>
+                        <li>地王大厦</li>
+                        <li>国贸</li>
+                        <li>东门</li>
+                        <li>莲塘</li>
+                        <li>笋岗</li>
+                        <li>宝安南路沿线</li>
+                        <li>翠竹路沿线</li>
+                        <li>喜荟城、水库</li>
+                        <li>火车站</li>
+                        <li>黄贝岭</li>
+                        <li>文锦渡</li>
+                        <li>布心、太白路</li>
+                        <li>田贝、水贝</li>
+                        <li>银湖、泥岗</li>
+                        <li>新秀、罗芳</li>
+                        <li>梧桐山</li>
+                    </ul>
+                </li>
+                <li><p>龙华新区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>龙华</li>
+                        <li>明治</li>
+                        <li>大浪</li>
+                        <li>观澜</li>
+                        <li>梅林关</li>
+                        <li>锦绣江南</li>
+                    </ul>
+                </li>
+                <li><p>龙岗区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>罗岗、求水山</li>
+                        <li>龙岗中心城</li>
+                        <li>五和、民营市场</li>
+                        <li>平湖</li>
+                        <li>横岗</li>
+                        <li>南联</li>
+                        <li>坪地</li>
+                        <li>大运</li>
+                        <li>李朗巨星商城</li>
+                        <li>万达广场、世贸</li>
+                        <li>华南城、奥特莱斯</li>
+                        <li>大芬、南岭</li>
+                        <li>双龙</li>
+                        <li>慢城、三联</li>
+                        <li>布吉街、东站、天虹</li>
+                        <li>天虹、坂田、杨美</li>
+                        <li>岗头、万科雪象</li>
+
+                    </ul>
+                </li>
+                <li><p>南澳大鹏新区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>南澳</li>
+                        <li>较场尾</li>
+                        <li>水头</li>
+                        <li>东西冲</li>
+                    </ul>
+                </li>
+                <li><p>光明新区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>光明新区</li>
+
+                    </ul>
+                </li>
+                <li><p>坪山新区</p>
+                    <ul>
+                        <li>全部</li>
+                        <li>坪山</li>
+                        <li>竹坑、坑梓</li>
+
+                    </ul>
+                </li>
+            </ul>
+            <div id="bg"></div>
+        </div>
+
+        <ul class="like">
+            <li><a href="details.html" style="background: url(images/2017-08-26_14.png) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>康师傅私房牛肉面</p>
+                    <p>￥62/人</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>买单立享9.7折</p>
+                    <p>　　康师傅私房牛肉面（中心城店）</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/22.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　单人餐69元起，双人餐136元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/33.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　68代98元，78代108元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/44.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>艾署</p>
+                    <p>￥62/人</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/55.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　单人餐69元起，双人餐136元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/66.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　68代98元，78代108元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/77.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>艾署</p>
+                    <p>￥62/人</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　[皇岗/水围]双时段2选1超值欢唱套餐</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/88.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>加州红颂歌量贩式KTV</p>
+                    <p>[19店通用]四季鲜果茶1份，提供免费WiFi</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　单人餐69元起，双人餐136元</p>
+                </span>
+            </a></li>
+            <li><a href="#" style="background: url(images/99.jpg) no-repeat left center /8rem 8rem">
+                <span class="detail">
+                    <p>尊宝披萨</p>
+                    <p>[107店通用]缤纷2-3人套餐</p>
+                    <p>蛋糕 下午茶</p>
+                    <p><span>支持外卖</span></p>
+                    <hr>
+                    <p>　　68代98元，78代108元</p>
+                </span>
+            </a></li>
+            <li>10</li>
+            <li>11</li>
+            <li>12</li>
+            <li>13</li>
+            <li>14</li>
+            <li>15</li>
+            <li>16</li>
+            <li>17</li>
+            <li>18</li>
+            <li>19</li>
+            <li>20</li>
+            <li>21</li>
+            <li>22</li>
+            <li>23</li>
+            <li>24</li>
+            <li>25</li>
+            <li>26</li>
+            <li>27</li>
+            <li>28</li>
+            <li>29</li>
+            <li>30</li>
+            <li>
+                <a href="#" style="line-height: 2rem">查看全部团购></a>
+                <!--<div class="arr"></div>-->
+            </li>
+
+        </ul>
+    </div>
+    <div class="footer">
+        <div class="btn">
+            <input type="button" value="登录"><input type="button" value="注册">
+            <span>城市：</span><input type="button" value="深圳" style="width: 8rem;margin-right: 0.5rem">
+        </div>
+
+        <ul class="bot">
+            <li><a href="#">首页</a></li>
+            <li><a href="#">我的</a></li>
+            <li><a href="#">美团下载</a></li>
+            <li><a href="#">电脑版</a></li>
+            <li><a href="#">帮助</a></li>
+        </ul>
+
+        <p class="friend">友情链接：<a href="#">猫眼电影</a></p>
+        <p class="copy">&copy;2017 美团网 京ICP证070791号</p>
+    </div>
+
+    <div class="download"></div>
+
+
+</body>
+</html>
+
+<script>//
+    $(function () {
+
+        window.onscroll=function () {
+            if($("body").scrollTop() <= 500){
+                $("#backtop").css({"display":"none"});
+            }else{
+                $("#backtop").css({"display":"block"});
+            }
+        }
+
+
+        $("#backtop").click(function () {
+            //$("html,body").scrollTop(0);
+
+            var timer = setInterval(function () {
+                var current = document.documentElement.scrollTop=document.body.scrollTop;
+                var speed = (0 - current)/4;
+                speed = Math.floor(speed);
+                if(current ==0){
+                    clearInterval(timer);
+                    return;
+                }
+                document.documentElement.scrollTop =current + speed;
+                document.body.scrollTop =current + speed;
+
+            },30)
+        })
+        //
+        var arr = [true,true,true,true];
+        $("#filter").on("click","li",function () {
+            var index = $(this).index( "#filter li");
+            if(arr[index]){
+                $("#list").css({"display":"none"});
+                $("#filter").addClass("filterClass")
+                $("#box ul").eq(index).show().siblings().hide();
+                $("#box").css({"margin-top":"4rem"});
+                $("#box #bg").show();
+                $("body").css({"overflow":"hidden"});
+                $("#box #bg").css("top", $("#box ul").eq(index).height() )
+                $("#filter").find("span").eq(index).css({"transform": "rotate(180deg)","border-top": "0.8rem solid #06c1a1"})
+                        .parent().siblings().find("span").css({"transform": "rotate(0deg)","border-top": "0.8rem solid #b7b7b7"});
+
+                for(var i=0;i<arr.length;i++){
+                    arr[i]=true;
+                }
+                arr[index] =false;
+            }
+            else{
+                $("#filter").removeClass("filterClass");
+                $("body").css({"overflow":"auto"});
+                $("#box ul").eq(index).hide().siblings().hide();
+                $("#box").css({"margin-top":"0rem"});
+                $("#filter").find("span").css({"transform": "rotate(0deg)","border-top": "0.8rem solid #b7b7b7"});
+                arr[index] =true;
+                $("#list").css({"display":"flex"});
+            }
+        })
+        //
+        $("#near").on("click","li",function () {
+            var index = $(this).index("#near>li") - 1;
+
+            //console.log(index);
+            $("#near>li").find("ul").eq(index).show().css("top",(-4.5)*index+"rem")
+                    .parent().siblings().find("ul").hide();
+
+            if(index !=-1){
+                $("#near>li").eq(index+1).css("background","#eee").siblings().css("background","#fff");
+            }
+
+        })
+        //
+        $("#tab").on("click","span",function () {
+            var index = $(this).index();
+            console.log(index);
+            $("#tab").find("span").eq(index).addClass("spanClass")
+                    .siblings().removeClass("spanClass");
+        })
+
+
+    })
+
+</script>
