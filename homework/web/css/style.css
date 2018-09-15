@@ -1,0 +1,16 @@
+/*#387ef5*/
+html{
+	width: 100%;font-size: 625% !important;
+}
+.mui-bar.mui-bar-nav{
+	background: #387ef5;
+}
+.mui-bar.mui-bar-nav h1{
+	color: #fff;
+}
+#user .wodedenglu{
+	width: 100%;height: 0.8rem !important;text-align: center;
+}
+#home .mui-slider-item{
+	width: 100%;height: 1rem !important;margin-top: 0.45rem;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>详情页面</title>
+    <script src="../js/mui.min.js"></script>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+    <link href="../css/style.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+    
+    <!--<script type="text/javascript" src="../js/basic.js"></script>-->
+</head>
+<body>
+	    <header class="mui-bar mui-bar-nav">
+	        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	        <h1 class="mui-title">新闻页面</h1>
+	    </header>
+		<div class="mui-content">
+		   	 <div id="content">
+		   	 	
+		   	 </div>
+		</div>
+</body>
+</html>
+
+<script type="text/javascript">
+	//获取传值  http://dev.dcloud.net.cn/mui/window/#window
+	//测试页面传值必须在手机上面
+	
+	mui.plusReady(function(){
+	     var aid=plus.webview.currentWebview().aid;
+	     //console.log(aid)
+	     var oCon = document.getElementById("content");
+	     //请求新闻详情
+		var url='http://www.phonegap100.com/appapi.php';
+		
+		//请求数据
+		mui.get(url,{
+			a:'getPortalArticle',
+			aid:aid
+		},function(data){
+				
+//			console.log(JSON.stringify(data));
+
+//			var content=data.result[0].content;
+			oCon.innerHTML=data.result[0].content;
+			
+			
+		},'json');
+	     
+	});
+	  
+</script>

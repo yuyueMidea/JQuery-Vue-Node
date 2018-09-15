@@ -1,0 +1,83 @@
+/*#387ef5*/
+html{
+	width: 100%;font-size: 625% !important;
+}
+.mui-bar.mui-bar-nav{
+	background: #387ef5;
+}
+.mui-bar.mui-bar-nav h1{
+	color: #fff;
+}
+.mui-bar.mui-bar-nav a{
+	color: #fff;font-size: 0.16rem;line-height: 0.25rem; 
+}
+
+.mui-content #content{
+	padding: 10px;
+	line-height: 2;
+}
+
+.mui-content #content img{
+	max-width: 80%;
+	display: block;
+	margin: 0 auto;
+}
+
+#user .wodedenglu{
+	width: 100%;height: 1rem !important;text-align: center;
+	background: #fff url(../images/head1.png) no-repeat center top;margin-top: 0.45rem;
+	
+}
+#user .wodedenglu button{
+	margin-top: 0.6rem;border: none;
+}
+#home .mui-slider-item{
+	width: 100%;height: 2rem !important;margin-top: 0.45rem;
+}
+.mui-action-back.mui-icon.mui-icon-left-nav.mui-pull-left{
+	color: #fff;font-size: 0.18rem;
+}
+.mui-input-row.feedbackText,#feedbackText{
+	height: 2rem !important;
+}
+#feedbackText{
+	height: 2rem !important;box-sizing: border-box;
+}
+
+#find #tap{
+	width: 100% !important;list-style: none;background: #eee;
+	position: fixed;top: 0.27rem;left: 0rem;overflow: hidden;
+	z-index: 10;
+	border-bottom: 0.01rem solid #ccc;
+}
+#find #tap li{
+	width: 25%;height: 0.3rem;box-sizing: border-box;float: left;margin: 0;
+}
+#find #tap li a{
+	height: 0.3rem;line-height: 0.3rem;text-align: center;color: #333;
+    		display: block;font-size: 0.14rem;
+    		/*border-bottom: 0.02rem solid #ccc;*/
+}
+#find #tap li a:hover{
+	border-bottom: 0.02rem solid red;
+}
+#find .mui-table-view{
+	margin-top: 0.5rem;
+}
+#user .mui-table-view-cell a{
+	padding-left: 0.5rem;
+}
+.mui-content #shift{
+	text-align: center !important;margin: 0.3rem auto !important;
+}
+
+.addClass{
+	height: 0.5rem !important;line-height: 0.5rem !important;
+	width: 100%;overflow: hidden;border-bottom: 1px solid #ccc;
+	padding-left: 0.15rem;
+}
+#collect{
+	width: 0.5rem ;height: 0.5rem;border-radius: 50%;
+	line-height: 0.5rem;background: pink;text-align: center;
+	position: fixed;right: 0.2rem;bottom: 0.4rem;
+}

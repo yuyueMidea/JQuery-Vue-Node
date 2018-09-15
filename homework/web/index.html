@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <script src="js/basic.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	
+	
+	<nav class="mui-bar mui-bar-tab">
+	    <a class="mui-tab-item mui-active" href="#home">
+	        <span class="mui-icon mui-icon-home"></span>
+	        <span class="mui-tab-label">首页</span>
+	    </a>
+	    <a class="mui-tab-item" href="#health">
+	        <span class="mui-icon mui-icon-phone"></span>
+	        <span class="mui-tab-label">健康分析</span>
+	    </a>
+	    <a class="mui-tab-item" href="#find">
+	        <span class="mui-icon mui-icon-email"></span>
+	        <span class="mui-tab-label">发现</span>
+	    </a>
+	    <a class="mui-tab-item" href="#user">
+	        <span class="mui-icon mui-icon-gear"></span>
+	        <span class="mui-tab-label">个人中心</span>
+	    </a>
+	</nav>
+	
+	<div class="mui-content">
+		<div class="content">
+			<div id="home" class="mui-control-content mui-active">
+				<header class="mui-bar mui-bar-nav">
+				    <h1 class="mui-title">首页</h1>
+				</header>
+				
+				<div id="slider" class="mui-slider" >
+				  <div class="mui-slider-group mui-slider-loop">
+				    <!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+				    <div class="mui-slider-item mui-slider-item-duplicate">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				    <!-- 第一张 -->
+				    <div class="mui-slider-item">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				    <!-- 第二张 -->
+				    <div class="mui-slider-item">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				    <!-- 第三张 -->
+				    <div class="mui-slider-item">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				    <!-- 第四张 -->
+				    <div class="mui-slider-item">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				    <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+				    <div class="mui-slider-item mui-slider-item-duplicate">
+				      <a href="#">
+				        <img src="http://placehold.it/400x300">
+				      </a>
+				    </div>
+				  </div>
+				  <div class="mui-slider-indicator">
+				    <div class="mui-indicator mui-active"></div>
+				    <div class="mui-indicator"></div>
+				    <div class="mui-indicator"></div>
+				    <div class="mui-indicator"></div>
+				  </div>
+				</div>
+				
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                 热门推荐
+			            </a>
+			        </li>
+				    <li class="mui-table-view-cell mui-media">
+				        <a href="javascript:;">
+				            <img class="mui-media-object mui-pull-left" src="http://placehold.it/40x30">
+				            <div class="mui-media-body">
+				                幸福
+				                <p class="mui-ellipsis">能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+				            </div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell mui-media">
+				        <a href="javascript:;">
+				            <img class="mui-media-object mui-pull-left" src="http://placehold.it/40x30">
+				            <div class="mui-media-body">
+				                木屋
+				                <p class="mui-ellipsis">想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+				            </div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell mui-media">
+				        <a href="javascript:;">
+				            <img class="mui-media-object mui-pull-left" src="http://placehold.it/40x30">
+				            <div class="mui-media-body">
+				                CBD
+				                <p class="mui-ellipsis">烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
+				            </div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		  
+			<div id="health" class="mui-control-content">
+				<header class="mui-bar mui-bar-nav">
+				    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				    <h1 class="mui-title">健康分析</h1>
+				</header>
+			</div>
+			<div id="find" class="mui-control-content">
+				<header class="mui-bar mui-bar-nav">
+				    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				    <h1 class="mui-title">健康资讯</h1>
+				</header>
+				<br /><br /><br />
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">按钮1</button>
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">按钮2</button>
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">按钮3</button>
+				<button type="button" class="mui-btn mui-btn-blue mui-btn-outlined">按钮4</button>
+			</div>
+			
+			<div id="user" class="mui-control-content">
+				<header class="mui-bar mui-bar-nav">
+				    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				    <h1 class="mui-title">我</h1>
+				</header>
+				<br /><br /><br />
+				<div class="wodedenglu">
+					<button id="goLogin" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">登录</button>
+					<button id="goRegister" type="button" class="mui-btn mui-btn-blue mui-btn-outlined">注册</button>
+				</div>
+				
+				<br />
+				<ul class="mui-table-view">
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                我的健康
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                 我的收藏
+			            </a>
+			        </li>
+			    </ul>
+			    <br />
+			    <ul class="mui-table-view">
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                在线客服
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                 帮助手册
+			            </a>
+			        </li>
+			    </ul>
+			    <br />
+			    <ul class="mui-table-view">
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                意见反馈
+			            </a>
+			        </li>
+			        <li class="mui-table-view-cell">
+			            <a class="mui-navigate-right">
+			                 我的收藏
+			            </a>
+			        </li>
+			    </ul>
+			    <br />
+				 
+			</div>
+		</div>
+		
+	    
+	</div>
+	
+	
+</body>
+</html>
