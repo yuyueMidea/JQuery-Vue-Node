@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- saved from url=(0099)https://apis.map.qq.com/tools/geolocation?key=DZYBZ-73WWI-FG6GZ-5JRFR-PNVIE-4OFUL&referer=waimaiapp -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+        <title>腾讯地图 - 前端定位组件</title>
+        
+        
+        
+    <link rel="stylesheet" href="./geolocation_c55a9bf.css"></head>
+    <body>
+        <p id="geoResult">深圳市</p>
+        <div id="loading" class="fadeout">
+            
+        </div>
+
+        
+
+        
+    <script type="text/javascript" src="./mod_0d3c97a.js.下载"></script><script type="text/javascript" src="./geolocation_libs_edf7499.js.下载"></script><script type="text/javascript">!function() {
+
+    window.listener.on('common.geolocation', 'success', function(evt, loc) {
+        var result = loc.addr || loc.city;
+        document.getElementById('geoResult').innerHTML = result;
+        document.getElementById('loading').className = 'fadeout';
+    });
+    window.listener.on('common.geolocation', 'fail', function() {
+        document.getElementById('geoResult').innerHTML = '定位失败';
+        document.getElementById('loading').className = 'fadeout';
+    });
+
+    window._prStat = require('geolocation:static/js/util/stat.js');
+    window._prStat.init({
+        appId: 'mc_geolocation',
+        statService: '//pr.map.qq.com/pingd',
+        from: 'waimaiapp'
+    });
+
+    window._DEFAULT_CITY = {"module":"geolocation","type":"ip","adcode":440300,"nation":"中国","province":"广东省","city":"深圳市","district":"","addr":"","lat":22.543099,"lng":114.057868,"accuracy":10000,"ip":"113.92.92.51"};
+    require('geolocation:static/js/boot.js').init({key: 'DZYBZ-73WWI-FG6GZ-5JRFR-PNVIE-4OFUL', debug: 0, clearCache: 0,locType: ''});
+    }();</script>
+
+    
+
+</body></html>

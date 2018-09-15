@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <style type="text/css">
+
+    	* {
+            padding:0;
+            margin:0;
+        }
+        ul li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        input{
+            outline: none;
+        }
+    	html{
+    		width: 100%;font-size: 100px;
+    	}
+    	.mui-table-view{
+    		
+    	}
+    	.mui-media{
+    		height: 1rem;font-size: 0.14rem;line-height: 0.2rem;
+    	}
+    	
+    	.mui-media p{
+    		font-size: 0.12rem;
+    	}
+    	.mui-media p span{
+    		color: #06c1ae;font-size: 0.16rem;font-weight: 700;
+    		
+    	}
+    	.mui-media-object{
+    		max-width: 0.8rem !important;height: 0.8rem !important;
+    	}
+    	#out{
+    		width: 100%;font-size: 0.14rem;z-index: 2;
+    		overflow: hidden;box-sizing: border-box;
+    		border: none;border-bottom: 1px solid #ccc;
+    
+    	}
+    	#out li{
+    		width: 25%;font-size: 0.16rem;float: left;
+    		height: 0.5rem;line-height: 0.5rem;
+    		box-sizing: border-box;
+    	}
+    	#out li a{
+    		height: 0.5rem !important;line-height: 0.5rem;
+    		text-align: center;color: #333;background: #fff;
+    		display: block;
+    	}
+    	
+    	@media only screen and (max-width: 320px){
+            html{
+                width: 100%;font-size: 85px !important;
+            }
+        }
+        .mui-slider-item{
+        	width: 100% !important;height: 1.8rem !important;
+        	display: flex;flex-wrap: wrap;justify-content: space-around;
+        }
+        .mui-slider-item li{
+        	width: 20% !important;height: 0.8rem !important;float: left;
+        	box-sizing: border-box;padding: 0.05rem;
+        }
+        .mui-popover{
+        	width: 100% !important;
+        }
+        .mui-popover ul{
+        	overflow-y: auto;height: 3rem;
+        }
+        .mui-popover ul li{
+        	width: 100% !important;font-size: 0.14rem;
+        }
+        #sug .mui-checkbox{
+        	height: 0.3rem;
+        }
+        .main{
+        	width: 80%;height: 800px;margin: auto;
+        }
+    </style>
+    
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <!--<script type="text/javascript" charset="utf-8">
+        	mui.init();
+        	
+    </script>-->
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">标题</h1>
+	</header>
+	<br /><br /><br />
+	<div class="mui-numbox" data-numbox-step='10' data-numbox-min='0' data-numbox-max='100'>
+	  <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+	  <input class="mui-numbox-input" type="number" />
+	  <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+	</div>
+	
+	<div class="mui-input-row mui-radio ">
+	    <label>Radio</label>
+	    <input name="radio" type="radio" checked>
+	</div>
+	<div class="mui-input-row mui-radio mui-disabled">
+	    <label>Radio</label>
+	    <input name="radio" type="radio" disabled="disabled">
+	</div>
+	<div class="mui-input-row mui-input-range">
+	    <label>Range</label>
+	    <input type="range" min="0" max="100" value="50">
+	</div>
+	<br /><br />
+	
+	
+	<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+	    <div class="mui-scroll">
+	        <a class="mui-control-item mui-active">
+	            推荐
+	        </a>
+	        <a class="mui-control-item">
+	          热点
+	        </a>
+	        <a class="mui-control-item">
+	           北京
+	        </a>
+	        <a class="mui-control-item">
+	           社会
+	        </a>
+	        <a class="mui-control-item">
+	           娱乐
+	        </a>
+	        <a class="mui-control-item">
+	           科技
+	        </a>
+	    </div>
+	</div>
+	
+	<br /><br />
+	<div class="mui-input-row">
+	    <label>Switch</label>
+	    <div class="mui-switch mui-active mui-switch-blue">
+	        <div class="mui-switch-handle"></div>
+	    </div>
+	</div>
+	<div class="mui-switch mui-switch-mini mui-active mui-switch-blue">
+	  <div class="mui-switch-handle"></div>
+	</div>
+	<div class="main">
+			<hr />
+			<progress id="pr" value="30" max="100"></progress>
+			<hr />
+			<meter id="mt" min="10" max="100" value="30"></meter>
+			<br /><br />
+			<details open="open">
+				<summary>标题</summary>
+				 <p>详细内容描述111</p>
+				 <p>详细内容描述222</p>
+				 <p>详细内容描述333</p>
+				 <p>详细内容描述444</p>
+			</details>
+			<br /><br />
+				<datalist id=”city ” >
+			      <option value="shanghai">
+			      <option value="beijing">
+			      <option value="wuhan">
+			 	 </datalist>
+			 	 <br /><br />
+	 	 <datalist id=”city ” > 
+		      <option value="1">上海</option> 
+		      <option value="2">北京</option> 
+		      <option value="3">武汉</option> 
+		    </datalist>
+		    <br /><br />
+		    <h2>详细内容描述222详细 <mark>内容描述</mark>222详细内容描述222详细内容描述222</h2>
+		    <br />
+		    <form action="">
+		    	<input type="email" name="email1" required="required"/>
+		    	<br />
+		    	<input type="url" required="required"/><br />
+		    	<input type="color" required="required" /><br />
+		    	<input type="number" required="required" /><br />
+		    	<input type="range" required="required" value="55" min="10" max="100" step="5"/><br />
+		    	<input type="search" required="required" /><br />
+		    	<input type="date" required="required" /><br />
+		    	<input type="text" autocomplete="on" />
+		    	<input type="submit" />
+		    </form>
+		    <br />
+		    
+		    
+		    
+	</div>
+
+</body>
+</html>
+
+		
+<script type="text/javascript">  
+		function chinanum(num){  
+		    var china = new Array('零','一','二','三','四','五','六','七','八','九');  
+		    var arr = [];  
+		    var english = num.split("")  
+		    for(var i=0;i<english.length;i++){  
+		        arr[i] = china[english[i]];  
+		    }  
+		    return arr.join("")  
+		}  
+		var shuzi = '767675';  
+		var shu = chinanum(shuzi); 
+		console.log(shu );
+		
+</script>  
+
+
+
