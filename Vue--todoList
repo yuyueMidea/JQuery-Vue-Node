@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>右键菜单</title>
+    <style type="text/css">
+      
+    </style>
+</head>
+<body>
+   
+        <div id='app'>
+            <input type="text" value="请输入姓名" v-model='name'/>
+            <input type="text" value="请输入年龄" v-model='age'/>
+            <button @click='btnAction()'>新增</button>
+            <!-- <p>{{this.name}}</p> -->
+            <ul id='listD'>
+                <li v-for='(item,key) in this.listData'>
+                    <p><span>{{item.name}}</span><span>{{item.age}}</span>--<button @click='btnEdit(key)'>修改</button><button @click='btnDel(key)'>删除</button></p>
+                </li>
+            </ul>
+        </div>
+
+    <script type="text/javascript" src='js/vue.js'></script>
+    <script type="text/javascript">
+      
+    /////////////////////////////
+    var app = new Vue({
+        el:'#app',
+        data:{
+            listData:[
+                /*{
+                    name: 'yuyue',
+                    age: 26,
+                },
+                {
+                    name: 'zhupeng',
+                    age: 27,
+                },
+                {
+                    name: 'fangbo',
+                    age: 28,
+                },*/
+            ],
+            name:'',
+            age:'',
+        },
+        methods:{
+            btnAction(){
+                console.log(this.listData);
+                this.listData.push({
+                    'name': this.name,
+                    'age': this.age,
+                })
+                this.name = '';
+                this.age ='';
+            },
+            btnEdit(key){
+                debugger
+                this.name = this.listData[key].name;
+                this.age = this.listData[key].age;
+            },
+            btnDel(key){
+                this.listData.splice(key,1);
+            }
+        }
+    })
+    
+
+
+    </script>
+</body>
+</html>
