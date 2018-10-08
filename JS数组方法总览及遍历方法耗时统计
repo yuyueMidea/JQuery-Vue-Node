@@ -1,0 +1,45 @@
+01、push(value)将value添加到数组的最后，返回数组长度(改变原数组)
+// Base
+let a = [1, 2, 3, 4, 5]
+let result = a.push(1)
+console.log(result)       // 6
+console.log(a)            // [1, 2, 3, 4, 5, 1] 原数组被改变
+
+// More
+a = [1, 2, 3, 4, 5]
+result = a.push('a', 'b') // 可一次添加多个值
+console.log(result)       // 7
+console.log(a)            // [1, 2, 3, 4, 5, 'a', 'b']
+复制代码02、unshift()添加元素到数组的开头，返回数组的长度(改变原数组)
+// Base
+let a = [1, 2, 3, 4, 5]
+let result = a.unshift(1)
+console.log(result)           // 6
+console.log(a)                // [1, 1, 2, 3, 4, 5]
+
+// More
+result = a.unshift('a', 'b')  // 可一次添加多个值
+console.log(result)           // 8
+console.log(a)                // ['a', 'b', 1, 1, 2, 3, 4, 5]
+复制代码03、pop()删除数组中最后一个元素，返回被删除元素(改变原数组)
+// Base
+let a = [5]
+let result = a.pop()
+console.log(result)   // 5
+console.log(a)        // []
+
+// More
+result = a.pop()      // 数组元素为空后会返回undefined
+console.log(result)   // undefined
+console.log(a)        // []
+复制代码04、shift()删除数组第一个元素，返回删除的元素(改变原数组)
+// Base
+let a = [5]
+let result = a.shift()
+console.log(result)      // 5
+console.log(a)           // []
+
+// More
+result = a.shift()       // 数组元素为空后会返回undefined
+console.log(result)      // undefined
+console.log(a)           // []
