@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vue-table-demo1</title>
+	<style type="text/css">
+		*{
+			padding: 0;margin: 0;
+		}
+		#app{
+			padding: 22px;
+		}
+		ul,ol{
+			list-style: none;
+		}
+		input{
+			padding: 3px 11px;
+		}
+		input type=['button']{
+			margin: 5px;
+		}
+		.showTable {
+			border-collapse: collapse; margin: 11px
+		}
+		.showTable td{
+			border: 1px solid #ccc; padding: 6px 22px;
+		}
+		.showTable tr:hover{
+			background: #ccc;
+		}
+	</style>
+</head>
+<body>
+<h2>hello~vue-table!</h2>
+	<div id="app">
+
+	    <input type="text" name="" v-model="name"><br><br>
+	    <input type="text" name="" v-model="gender"><br><br>
+	    <input type="text" name="" v-model="hobby"><br><br>
+	    <input type="text" name="" v-model="address"><br><br>
+	    <input type="button" value="新增" @click='addNew'>
+	    <input type="button" value="删除" @click='delete(keyName)'>
+	    <input type="button" value="修改" @click='update(key)'>
+    	
+    	<table class="showTable" >
+    		<tr v-for='item in tableData' @click='getName(item.name)'>
+    			<td>{{item.name}}</td>
+    			<td>{{item.gender}}</td>
+    			<td>{{item.hobby}}</td>
+    			<td>{{item.address}}</td>
+    		</tr>
+    	</table>
+
+    </div>
+    
+    <!-- 脚本 -->
+    <script src="js/vue.js"></script>
+	
+    <script>
+		var app1 = new Vue({
+			el: '#app',
+			data(){
+				return{
+					msg: 123,
+					key: '',
+					keyName:'',
+	               columns: [
+	                   {field: 'name', title: '姓名', width: 80, columnAlign:'center',isResize:true},
+	                   {field: 'gender', title: '手机号码', width: 50,columnAlign:'center',isResize:true},
+	                   {field: 'hobby', title: '爱好', width: 150,columnAlign:'center',isResize:true},
+	                   {field: 'address', title: '地址',width: 280,isResize:true}
+	               ],
+	               tableData:[
+	                   {"name":"赵伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市黄浦区金陵东路569号17楼"},
+	                   {"name":"李伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市奉贤区南桥镇立新路12号2楼"},
+	                   {"name":"孙伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市崇明县城桥镇八一路739号"},
+	                   {"name":"周伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市青浦区青浦镇章浜路24号"},
+	                   {"name":"吴伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市松江区乐都西路867-871号"}
+	               ]
+				}
+			},
+			methods:{
+				addNew(){
+					this.tableData.push({
+						"name": this.name,
+						"gender": this.gender,
+						"hobby": this.hobby,
+						"address": this.address,
+					})
+				},
+				delete(keyName){
+					for(var i=0;i<this.tableData.length;i++){
+						if(this.tableData[i].name ==keyName){
+							this.tableData.splice(i,1);
+							break
+						}
+					}
+				},getName(keyName){
+					this.keyName =keyName;
+				}
+			}
+		})
+	</script>
+
+</body>
+</html>
