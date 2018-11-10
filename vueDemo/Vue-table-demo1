@@ -27,29 +27,45 @@
 		.showTable tr:hover{
 			background: #ccc;
 		}
+		.active{
+			background: #ccc;color: pink;
+		}
 	</style>
 </head>
 <body>
 <h2>hello~vue-table!</h2>
 	<div id="app">
 
-	    <input type="text" name="" v-model="name"><br><br>
-	    <input type="text" name="" v-model="gender"><br><br>
-	    <input type="text" name="" v-model="hobby"><br><br>
+	    <input type="text" name="" v-model="name">
+	    <input type="text" name="" v-model="gender">
+	    <input type="text" name="" v-model="hobby">
 	    <input type="text" name="" v-model="address"><br><br>
 	    <input type="button" value="新增" @click='addNew'>
-	    <input type="button" value="删除" @click='delete(keyName)'>
-	    <input type="button" value="修改" @click='update(key)'>
+	    <input type="button" value="删除" @click='delete(checkedNames)'>
+	    <input type="button" value="修改" @click='update(rowId)'>
+	    <input type="button" value="重置" @click='reset'>
     	
     	<table class="showTable" >
-    		<tr v-for='item in tableData' @click='getName(item.name)'>
-    			<td>{{item.name}}</td>
+    		<tr>
+    			<td>rowId</td>
+    			<td>name</td>
+    			<td>gender</td>
+    			<td>hobby</td>
+    			<td>address</td>
+    		</tr>
+    		<tr v-for='item in tableData'>
+    			<td>{{item.rowId}}</td>
+    			<td>
+    				<input type="checkbox" id="{{item.rowId}}" value="{{item.rowId}}" v-model="checkedNames">
+  					<label for="{{item.rowId}}" @click='getName(item.rowId)'>{{item.name}}</label>
+    			</td>
+    			<!-- <td>{{item.name}}</td> -->
     			<td>{{item.gender}}</td>
     			<td>{{item.hobby}}</td>
     			<td>{{item.address}}</td>
     		</tr>
     	</table>
-
+    	<p>{{checkedNames}}</p>
     </div>
     
     <!-- 脚本 -->
@@ -61,7 +77,14 @@
 			data(){
 				return{
 					msg: 123,
+						"name": '',
+						"gender": '',
+						"hobby": '',
+						"address": '',
+						"rowId":6,
 					key: '',
+					checkedNames:[],
+					isActive: false,
 					keyName:'',
 	               columns: [
 	                   {field: 'name', title: '姓名', width: 80, columnAlign:'center',isResize:true},
@@ -70,32 +93,75 @@
 	                   {field: 'address', title: '地址',width: 280,isResize:true}
 	               ],
 	               tableData:[
-	                   {"name":"赵伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市黄浦区金陵东路569号17楼"},
-	                   {"name":"李伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市奉贤区南桥镇立新路12号2楼"},
-	                   {"name":"孙伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市崇明县城桥镇八一路739号"},
-	                   {"name":"周伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市青浦区青浦镇章浜路24号"},
-	                   {"name":"吴伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市松江区乐都西路867-871号"}
+	                   {"rowId":1,"name":"赵伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市黄浦区金陵东路569号17楼"},
+	                   {"rowId":2,"name":"李伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市奉贤区南桥镇立新路12号2楼"},
+	                   {"rowId":3,"name":"孙伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市崇明县城桥镇八一路739号"},
+	                   {"rowId":4,"name":"周伟","gender":"女","hobby":"钢琴、书法、唱歌","address":"上海市青浦区青浦镇章浜路24号"},
+	                   {"rowId":5,"name":"吴伟","gender":"男","hobby":"钢琴、书法、唱歌","address":"上海市松江区乐都西路867-871号"}
 	               ]
 				}
 			},
 			methods:{
 				addNew(){
-					this.tableData.push({
-						"name": this.name,
-						"gender": this.gender,
-						"hobby": this.hobby,
-						"address": this.address,
-					})
+					if(this.name &&this.gender &&this.hobby &&this.address){
+						for(var i=0;i<this.tableData.length;i++){
+							if(this.tableData[i].rowId ==this.rowId || this.tableData[i].name ==this.name){
+								
+								return;
+							}
+						}
+						this.tableData.push({
+							"rowId": this.rowId++,
+							"name": this.name,
+							"gender": this.gender,
+							"hobby": this.hobby,
+							"address": this.address,
+						})
+					}
 				},
-				delete(keyName){
+				delete(checkedNames){
+					if(checkedNames.length <1) return;
+					var ifSure=confirm("确认删除选中的数据吗？");
+  					if(!ifSure) return;
+  		
 					for(var i=0;i<this.tableData.length;i++){
-						if(this.tableData[i].name ==keyName){
+						if(checkedNames.indexOf(String(this.tableData[i].rowId)) !=-1){
 							this.tableData.splice(i,1);
-							break
+							i--;
 						}
 					}
-				},getName(keyName){
-					this.keyName =keyName;
+				},getName(rowId){
+					this.isActive =!this.isActive;
+					// debugger
+					this.rowId =rowId;
+					for(var i=0;i<this.tableData.length;i++){
+						if(this.tableData[i].rowId ==rowId){
+							this.rowId = this.tableData[i].rowId;
+							this.name = this.tableData[i].name;
+							this.gender = this.tableData[i].gender;
+							this.hobby = this.tableData[i].hobby;
+							this.address = this.tableData[i].address;
+							break;
+						}
+					}
+				},update(rowId){
+					if(!rowId) return;
+					for(var i=0;i<this.tableData.length;i++){
+						if(this.tableData[i].rowId ==rowId){
+							// this.rowId = this.tableData[i].rowId;
+							 this.tableData[i].name =this.name;
+							 this.tableData[i].gender = this.gender;
+							this.tableData[i].hobby=this.hobby;
+							this.tableData[i].address=this.address ;
+							break;
+						}
+					}
+				},reset(){
+					// this.rowId ='';
+					this.name = '';
+					this.gender = '';
+					this.hobby = '';
+					this.address = '';
 				}
 			}
 		})
