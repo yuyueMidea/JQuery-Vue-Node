@@ -30,6 +30,22 @@
 		.active{
 			background: #ccc;color: pink;
 		}
+		.music-list li{
+			border-bottom: 1px solid #ccc; padding: 5px;
+		}
+		.music-list li span{
+			overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+			 display: inline-block;
+		}
+		.music-list li span:nth-child(1){
+			width: 150px;color: red;
+		}
+		.music-list li span:nth-child(2){
+			width: 100px;color: pink; 
+		}
+		.music-list li span:nth-child(3){
+			width: 250px;color: #aaa; 
+		}
 	</style>
 </head>
 <body>
@@ -43,8 +59,9 @@
 	    <input type="button" value="新增" @click='addNew'>
 	    <input type="button" value="删除" @click='delete(checkedNames)'>
 	    <input type="button" value="修改" @click='update(rowId)'>
-	    <input type="button" value="重置" @click='reset'>
-    	
+	    <input type="button" value="重置" @click='reset'><br/>
+	    
+    	<!--  -->
     	<table class="showTable" >
     		<tr>
     			<td>rowId</td>
@@ -66,10 +83,28 @@
     		</tr>
     	</table>
     	<p>{{checkedNames}}</p>
+    	<br/><hr/>
+    	<div class="music-list-bor" style="border: 1px solid #ccc">   	
+	    	<h2>音乐排行榜详情接口：
+	    		<input type="button" value="请求数据" @click='getData'>
+	    		<img src="loading.gif" v-if='showImg'/>
+	    	</h2>
+	    	<ul class="music-list">
+	    		<li v-for='item in listInfo'>
+	    			<p>
+	    				<span title="{{item.title}}">{{item.title}}</span>
+	    				<span title="{{item.author}}">{{item.author}}</span>
+	    				<span title="{{item.si_proxycompany}}">
+	    					{{item.si_proxycompany}}</span>
+	    			</p>
+	    		</li>
+	    	</ul>
+    	</div>
     </div>
     
     <!-- 脚本 -->
     <script src="js/vue.js"></script>
+    <script src="js/axios.js"></script>
 	
     <script>
 		var app1 = new Vue({
@@ -83,6 +118,9 @@
 						"address": '',
 						"rowId":6,
 					key: '',
+					showImg: false,
+					listInfo:[],
+					pageNo:1,
 					checkedNames:[],
 					isActive: false,
 					keyName:'',
@@ -103,6 +141,7 @@
 			},
 			methods:{
 				addNew(){
+					debugger
 					if(this.name &&this.gender &&this.hobby &&this.address){
 						for(var i=0;i<this.tableData.length;i++){
 							if(this.tableData[i].rowId ==this.rowId || this.tableData[i].name ==this.name){
@@ -162,6 +201,24 @@
 					this.gender = '';
 					this.hobby = '';
 					this.address = '';
+				},getData(){
+					var url="http://api.apiopen.top/musicRankingsDetails?type="+this.pageNo;
+					this.showImg =true;
+					var that =this;
+					axios.get(url)
+					  .then(function (response) {
+					    // handle success
+					    that.listInfo =response.data.result;
+					    console.log(response.data.result);
+					    that.showImg =false;
+					  })
+					  .catch(function (error) {
+					    // handle error
+					    console.log(error);
+					  })
+					  .then(function () {
+					    
+					  });
 				}
 			}
 		})
