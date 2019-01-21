@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>heyUI-demo</title>
+</head>
+<body>
+  <h1 style="text-align: center;">hello~heyUI</h1>
+  <div id="app" v-padding="20">
+  <hr>
+	<h2>DropdownCustom 自定义下拉控件</h2>
+	<h-dropdowncustom class-name="h-text-dropdown">
+	    <span>个人信息</span>
+	    <div slot="content" v-width="200">
+	      <div v-padding="20">
+	        <img :width="80" :height="80" style="border-radius:80px;float:left" src="http://www.ch-un.com/images/head.jpg">
+	        <div style="height:80px;margin-left:90px;line-height:80px;">LAN</div>
+	      </div>
+	      <h-row style="line-height:40px;border-top:1px solid #EEE;"><h-col width=12 class="text-center" style="border-right:1px solid #EEE;"><a>个人信息</a></h-col><h-col width=12 class="text-center"><a>注销</a></h-col></h-row>
+	    </div>
+	</h-dropdowncustom>
+  <hr>
+  <p>
+    <button class='h-btn h-btn-blue' @click="message('info')">消息</button>
+    <button class='h-btn h-btn-green' @click="message('success')">成功</button>
+    <button class='h-btn h-btn-yellow' @click="message('warn')">警告</button>
+    <button class='h-btn h-btn-red' @click="message('error')">错误</button>
+  <button class='h-btn' @click="messageLoad()">显示加载中</button></p>
+    <p><h-button color="primary" @click="show = true">打开vue弹框</h-button>
+    <h-button color="primary" @click="openModal">打开js弹框</h-button></p>
+  <hr>
+  <div class="tooltip2-demo">
+      <h-row :space="10" v-width="300" style="margin-left:80px;">
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="top-start" content="提示语">上左</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="top" content="提示语">上中</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="top-end" content="提示语">上右</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="left-start" content="提示语">左上</button></h-col>
+        <h-col :width="8"><button class="h-btn h-btn-text">中间</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="right-start" content="提示语">右上</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="left" content="提示语">左中</button></h-col>
+        <h-col :width="8"><button class="h-btn h-btn-text">中间</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="right" content="提示语">右中</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="left-end" content="提示语">左下</button></h-col>
+        <h-col :width="8"><button class="h-btn h-btn-text">中间</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="right-end" content="提示语">右下</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="bottom-start" content="提示语">下左</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="bottom" content="提示语">下中</button></h-col>
+        <h-col :width="8"><button class="h-btn" v-tooltip placement="bottom-end" content="提示语">下右</button></h-col>
+      </h-row>
+  </div>
+  <hr>
+  <div>
+      <h-poptip content="确定删除此段工作经历，是否永久删除？" @confirm="confirm"><button class="h-btn h-btn-red">删除</button></h-poptip>
+      <h-poptip content="确认删除?" @confirm="confirm"><button class="h-btn h-btn-text-red h-btn-no-border"><i class="h-icon-trash"></i></button></h-poptip>
+  </div>
+  <hr>
+
+<div class="h-panel">
+    <div class="h-panel-bar">
+      <span class="h-panel-title">标题</span>
+      <span v-color:gray v-font="13">说明~~</span>
+      <div class="h-panel-right"><h-search placeholder="查询" v-width="200"></h-search><i class="h-split"></i><button class="h-btn h-btn-green h-btn-m">查询</button></div>
+    </div>
+    <div class="h-panel-bar">
+      <span class="link">下载</span><i class="h-split" v-width="10"></i><span class="link" :disabled="!selectAll">分享</span>
+      <i class="h-split"></i>
+      <h-dropdownMenu :datas="menus" class-name="h-text-dropdown"><span :disabled="!selectAll">更多</span></h-dropdownMenu>
+      <div class="h-panel-right">
+        <h-pagination :cur="page.cur" :total="page.total" :small="true" layout="pager" @change="currentChange"></h-pagination>
+      </div>
+    </div>
+    <div class="h-panel-body bottom-line">
+      <h-table :datas="datas" checkbox :columns="columns"></h-table>
+    </div>
+    <div class="h-panel-bar">
+      <h-pagination :cur="page.cur" :total="page.total" :small="true" align="right" @change="currentChange"></h-pagination>
+    </div>
+</div>
+<hr>
+<div>
+  <p>值：{{checkedvalue}}</p>
+  <p>
+    <h-button @click="updateChoose" size="xs">设置checkbox选中值</h-button>
+    <h-button @click="getChoose" size="xs">获得checkbox选中值</h-button>
+    <h-button @click="getFullChoose" size="xs">获得所有checkbox选中值</h-button>
+    <h-button @click="chooseAll" size="xs">选中所有值</h-button>
+  </p>
+  <h-tree :option="param" ref="demo" v-model="checkedvalue" :multiple="true" choose-mode="all" @choose="choose"></h-tree>
+</div>
+
+  <hr>
+    <p>[普通选择日期控件]value:{{datevalue}}</p>
+    <p><h-switch v-model="disabled" :small="true">禁用</h-switch></p>
+    <p><h-switch v-model="readonly" :small="true">只读</h-switch></p>
+    <p><h-switchlist v-model="datetype" :datas="{year: '年', month: '月', quarter: '季度', week: '周', date: '日'}"></h-switchlist></p>
+    <p><h-datepicker v-model="datevalue" :readonly="readonly" :disabled="disabled" :type="datetype"></h-datepicker></p>
+    <hr>
+	<p>[滑块]对应的值：{{slidervalue}}</p>
+	<p><h-slider v-model="slidervalue"></h-slider></p>
+	<hr>
+	<p>[评分]{{rateValue}}</p>
+	<p><h-rate v-model="rateValue" show-text></h-rate></p>
+	<hr>
+	<p>[TagInput 标签输入]{{tagValue}}</p>
+	<p><h-taginput v-model="tagValue"></h-taginput></p>
+	<hr>
+	
+
+	<hr>
+	<h2>Badge 徽标数</h2>
+	<p>
+		<h-buttongroup size="s">
+		<h-button icon="h-icon-plus" @click="count++"></h-button>
+      <h-button icon="h-icon-minus" @click="count<=0||count--"></h-button>
+      </h-buttongroup>
+      <!-- <i class="h-split"></i> -->
+      <h-badge :count="count"><span >消息</span></h-badge>
+	</p>
+	<hr>
+	<div v-width="600">
+	<h2>Progress 进度条</h2>
+	    <p><h-progress :percent="60"><span slot="title">项目1</span><span slot="text"><span class="primary-color">180</span> K</span></h-progress></p>
+	    <p><h-progress :percent="99" color="green"><span slot="title">项目2</span><span slot="text">成功</span></h-progress></p>
+	    <p><h-progress :percent="12" color="red"><span slot="title">项目2</span><span slot="text">失败</span></h-progress></p>
+	</div>
+	<hr>
+	<h2>Circle 进度环</h2>
+	<div>
+	    <h-circle :percent="60"><span >项目1</span></h-circle>
+	    <h-circle :percent="99" color="#13CE66"><span>项目2</span></h-circle>
+	    <h-circle :percent="12" color="#E11617"><span>项目2</span></h-circle>
+	</div>
+	<hr>
+	<h2>Steps 步骤条</h2>
+	<div>
+	    <p>
+	      <h-buttongroup size="s">
+	        <h-button icon="h-icon-plus" @click="step>=3||step++"></h-button>
+	        <h-button icon="h-icon-minus" @click="step<=0||step--"></h-button>
+	      </h-buttongroup>
+	    </p>
+	    <Steps :datas="dataStep" :step="step"></Steps>
+	</div>
+	<hr>
+	<h2>SwitchList 选项</h2>
+	<p v-color:gray>{{switchValue}}</p>
+    <div><h-switchlist v-model="switchValue" :datas="param1"></h-switchlist>
+    </div>
+    <hr>
+    <h2>Carousel 走马灯</h2>
+	<div>
+	    <p>切换到{{page1}}</p>
+	    <h-carousel :datas="params2" :height="300" pageTheme="circle" @change="change" @click="click"></h-carousel>
+	</div>
+	<hr>
+	<h2>Collapse 折叠面板</h2>
+	<div class="">
+	    <h-collapse v-model="showvalue">
+	      <h-collapseitem title="迈尔斯·莫拉莱斯">
+	        终极宇宙里的蜘蛛侠，被一只放射性蜘蛛咬伤，并因此获得了超能力。偶然和其他宇宙的蜘蛛侠相遇，将和他们共同对抗最强反派。
+	      </h-collapseitem>
+	      <h-collapseitem title="彼得·帕克">
+	        616宇宙的蜘蛛侠，他帮助训练迈尔斯·莫拉莱斯正视自己，勇于承担肩上的责任，在这期间也慢慢的找回自我。
+	      </h-collapseitem>
+	      <h-collapseitem title="格温·史黛西">
+	        我是她是一个非常聪明、反应极快的女孩儿，能够以宛如舞者般优雅的身姿穿梭往来，是她所属那个世界的蜘蛛侠。
+	      </h-collapseitem>
+	    </h-collapse>
+	</div>
+	
+
+    
+
+    <Modal v-model="show">
+      <div slot="header">标题</div>
+      <div>
+        这是一个vue调用的弹框
+      </div>
+      <div slot="footer">
+        <h-button @click="show=false">取消</h-button>
+      </div>
+    </Modal>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/heyui"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/heyui/themes/index.css">
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      show: false,
+      datevalue:'2017-01-01',
+      disabled: false,
+      readonly: false,
+      datetype: 'date',
+      slidervalue: 20,
+      rateValue: 3,
+      tagValue: ['test1'],
+      operationValue: 3,
+      count: 2,
+      dataStep: {
+        a: 'step1',
+        b: 'step2',
+        c: 'step3',
+        d: 'step4',
+      },
+      step: 0,
+      checkedvalue: [202],
+      param: {
+        keyName: 'id',
+        titleName: 'title',
+        dataMode: 'tree',
+        datas: [
+          { id: 1, title: "一级", children: [
+          { id: 10, title: "一级-0" },
+          { id: 11, title: "一级-1" },
+          { id: 12, title: "一级-2" },
+          { id: 13, title: "一级-3", },
+          { id: 14, title: "一级-4", },
+        ]},
+        { id: 2, title: "二级", children: [
+          { id: 20, title: "二级-0", children: [
+            { id: 201, title: "二级-0-1", },
+            { id: 202, title: "二级-0-2", },
+            { id: 203, title: "二级-0-3", },
+          ]},
+          { id: 21, title: "二级-1", },
+          { id: 22, title: "二级-2", },
+          { id: 23, title: "二级-3", },
+          { id: 24, title: "二级-4", },
+        ]},
+        { id: 3, title: "三级", checkable: false, children: [
+          { id: 30, title: "三级-0", },
+          { id: 31, title: "三级-1", },
+          { id: 32, title: "三级-2", },
+          { id: 33, title: "三级-3", },
+          { id: 34, title: "三级-4", }
+        ]},
+        ]
+      },
+
+      menus: ['Operate1','Operate2','Operate3'],
+      selectAll: false,
+      page: {
+        cur: 3,
+        total: 58
+      },
+      columns: [
+        { title: '序号', prop: '$index', width: 100 },
+        { title: 'ID', prop: 'id', width: 100},
+        { title: '姓名', prop: 'name'},
+        { title: '年龄', prop: 'age'},
+        { title: '地址', prop: 'address' },
+      ],
+      datas: [
+        { id: 5, name: '测试5', age: 12, address: "上海" },
+        { id: 6, name: '测试6', age: 13, address: "上海" },
+        { id: 7, name: '测试7', age: 14, address: "上海" },
+        { id: 5, name: '测试5', age: 17, address: "上海" },
+        { id: 6, name: '测试6', age: 18, address: "上海" },
+        { id: 7, name: '测试7', age: 12, address: "上海" },
+      ],
+      switchValue: '选择1',
+      param1: ['选择1', '选择2', '选择3'],
+      page1: 'Page 1',
+      params2:[
+        {
+          title:'Page 1',
+          link: true,
+          image:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540197899055&di=75c86ca282306c46d9de3dccac8f5e0b&imgtype=0&src=http%3A%2F%2Fimg17.3lian.com%2Fd%2Ffile%2F201702%2F27%2Fd27cb266e19ab3e5ecffa2bd8c8e9426.jpg',
+        },{
+          title:'Page 2',
+          link: 'http://www.baidu.com',
+          image:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1540197899054&di=3367ff0605072bc351651cfffb8dac08&imgtype=0&src=http%3A%2F%2Fimg534.ph.126.net%2FEGAn7UXOMIr5XJ7HWEUylw%3D%3D%2F2650649855685047930.jpg',
+        },{
+          title:'Page 3',
+          image:'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=436156375,527884653&fm=27&gp=0.jpg',
+        },{
+          title:'Page 4',
+          image:'http://pic.58pic.com/58pic/14/48/31/98R58PICUsm_1024.jpg',
+        },
+      ],
+      showvalue: [0]
+    },
+    methods: {
+      openModal() {
+        this.$Modal({
+          title: '标题',
+          content: '这是一个js调用的弹框'
+        })
+      },
+	    change(index, data){
+	      this.page1 = data.title;
+	    },
+	    click(index, data){
+	      this.$Message(`点击了${data.title}`);
+	    },
+      message(type) {
+        let text = { info: '消息', success: '成功', warn: '警告', error: '错误' }[type];
+        this.$Message({
+          type,
+          text: `这是一个${text}的消息`
+        });
+      },
+      messageLoad() {
+        let message = this.$Message.loading(`正在加载中`, 0);
+        // this.$Message({
+        //   type: 'loading',
+        //   text:`正在加载中`, 
+        //   timeout: 0
+        // })
+        setTimeout(()=>{
+          message.close();
+        }, 4000);
+      },
+      confirm() {
+        this.$Message.success("删除成功");
+      },
+      currentChange(page) {
+        this.page.cur = page.cur;
+      },
+      choose(data) {
+      log(data);
+    },
+    chooseAll() {
+      this.$refs.demo.chooseAll();
+    },
+    updateChoose() {
+      // 两种方法都可以
+      // this.$refs.demo.updateChoose([1, 23, 31]);
+      this.value = [11, 23, 201, 202, 203];
+    },
+    getChoose() {
+      let options = this.$refs.demo.getChoose();
+      if (options.length == 0) {
+        this.$Message.info(`当前未选中`);
+      } else {
+        this.$Message.info(`当前选中: ${options.length}个`);
+      }
+    },
+    getFullChoose() {
+      let options = this.$refs.demo.getFullChoose();
+      log(options);
+      this.$Message.info(`当前选中: ${options.length}个`);
+    }
+
+    }
+  })
+</script>
+</html>
