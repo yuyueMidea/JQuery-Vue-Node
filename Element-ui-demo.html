@@ -14,6 +14,50 @@
 <body>
   <div id="app">
  
+ <div style="width:80%;margin:11px auto;">
+  <el-menu mode="horizontal" :default-active="activeIndex">
+    <el-menu-item index="1">处理中心</el-menu-item>
+    <el-submenu index="2">
+      <template slot="title">我的工作台</template>
+      <el-menu-item index="2-1">选项1</el-menu-item>
+      <el-menu-item index="2-2">选项2</el-menu-item>
+      <el-menu-item index="2-3">选项3</el-menu-item>
+      <el-submenu index="2-4">
+        <template slot="title">选项4</template>
+        <el-menu-item index="2-4-1">选项1</el-menu-item>
+        <el-menu-item index="2-4-2">选项2</el-menu-item>
+        <el-menu-item index="2-4-3">选项3</el-menu-item>
+      </el-submenu>
+    </el-submenu>
+    <el-menu-item index="3" disabled>消息中心</el-menu-item>
+    <el-menu-item index="4">订单管理</el-menu-item>
+  </el-menu>
+</div>
+<div style="width:80%;margin:11px auto;">
+    <el-row>
+      <el-col :span='6'>
+        <el-menu :default-active="activeIndex" background-color="#545c64"
+            text-color="#fff" active-text-color="#ffd04b">
+            <el-menu-item index="1">处理中心</el-menu-item>
+            <el-submenu index="2">
+              <template slot="title">我的工作台</template>
+              <el-menu-item index="2-1">选项1</el-menu-item>
+              <el-menu-item index="2-2">选项2</el-menu-item>
+              <el-menu-item index="2-3">选项3</el-menu-item>
+              <el-submenu index="2-4">
+                <template slot="title">选项4</template>
+                <el-menu-item index="2-4-1">选项1选项1选项1选项1</el-menu-item>
+                <el-menu-item index="2-4-2">选项2选项2选项2选项2</el-menu-item>
+                <el-menu-item index="2-4-3">选项3</el-menu-item>
+              </el-submenu>
+            </el-submenu>
+            <el-menu-item index="3">订单管理</el-menu-item>
+        </el-menu> 
+      </el-col>
+      <el-col :span='12'></el-col>
+    </el-row>
+   
+</div>
 <div class="the_form">
 <el-form ref="form" :model="form" label-width="80px">
   <el-form-item label="活动名称">
@@ -60,14 +104,28 @@
   </el-form-item>
 </el-form>
 </div>
-<div>
+
   <el-table :data="tableData" border style="width:80%;margin:11px auto;" highlight-current-row>
     <el-table-column type="selection" width="55"></el-table-column>
     <el-table-column prop="date" label="日期" sortable></el-table-column>
     <el-table-column prop="name" label="姓名"></el-table-column>
     <el-table-column prop="address" label="地址"></el-table-column>
   </el-table>
+<div style="width:80%;margin:11px auto;">
+<p>Loading...</p>
+    <el-button
+    type="primary"
+    @click="openFullScreen"
+    v-loading.fullscreen.lock="fullscreenLoading">
+    指令方式
+  </el-button>
+  <el-button
+    type="primary"
+    @click="openFullScreen2">
+    服务方式
+  </el-button>
 </div>
+
 
   </div>
 </body>
@@ -113,13 +171,31 @@
             date: '2016-05-03',
             name: '王小虎',
             address: '上海市普陀区金沙江路 1516 弄'
-          }]
+          }],
+          fullscreenLoading: false,
 
         }
       },
       methods:{
         onSubmit() {
           console.log('submit!');
+        },
+        openFullScreen() {
+          this.fullscreenLoading = true;
+          setTimeout(() => {
+            this.fullscreenLoading = false;
+          }, 2000);
+        },
+        openFullScreen2() {
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          setTimeout(() => {
+            loading.close();
+          }, 2000);
         }
 
       }
