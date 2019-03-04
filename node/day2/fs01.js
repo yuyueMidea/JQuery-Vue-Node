@@ -12,7 +12,6 @@
 
 var fs=require('fs');
 
-
 //1. fs.stat  检测是文件还是目录
 
 //fs.stat('html',function(err,stats){
