@@ -6,6 +6,9 @@ activated()：在vue对象存活的情况下，进入当前存在activated()函�
 
 // 挂载在vue原型上的属性一般在属性名前加 $ 符号
 Vue.prototype.$mideaMessage = mideaMessage // 挂载消息统一处理方法
+
 Vue.prototype.$pageLoading = loading      // 加载动画loading
+
 Vue.prototype.$loadLocals = loadLocals    // 语言加载方法
+
 Vue.prototype.$getLovValues = getLovValues
