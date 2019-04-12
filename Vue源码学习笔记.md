@@ -22,3 +22,11 @@ Vue.js 为其组件设计了一个 [keep-alive] 的特性，如果这个特性�
 数据监听机制
 如何监听某一个对象属性的变化呢？我们很容易想到 Object.defineProperty 这个 API，为此属性设计一个特殊的 getter/setter，然后在 setter 里触发一个函数，就可以达到监听的效果。
 ```
+
+```
+Vue.js 里的代码细节还不仅于此，比如：
+```
+cache.js 里的缓存机制设计和场景运用 (如在 parsers/path.js 中)
+parsers/template.js 里的 cloneNode 方法重写和对 HTML 自动补全机制的兼容
+在开发和生产环境分别用注释结点和不可见文本结点作为视图的“占位符”等等
+```
