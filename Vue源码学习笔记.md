@@ -7,13 +7,18 @@ vm 实例设计：包括接口设计 (vm 原型)、实例初始化过程设计 (
 整个实例初始化的过程中，重中之重就是把数据 (Model) 和视图 (View) 建立起关联关系。Vue.js 和诸多 MVVM 的思路是类似的，主要做了三件事：
 
 通过 observer 对 data 进行了监听，并且提供订阅某个数据项的变化的能力
-把 template 解析成一段 document fragment，然后解析其中的 directive，得到每一个 directive 所依赖的数据项及其更新方法。比如 v-text="message" 被解析之后 (这里仅作示意，实际程序逻辑会更严谨而复杂)：
+把 template 解析成一段 document fragment，然后解析其中的 directive，得到每一个 directive 所依赖的数据项及其更新方法。
+比如 v-text="message" 被解析之后 (这里仅作示意，实际程序逻辑会更严谨而复杂)：
 所依赖的数据项 this.$data.message，以及
 相应的视图更新方法 node.textContent = this.$data.message
-通过 watcher 把上述两部分结合起来，即把 directive 中的数据依赖订阅在对应数据的 observer 上，这样当数据变化的时候，就会触发 observer，进而触发相关依赖对应的视图更新方法，最后达到模板原本的关联效果。
+通过 watcher 把上述两部分结合起来，即把 directive 中的数据依赖订阅在对应数据的 observer 上，这样当数据变化的时候，就会触发 observer，
+进而触发相关依赖对应的视图更新方法，最后达到模板原本的关联效果。
 所以整个 vm 的核心，就是如何实现 observer, directive (parser), watcher 这三样东西
 ```
 Vue.js 为其组件设计了一个 [keep-alive] 的特性，如果这个特性存在，那么在组件被重复创建的时候，会通过缓存机制快速创建组件，以提升视图更新的性能。代码在 directives/component.js。
 ```
 数据更新的 diff 机制
+```
+数据监听机制
+如何监听某一个对象属性的变化呢？我们很容易想到 Object.defineProperty 这个 API，为此属性设计一个特殊的 getter/setter，然后在 setter 里触发一个函数，就可以达到监听的效果。
 ```
