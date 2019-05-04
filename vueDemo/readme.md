@@ -12,3 +12,24 @@ Vue.prototype.$pageLoading = loading      // 加载动画loading
 Vue.prototype.$loadLocals = loadLocals    // 语言加载方法
 
 Vue.prototype.$getLovValues = getLovValues
+
+## 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
+## 需要为已有对象赋予多个新属性，比如使用 Object.assign()
+var app = new Vue({
+  el: '#app',
+  data: {
+    obj:{
+      name:'yuyue'
+    }
+  },
+
+})
+
+/**
+ * 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
+ */
+app.$set(app.obj,'age',27);
+//需要为已有对象赋予多个新属性，比如使用 Object.assign()
+app.obj=Object.assign({},app.obj,{
+	yyyy:2019,mm:5,date:4
+})
