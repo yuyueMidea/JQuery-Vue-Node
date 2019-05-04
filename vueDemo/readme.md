@@ -25,11 +25,12 @@ var app = new Vue({
 
 })
 
-/**
- * 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
- */
+// 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
+
 app.$set(app.obj,'age',27);
+
 //需要为已有对象赋予多个新属性，比如使用 Object.assign()
+
 app.obj=Object.assign({},app.obj,{
 	yyyy:2019,mm:5,date:4
 })
