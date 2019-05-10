@@ -34,3 +34,8 @@ app.$set(app.obj,'age',27);
 app.obj=Object.assign({},app.obj,{
 	yyyy:2019,mm:5,date:4
 })
+
+## // 父组件改变props，子组件如果直接使用props，会触发子组件更新
+    // 父组件改变props，子组件如果将props放进data中再使用，不会触发子组件更新
+    // 父组件改变props，子组件如果将props放进computed中再使用，会触发子组件更新
+    // 子组件改变props，父组件会更新，但其他子组件不会更新，故共享的属性需要放到父组件去改变
