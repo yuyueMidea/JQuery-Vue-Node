@@ -52,3 +52,13 @@ mutations：状态改变操作方法，由actions中的commit('mutation 名称')
 state：页面状态管理容器对象。集中存储Vue components中data对象的零散数据，全局唯一，以进行统一的状态管理。页面显示所需的数据从该对象中进行读取，利用Vue的细粒度数据响应机制来进行高效的状态更新。
 getters：state对象读取方法。图中没有单独列出该模块，应该被包含在了render中，Vue Components通过该方法读取全局state对象。
 
+## 父子组件通信
+常见使用场景可以分为三类：
+
+父子通信：
+父向子传递数据是通过 props，子向父是通过 events（$emit）；通过父链 / 子链也可以通信（$parent / $children）；ref 也可以访问组件实例；provide / inject API；$attrs/$listeners
+兄弟通信：
+Bus；Vuex
+跨级通信：
+Bus；Vuex；provide / inject API、$attrs/$listeners
+
