@@ -1,0 +1,53 @@
+.el-input__inner {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.form-container {
+  padding: 10px;
+
+  .el-form {
+    .el-form-item {
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .el-row .el-form-item {
+      &:first-child {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .el-form-item__label {
+    font-size: 12px;
+    font-weight: normal;
+    white-space: nowrap;
+  }
+
+  .el-input-group__append {
+    text-align: center;
+  }
+
+  .el-input-group__prepend {
+    padding-left: 10px; 
+    padding-right: 10px;
+  }
+
+  .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    max-width: 100%;
+  }
+
+  .el-checkbox__label {
+    font-size: 12px;
+  }
+
+  .dialog-footer {
+    padding-top: 20px;
+    text-align: right;
+  }
+
+}
