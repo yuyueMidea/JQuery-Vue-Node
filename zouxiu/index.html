@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/jquery-1.12.3.js"></script>
+		<script src="js/jquery.cookie.js"></script>
+		<link rel="stylesheet" type="text/css" href="zouxiu.css"/>
+		<!--<script type="text/javascript" src="js/move.js"></script>-->
+		<script type="text/javascript" src="js/zouxiu.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var user = $.cookie("user");
+				$(".login").html(user);
+				//
+//				var totalNum = $.cookie("count");
+//				$("#number").html(totalNum);
+				
+			})
+		</script>
+	</head>
+	<body>
+		<!--header-->
+		<div class="header">
+			<div class="main">
+				<ul class="regist">
+					<li><a href="denglu.html" title="登录/注册" class="login">登录/注册</a></li>
+					<li>
+						<a href="cart.html"><img src="images/zx_01.jpg"/>&nbsp;&nbsp;购物袋 <span id="number">0</span> 件</a>
+						<div class="cart">购物袋暂时没有商品</div>
+					</li>
+					<li>
+						<a href="#">我的走秀&nbsp;<img src="images/zx_09.jpg" class="xia"/><img src="images/zx_091.jpg" class="shang"/>&nbsp;</a>
+						<div class="bag">
+							<ul>
+								<li><a href="#">我的订单</a></li>
+								<li><a href="#">自助退货</a></li>
+								<li><a href="#">我的收藏</a></li>
+								<li><a href="#">帮助中心</a></li>
+								<li><a href="#">全部吐槽</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+				<div class="logo"><a href="http://www.xiu.com/"><img src="images/zx_03.jpg"/></a></div>
+				<ul class="fenlei">
+					<li><a href="http://www.xiu.com/#s_id=1_32146_4_0" style="border-bottom: 2px solid #aaa;">首页</a></li>
+					<li><a href="http://www.xiu.com/cx/150463.shtml#s_id=1_32146_4_1">新品</a></li>
+					<li><a href="http://www.xiu.com/cx/150450.shtml#s_id=1_32146_4_2">男士</a></li>
+					<li><a href="http://www.xiu.com/cx/150451.shtml#s_id=1_32146_4_3">女士</a></li>
+					<li><a href="http://www.xiu.com/brand.html#s_id=1_32146_4_4">品牌</a></li>
+					<li><a href="http://www.xiu.com/cx/168850.shtml#s_id=1_32146_4_5" style="color: red;">发现</a></li>
+					<li><a href="http://www.xiu.com/cx/150278.shtml#s_id=1_32146_4_6">专题</a></li>
+					<li><a href="http://app.xiu.com/#s_id=1_32146_4_7">手机走秀</a></li>
+				</ul>
+				<div class="search">
+					<input type="text" id="searchBtn" value="请搜索Opening Ceremony试试"/>
+					<a href="#"><img src="images/zx_06.jpg"/></a>
+				</div>
+				
+			</div>
+			<div id="scr"></div>
+		</div>
+		
+		<!--nav-->
+		<div class="nav">
+			<div class="main">
+				<ul class="item">
+					<li>
+						<a href="#">包袋</a>
+						<div class="bd">
+							<h3>女士包袋</h3>
+							<ul>
+								<li><a href="#">手提包</a></li>
+								<li><a href="#">水桶包</a></li>
+								<li><a href="#">链条包</a></li>
+								<li><a href="#">购物袋</a></li>
+								<li><a href="#">斜挎包</a></li>
+								<li><a href="#">化妆包</a></li>
+								<li><a href="#">两用包</a></li>
+								<li><a href="#">长款钱包</a></li>
+								<li><a href="#">短款钱包</a></li>
+								<li><a href="#">零钱包</a></li>
+								<li><a href="#">双肩包</a></li>
+								
+							</ul>
+							<br />
+							<h3>男士包袋</h3>
+							<ul>
+								<li><a href="#">手提包</a></li>
+								<li><a href="#">水桶包</a></li>
+								<li><a href="#">链条包</a></li>
+								<li><a href="#">购物袋</a></li>
+								<li><a href="#">斜挎包</a></li>
+								<li><a href="#">化妆包</a></li>
+								<li><a href="#">两用包</a></li>
+								<li><a href="#">长款钱包</a></li>
+								<li><a href="#">短款钱包</a></li>
+								<li><a href="#">零钱包</a></li>
+								<li><a href="#">双肩包</a></li>
+							</ul>
+							<br />
+							<h3>功能箱包</h3>
+							<ul>
+								<li><a href="#">数码包袋 </a></li>
+								<li><a href="#">钥匙包 </a></li>
+								<li><a href="#">名片夹 </a></li>
+								<li><a href="#">证件夹/套</a></li>
+								<li><a href="#">腰包</a></li>
+							</ul>
+							<br />
+							<h3>旅行箱包</h3>
+							<ul>
+								<li><a href="#">登机箱 </a></li>
+								<li><a href="#"> 旅行包</a></li>
+								<li><a href="#">登山包</a></li>
+								<li><a href="#"> 托运行李箱</a></li>
+							</ul>
+						</div>
+					</li>
+					
+					<li>
+						<a href="#">服装</a>
+						<div class="fz">
+							<h3>女装</h3>
+							<ul>
+								<li><a href="#">T恤 </a></li>
+								<li><a href="#">吊带/背心</a></li>
+								<li><a href="#">雪纺衫</a></li>
+								<li><a href="#"> 上衣 </a></li>
+								
+							</ul>
+							<br />
+							<h3>男装</h3>
+							<ul>
+								<li><a href="#">T恤 </a></li>
+								<li><a href="#">背心</a></li>
+								<li><a href="#"> POLO衫</a></li>
+								<li><a href="#"> 卫衣 </a></li>
+								<li><a href="#">羊绒衫</a></li>
+							</ul>
+							<br />
+							<h3>上装</h3>
+							<ul>
+								<li><a href="#">大衣</a></li>
+								<li><a href="#"> 风衣</a></li>
+								<li><a href="#"> 羽绒服 </a></li>
+								<li><a href="#">棉服 </a></li>
+								<li><a href="#">正装西服</a></li>
+							</ul>
+							<br />
+							<h3>下装</h3>
+							<ul>
+								<li><a href="#">休闲裤</a></li>
+								<li><a href="#">牛仔裤</a></li>
+								<li><a href="#">西裤 </a></li>
+								<li><a href="#"> 短裤 </a></li>
+								<li><a href="#">皮裤</a></li>
+							</ul>
+							<br />
+							<h3>套装</h3>
+							<ul>
+								<li><a href="#">正装套装</a></li>
+								<li><a href="#">休闲套装</a></li>
+							</ul>
+							<br />
+							<h3>运动户外</h3>
+							<ul>
+								<li><a href="#">运动上装</a></li>
+								<li><a href="#">运动下装</a></li>
+								<li><a href="#">运动套装</a></li>
+								<li><a href="#">户外装/冲锋衣 </a></li>
+								<li><a href="#">沙滩裤</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#">鞋靴</a>
+						<div class="xx">
+							<h3>女鞋</h3>
+							<ul>
+								<li><a href="#">平跟鞋 </a></li>
+								<li><a href="#">低跟鞋  </a></li>
+								<li><a href="#"> 中跟鞋 </a></li>
+								<li><a href="#">高跟鞋  </a></li>
+								<li><a href="#"> 增高鞋 </a></li>
+								
+							</ul>
+							<br />
+							<h3>男鞋</h3>
+							<ul>
+								<li><a href="#">切尔西靴</a></li>
+								<li><a href="#">长靴</a></li>
+								<li><a href="#">马丁靴</a></li>
+								<li><a href="#">雪地靴 </a></li>
+							</ul>
+							<br />
+							<h3>运动鞋</h3>
+							<ul>
+								<li><a href="#">板鞋</a></li>
+								<li><a href="#"> 一脚蹬 </a></li>
+								<li><a href="#">乐福鞋 </a></li>
+								<li><a href="#">运动鞋</a></li>
+							</ul>
+						</div>
+					</li>
+					
+					<li>
+						<a href="#">腕表</a>
+						<div class="wb">
+							<h3>顶级品牌</h3>
+							<ul>
+								<li><a href="#">百达翡丽</a></li>
+								<li><a href="#"> 格拉苏蒂</a></li>
+								<li><a href="#"> 积家 </a></li>
+								<li><a href="#"> 宝玑 </a></li>
+								<li><a href="#"> 法兰克•穆勒</a></li>
+								
+							</ul>
+							<br />
+							<h3>高档品牌</h3>
+							<ul>
+								<li><a href="#">劳力士</a></li>
+								<li><a href="#">欧米茄 </a></li>
+								<li><a href="#"> 卡地亚</a></li>
+								<li><a href="#"> 万国 </a></li>
+								<li><a href="#"> 芝柏</a></li>
+							</ul>
+							<br />
+							<h3>中档品牌</h3>
+							<ul>
+								<li><a href="#">天梭 </a></li>
+								<li><a href="#"> 浪琴</a></li>
+								<li><a href="#"> 摩凡陀 </a></li>
+								<li><a href="#"> 汉米尔顿 </a></li>
+							</ul>
+							<br />
+							<h3>时尚品牌</h3>
+							<ul>
+								<li><a href="#">安普里奥.阿玛尼</a></li>
+								<li><a href="#">卡尔文·克莱恩</a></li>
+								<li><a href="#"> 博柏利 </a></li>
+								<li><a href="#">丹尼尔·惠灵顿 </a></li>
+							</ul>
+							<br />
+							<h3>石英表</h3>
+							<ul>
+								<li><a href="#">安普里奥·阿玛尼 </a></li>
+								<li><a href="#"> 博柏利</a></li>
+								<li><a href="#">施华洛世奇</a></li>
+								<li><a href="#"> 丹尼尔·惠灵顿</a></li>
+								<li><a href="#"> 施华洛世奇</a></li>
+							</ul>
+							<br />
+							<h3>机械表</h3>
+							<ul>
+								<li><a href="#">卡地亚 </a></li>
+								<li><a href="#"> 浪琴</a></li>
+								<li><a href="#">劳力士</a></li>
+								<li><a href="#"> 欧米茄 </a></li>
+								<li><a href="#">萧邦</a></li>
+							</ul>
+							<br />
+							<h3>特殊功能</h3>
+							<ul>
+								<li><a href="#">月相表 </a></li>
+								<li><a href="#">动力储备显示</a></li>
+							</ul>
+							
+						</div>
+					</li>
+					<li>
+						<a href="#">配饰</a>
+						<div class="ps">
+							<h3>女士配饰</h3>
+							<ul>
+								<li><a href="#">披肩</a></li>
+								<li><a href="#"> 围巾 </a></li>
+								<li><a href="#">丝巾 </a></li>
+								<li><a href="#"> 腰带 </a></li>
+								<li><a href="#"> 棒球帽 </a></li>
+								<li><a href="#"> 针织帽 </a></li>
+								<li><a href="#"> 礼帽 </a></li>
+								<li><a href="#">其他帽子</a></li>
+							</ul>
+							<br />
+							<h3>男士配饰</h3>
+							<ul>
+								<li><a href="#">腰带</a></li>
+								<li><a href="#"> 围巾/丝巾</a></li>
+								<li><a href="#">棒球帽</a></li>
+								<li><a href="#">针织帽 </a></li>
+								<li><a href="#">礼帽 </a></li>
+								<li><a href="#"> 其他帽子 </a></li>
+								<li><a href="#">领带 </a></li>
+								<li><a href="#"> 领带夹</a></li>
+							</ul>
+							<br />
+							<h3>其他饰品</h3>
+							<ul>
+								<li><a href="#">眼镜/镜架 </a></li>
+								<li><a href="#"> 手机壳 </a></li>
+								<li><a href="#">挂饰/钥匙扣</a></li>
+								<li><a href="#"> 装饰贴/徽章</a></li>
+								<li><a href="#"> 笔具</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#">妆品</a>
+						<div class="zp">
+							<h3>女士护肤</h3>
+							<ul>
+								<li><a href="#"> 爽肤水 </a></li>
+								<li><a href="#">  乳液 </a></li>
+								<li><a href="#"> 精华 </a></li>
+								<li><a href="#">  面霜  </a></li>
+								<li><a href="#"> 面膜 </a></li>
+								
+							</ul>
+							<br />
+							<h3>彩妆</h3>
+							<ul>
+								<li><a href="#">气垫粉饼</a></li>
+								<li><a href="#"> 散粉/蜜粉 </a></li>
+								<li><a href="#">遮瑕  </a></li>
+								<li><a href="#"> 高光/阴影 </a></li>
+							</ul>
+							<br />
+							<h3>男士护肤</h3>
+							<ul>
+								<li><a href="#">香水 </a></li>
+								<li><a href="#"> 洁面 </a></li>
+								<li><a href="#"> 爽肤水</a></li>
+								<li><a href="#"> 沐浴</a></li>
+							</ul>
+							<br />
+							<h3>身体护理</h3>
+							<ul>
+								<li><a href="#">洗发水</a></li>
+								<li><a href="#">护发素 </a></li>
+								<li><a href="#">晒后修复 </a></li>
+								<li><a href="#"> 护手霜</a></li>
+							</ul>
+							<br />
+							<h3>口腔护理</h3>
+							<ul>
+								<li><a href="#">牙膏 </a></li>
+								<li><a href="#">牙刷 </a></li>
+								<li><a href="#"> 洗牙器</a></li>
+							</ul>
+							<br />
+							<h3>香水</h3>
+							<ul>
+								<li><a href="#">女士香水</a></li>
+								<li><a href="#">男士香水</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#">生活</a>
+						<div class="sh">
+							<h3>生活</h3>
+							<h3>厨房餐具</h3>
+							<ul>
+								<li><a href="#">汤锅 </a></li>
+								<li><a href="#">压力锅</a></li>
+								<li><a href="#">蒸锅</a></li>
+								<li><a href="#">刀具</a></li>
+								
+							</ul>
+							<br />
+							<h3>酒水咖啡茶具</h3>
+							<ul>
+								<li><a href="#">酒杯  </a></li>
+								<li><a href="#">酒架酒塞 </a></li>
+								<li><a href="#"> 酒具套装</a></li>
+								<li><a href="#">开瓶器 </a></li>
+							</ul>
+							<br />
+							<h3>卧室和家纺</h3>
+							<ul>
+								<li><a href="#">凉席  </a></li>
+								<li><a href="#">毛毯/披毯 </a></li>
+								<li><a href="#"> 三件套  </a></li>
+								<li><a href="#"> 多件套 </a></li>
+							</ul>
+							<br />
+							<h3>浴室用品</h3>
+							<ul>
+								<li><a href="#">发梳</a></li>
+								<li><a href="#"> 浴巾/毛巾 </a></li>
+								<li><a href="#"> 吹风机 </a></li>
+								<li><a href="#"> 理发器 </a></li>
+							</ul>
+							<br />
+							<h3>家庭装饰</h3>
+							<ul>
+								<li><a href="#">梯子 </a></li>
+								<li><a href="#">地垫/防滑脚垫</a></li>
+								<li><a href="#">餐垫杯垫 </a></li>
+								<li><a href="#">餐巾/桌布</a></li>
+							</ul>
+							<br />
+							<h3>生活电器</h3>
+							<ul>
+								<li><a href="#">电饭煲 </a></li>
+								<li><a href="#">电水壶 </a></li>
+								<li><a href="#"> 滤水壶 </a></li>
+								<li><a href="#">其他电器</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#">婴童</a>
+						<div class="yt">
+							<h3>女鞋</h3>
+							<ul>
+								<li><a href="#">休闲鞋 </a></li>
+								<li><a href="#">运动鞋</a></li>
+								<li><a href="#"> 靴子</a></li>
+								<li><a href="#"> 雪地靴 </a></li>
+								<li><a href="#"> 雨靴</a></li>
+								
+							</ul>
+							<br />
+							<h3>男鞋</h3>
+							<ul>
+								<li><a href="#">休闲鞋 </a></li>
+								<li><a href="#">运动鞋</a></li>
+								<li><a href="#"> 靴子</a></li>
+								<li><a href="#"> 雪地靴 </a></li>
+								<li><a href="#"> 雨靴</a></li>
+							</ul>
+							<br />
+							<h3>女装</h3>
+							<ul>
+								<li><a href="#"> 连衣裙</a></li>
+								<li><a href="#"> 半身裙 </a></li>
+								<li><a href="#">  毛衣/针织衫 </a></li>
+								<li><a href="#">  衬衫</a></li>
+							</ul>
+							<br />
+							<h3>男装</h3>
+							<ul>
+								<li><a href="#">毛衣/针织衫 </a></li>
+								<li><a href="#"> 衬衫 </a></li>
+								<li><a href="#"> 长裤 </a></li>
+								<li><a href="#">外套卫</a></li>
+							</ul>
+							<br />
+							<h3>婴儿鞋服</h3>
+							<ul>
+								<li><a href="#">上装</a></li>
+								<li><a href="#"> 裙子</a></li>
+								<li><a href="#"> 礼盒 </a></li>
+								<li><a href="#">泳装</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<a href="#">豪车</a>
+						<div class="hc">
+							<h3>豪车</h3>
+							<ul>
+								<li><a href="#"> 宾利 </a></li>
+								<li><a href="#"> 兰博基尼</a></li>
+								<li><a href="#"> 玛莎拉蒂</a></li>
+								<li><a href="#"> 迈凯伦 </a></li>
+								
+							</ul>
+							<br />
+							<h3>奢华品牌</h3>
+							<ul>
+								<li><a href="#"> 宾利 </a></li>
+								<li><a href="#"> 兰博基尼</a></li>
+								<li><a href="#"> 玛莎拉蒂</a></li>
+								<li><a href="#"> 迈凯伦 </a></li>
+							</ul>
+							<br />
+							<h3>豪华品牌</h3>
+							<ul>
+								<li><a href="#"> 沃尔沃</a></li>
+								<li><a href="#">保时捷 </a></li>
+								<li><a href="#"> 宝马 </a></li>
+								<li><a href="#">捷豹 </a></li>
+							</ul>
+							<br />
+							<h3>中高档品牌</h3>
+							<ul>
+								<li><a href="#">福特</a></li>
+								<li><a href="#">丰田</a></li>
+							</ul>
+							
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<!--banner-->
+		<div class="banner">
+			<div class="main">
+				<ul id="list">
+					<!--<li><a href="#"><img src="image/banner1.jpg"/></a></li>
+					<li><a href="#"><img src="image/banner2.jpg"/></a></li>
+					<li><a href="#"><img src="image/banner3.jpg"/></a></li>
+					<li><a href="#"><img src="image/banner4.jpg"/></a></li>
+					<li><a href="#"><img src="image/banner5.jpg"/></a></li>
+					<li><a href="#"><img src="image/banner1.jpg"/></a></li>-->
+				</ul>
+				<ul id="list2">
+					<!--<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>-->
+				</ul>
+			</div>
+		</div>
+		
+		<!--尖货推荐-->
+		<div class="blank">
+			<div class="main">
+				<ul>
+					<li><a href="#"><img src="images/zx_15.jpg"/>
+						<span>分享返现</span>
+						<span>分享专属大礼包</span>
+					</a></li>
+					<li><a href="#"><img src="images/zx_18.jpg"/>
+						<span>新品专享</span>
+						<span>我的专享定制</span>
+					</a></li>
+					<li><a href="#"><img src="images/zx_20.jpg"/>
+						<span>新人有礼</span>
+						<span>注册即送880元</span>
+					</a></li>
+					<li><a href="denglu.html" target="_blank"><img src="images/zx_22.jpg"/>
+						<span>邀请好友</span>
+						<span>邀请好友立减50元</span>
+					</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="jianhuo">
+			<div class="main">
+				<h1>&nbsp;&nbsp;</h1>
+				
+				<ul>
+					<li><a href="#"><img src="image/1.jpg"/></a></li>
+					<li><a href="#"><img src="image/2.jpg"/></a></li>
+					<li><a href="#"><img src="image/3.jpg"/></a></li>
+					<li><a href="#"><img src="image/4.jpg"/></a></li>
+					<li><a href="#"><img src="image/5.jpg"/></a></li>
+					<li><a href="#"><img src="image/6.jpg"/></a></li>
+					<li><a href="#"><img src="image/7.jpg"/></a></li>
+					<li><a href="#"><img src="image/8.jpg"/></a></li>
+					<li><a href="#"><img src="image/9.jpg"/></a></li>
+					<li><a href="#"><img src="image/10.jpg"/></a></li>
+					<li><a href="#"><img src="image/11.jpg"/></a></li>
+					<li><a href="#"><img src="image/12.jpg"/></a></li>
+					<li><a href="#"><img src="image/13.jpg"/></a></li>
+					<li><a href="#"><img src="image/14.jpg"/></a></li>
+					<li><a href="#"><img src="image/15.jpg"/></a></li>
+					<li><a href="#"><img src="image/16.jpg"/></a></li>
+					<li><a href="#"><img src="image/17.jpg"/></a></li>
+					<li><a href="#"><img src="image/18.jpg"/></a></li>
+					<li><a href="#"><img src="image/19.jpg"/></a></li>
+					<li><a href="#"><img src="image/20.jpg"/></a></li>
+					<li><a href="#"><img src="image/21.jpg"/></a></li>
+					<li><a href="#"><img src="image/22.jpg"/></a></li>
+					<li><a href="#"><img src="image/23.jpg"/></a></li>
+					<li><a href="#"><img src="image/24.jpg"/></a></li>
+					<li><a href="#"><img src="image/25.jpg"/></a></li>
+					<li><a href="#"><img src="image/26.jpg"/></a></li>
+					<li><a href="#"><img src="image/27.jpg"/></a></li>
+				</ul>
+			</div>
+		</div>
+		<!--热荐专题-->
+		<div class="rejian">
+			<div class="main">
+				<h1>&nbsp;&nbsp;</h1>
+				<ul>
+					<li><a href="#"><img src="image/beats_01.jpg"/>
+						<p><img src="image/beats_01.png" /></p>
+					</a></li>
+					<li><a href="#"><img src="image/beats_02.jpg"/>
+						<p><img src="image/beats_02.png" /></p>
+					</a></li>
+					<li><a href="#"><img src="image/beats_03.jpg"/>
+						<p><img src="image/beats_03.png" /></p>
+					</a></li>
+					<li><a href="#"><img src="image/beats_04.jpg"/>
+						<p><img src="image/beats_04.png" /></p>
+					</a></li>
+					<li><a href="#"><img src="image/beats_05.jpg"/>
+						<p><img src="image/beats_05.png" /></p>
+					</a></li>
+					<li><a href="#"><img src="image/beats_06.jpg"/>
+						<p><img src="image/beats_06.png" /></p>
+					</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<!--走秀豪车-->
+		<div class="haoche">
+			<div class="main">
+				<p><a href="#">查看更多专题</a></p>
+				<a href="#"><img src="image/0704auto.jpg"/></a>
+			</div>
+		</div>
+		
+		<!--发现好货-->
+		<div class="find">
+			<div class="main">
+				<h1>&nbsp;&nbsp;</h1>
+				<ul>
+					<li><a href="#"><img src="image/h1.jpg"/></a></li>
+					<li><a href="#"><img src="image/h2.jpg"/></a></li>
+					<li><a href="#"><img src="image/h3.jpg"/></a></li>
+					<li><a href="#"><img src="image/h4.jpg"/></a></li>
+					<li><a href="#"><img src="image/h5.jpg"/></a></li>
+					<li><a href="#"><img src="image/h6.jpg"/></a></li>
+					<li><a href="#"><img src="image/h7.jpg"/></a></li>
+					<li><a href="#"><img src="image/h8.jpg"/></a></li>
+					<li><a href="#"><img src="image/h9.jpg"/></a></li>
+					<li><a href="#"><img src="image/h10.jpg"/></a></li>
+					<li><a href="#"><img src="image/h11.jpg"/></a></li>
+					<li><a href="#"><img src="image/h12.jpg"/></a></li>
+					<li><a href="glass1.html" target="_blank"><img src="image/h13.jpg"/></a></li>
+					<li><a href="glass2.html" target="_blank"><img src="image/h14.jpg"/></a></li>
+					<li><a href="glass3.html" target="_blank"><img src="image/h15.jpg"/></a></li>
+					<li><a href="glass4.html" target="_blank"><img src="image/h16.jpg"/></a></li>
+				</ul>
+				<p><a href="#">发现更多好货</a></p>
+			</div>
+		</div>
+		<!--footer-->
+		<div class="footer">
+			<div class="main">
+				<ul class="kefu">
+					<li><a href="#" title="在线客服"><img src="images/zx_31.jpg"/>&nbsp;&nbsp;<span>在线客服</span></a></li>
+					<li><a href="#"><img src="images/zx_34.jpg"/>&nbsp;&nbsp;400-800-600</a></li>
+					<li><a href="#" title="我要吐槽"><img src="images/zx_53.jpg"/>&nbsp;&nbsp;我要吐槽</a></li>
+				</ul>
+				<ul class="zhao">
+					<li><a href="#">招贤纳士</a></li>
+					<li><a href="#">CEO邮箱</a></li>
+					<li><a href="#">售后服务</a></li>
+					<li><a href="#">常见问题</a></li>
+					<li><a href="#" title="商品为海外商品，关税由海外卖家承担，如顾客接海关或物流通知缴纳税费，请先行按照国家规定支付，再凭纳税凭证联系走秀客服找海外卖家报销。">关税说明</a></li>
+					<li><a href="#">物流配送</a></li>
+				</ul>
+				<div class="cen">
+					<h2>&nbsp;&nbsp;</h2>
+					<ul class="wx">
+						<li><a href="#"><img src="images/zx_37.jpg"/><img src="images/zx-wx.png" class="zxwx"/></a></li>
+						<li><a href="#"><img src="images/zx_39.jpg"/><img src="images/zx-wb.png"/></a></li>
+						<li><a href="#"><img src="images/zx_41.jpg"/><img src="images/zx-wei2.png"/></a></li>
+						<li><a href="#"><img src="images/zx_43.jpg"/><img src="images/zx-face.png"/></a></li>
+					</ul>
+					<div class="int">
+						<input type="text" placeholder="订阅最新时尚资讯邮件"/>
+						<a href="#"><img src="images/zx_51.jpg"/></a>
+					</div>
+				</div>
+				<div class="shao">
+					<h3>我们的APP</h3>
+					<a href="#"><img src="image/weixinQr.jpg"/></a>
+				</div>
+			</div>
+		</div>
+		<!--bottom-->
+		<div class="bottom">
+			<div class="main">
+				<ul class="bo-list">
+					<li><a href="#">关于走秀</a></li>
+					<li><a href="#">About us</a></li>
+					<li><a href="#">媒体报道</a></li>
+					<li><a href="#">品牌招商</a></li>
+					<li><a href="#">加入走秀</a></li>
+					<li><a href="#">网站地图</a></li>
+					<li><a href="#">联系我们</a></li>
+					<li><a href="#">品牌大全</a></li>
+					<li><a href="#">邮件订阅</a></li>
+					<li><a href="#" style="border: none;">WAP站点</a></li>
+				</ul>
+				<ul class="bo-list2">
+					<li><a href="#" title="海外直发"><img src="images/zx_57.jpg"/><span>海外直发</span></a></li>
+					<li><a href="#" title="正品保证"><img src="images/zx_59.jpg"/><span>正品保证</span></a></li>
+					<li><a href="#" title="售后保障"><img src="images/zx_61.jpg"/><span>售后保障</span></a></li>
+				</ul>
+				
+				<p class="copy">Copyright &copy; 2008-2017 <a href="#">Xiu.com</a>深圳走秀网络科技有限公司 版权所有 . <a href="#">粤ICP备07502993号</a></p>
+				
+				<ul class="police">
+					<li><a href="#"><img src="image/c_01.jpg"/></a></li>
+					<li><a href="#"><img src="image/c_11.jpg"/></a></li>
+					<li><a href="#"><img src="image/c_04.jpg"/></a></li>
+					<li><a href="#"><img src="image/c_08.jpg"/></a></li>
+					<li><a href="#"><img src="image/c_09.jpg"/></a></li>
+
+				</ul>
+				
+			</div>
+		</div>
+	</body>
+</html>

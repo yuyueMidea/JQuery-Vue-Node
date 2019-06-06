@@ -1,0 +1,26 @@
+[
+	{
+		"id":101,
+		"img":"images/g1_66_88.jpg",
+		"name":"染发膏",
+		"price":"420"
+	},
+	{
+		"id":102,
+		"img":"images/g21_66_88.jpg",
+		"name":"防晒霜",
+		"price":"329"
+	},
+	{
+		"id":103,
+		"img":"images/g31_66_88.jpg",
+		"name":"石英表",
+		"price":"999"
+	},
+	{
+		"id":104,
+		"img":"images/g41_66_88.jpg",
+		"name":"自拍雨伞",
+		"price":"329"
+	}
+]
