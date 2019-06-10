@@ -1,0 +1,46 @@
+*{
+  padding: 0; margin: 0;
+}
+
+ul,ol{
+  list-style: none;
+}
+.left{
+  bottom: 0px;
+    display: block;
+    font-size: 13px;
+    height: 100vh;
+    left: 0px;
+    position: fixed;
+    top: 0px;
+    width: 250px;
+    background: rgb(238, 238, 238);
+    overflow: auto;
+}
+.right{
+  display: block;
+    margin-left: 250px;
+}
+.App-header .nav{
+  background: #d3d3d3; 
+}
+.App-header ul li{
+  line-height: 2em; 
+}
+.App-header ul li a{
+  display: block; 
+  padding: 5px 11px;cursor: pointer;
+}
+.App-header ul li a:hover{
+  background: pink; color: #000;
+}
+
+.the_bus{
+  padding: 22px; border: 1px solid #ccc; border-radius: 11px;
+}
+.the_NameForm{
+  padding: 22px; border: 1px solid #ccc; border-radius: 11px;
+}
+.the_user ul li span{
+  width: 222px; padding: 3px 6px;
+}
