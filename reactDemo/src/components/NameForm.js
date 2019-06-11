@@ -37,12 +37,12 @@ class NameForm extends React.Component {
         <form onSubmit={this.handleSubmit} className="the_NameForm">
           <label>
             名字:
-            <input type="text" value={this.state.name} onChange={this.getName} />
+            <input type="text" className="form-control" value={this.state.name} onChange={this.getName} />
           </label>
           <br/>
           <label>
             请输入温度（0-200C）:
-            <input type="text" value={this.state.temp} onChange={this.getTemp} />
+            <input type="text" className="form-control" value={this.state.temp} onChange={this.getTemp} />
           </label>
           <br/>
           <BoilingVerdict celsius={temperature} />
@@ -50,14 +50,14 @@ class NameForm extends React.Component {
           <hr/>
           <label>
           选择你喜欢的风味:
-          <select value={this.state.value} onChange={this.handleChange}>
+          <select className="form-control" value={this.state.value} onChange={this.handleChange}>
             <option value="grapefruit">葡萄柚</option>
             <option value="lime">柠檬</option>
             <option value="coconut">椰子</option>
             <option value="mango">芒果</option>
           </select>
         </label>
-          <input type="submit" value="提交" />
+          <input type="submit" className="btn btn-success" value="提交" />
         </form>
       );
     }
