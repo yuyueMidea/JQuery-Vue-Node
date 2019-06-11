@@ -1,24 +1,22 @@
 import React from 'react';
+
+import './bootstrap.min.css'
 import './App.css';
 
+
 // 引入组件
-import Bus from './components/Bus';
+import Index from './components/Index';
+import Table from './components/Table';
 import Clock from './components/Clock';
 import About from './components/About';
 import User from './components/User';
+import Cart from './components/Cart';
 import Home from './components/Home';
+import Hook from './components/Hook';
 import NameForm from './components/NameForm';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-function Index() {
-  return <div>
-            <h1>hi-react!</h1>
-          </div>
-}
 
-function Cart() {
-  return <h3>Cart</h3>;
-}
 const routes = [
   {
     path: "/index",
@@ -39,11 +37,14 @@ const routes = [
     path: "/nameForm",
     component: NameForm
   },{
-    path: "/bus",
-    component: Bus
+    path: "/table",
+    component: Table
   },{
     path: "/cart",
     component: Cart
+  },{
+    path: "/hook",
+    component: Hook
   }
 ];
 
@@ -51,8 +52,7 @@ function RouteWithSubRoutes(route) {
   return (
     <Route
       path={route.path}
-      render={props => (
-        // pass the sub-routes down to keep nesting
+      render={props => (         // pass the sub-routes down to keep nesting
         <route.component {...props} routes={route.routes} />
       )}
     />
@@ -71,32 +71,14 @@ function App() {
         <header className="App-header">      
           
             <ul className="nav">
-            <li>
-                  <Link to="/index">Index</Link>
-                </li>
-                <li>
-                  <Link to="/clock">Clock</Link>
-                </li>
-                <li>
-                  <Link to="/home/">Home</Link>
-                </li>
-                <li>
-                  <Link to="/about/">About</Link>
-                </li>
-                <li>
-                  <Link to="/user/">User</Link>
-                </li>
-
-                <li>
-                  <Link to="/bus">bus</Link>
-                </li>
-                <li>
-                  <Link to="/cart">cart</Link>
-                </li>
-                <li>
-                  <Link to="/nameForm">NameForm</Link>
-                </li>
-
+                <li><Link to="/index">Index</Link></li>
+                <li><Link to="/home/">Home</Link>  </li>
+                <li> <Link to="/about/">About</Link></li>
+                <li> <Link to="/user/">User</Link>  </li>
+                <li> <Link to="/table">Table</Link> </li>
+                <li><Link to="/cart">cart</Link>  </li>
+                <li> <Link to="/nameForm">NameForm</Link></li>
+                <li><Link to="/hook">Hook</Link></li>
               </ul>
               
       
@@ -105,6 +87,9 @@ function App() {
       </div>
         {/* 右边context */}
       <div className="right">
+        <div className="navbar">
+          <Clock/>
+        </div>
               {/* <Route path="/" exact component={Index} />
               <Route path="/home" exact component={Home} />
               <Route path="/about/" component={About} />
