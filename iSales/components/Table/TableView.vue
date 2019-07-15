@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical" style="min-height: 0">
+  <el-container direction="vertical">
     <el-main style="flex-grow: 1;display: flex;flex-direction: column" >
     <el-table
       stripe
@@ -12,15 +12,21 @@
       @row-dblclick="rowDblclick"
       @selection-change="checkChange"
       @cell-click="cellclick"
+      @row-click="rowClick"
       :data="tableData"
       v-loading="loading"
       element-loading-text="拼命加载中"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.3)"
+      :default-expand-all="expandAll"
+      lazy
+      :tree-props="treeProps"
       ref="tableGrid"
       style="flex-grow: 1"
       height="100%"
       :row-class-name="rowClass"
+      :row-key="rowKey"
+      :load="load"
     >
       <el-table-column v-if="checkbox" type="selection" :selectable="setSelectable" />
       <el-table-column type="index" align="center" fixed></el-table-column>
@@ -69,12 +75,23 @@
               </span>
             </template>
           </template>
-
           <template slot-scope="scope">
-            <el-button v-if="col.showType == 'button'" type="primary" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></el-button>
-            <a href="javascript:void(0)" v-else-if="col.showType == 'href'" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></a>
+            <template v-if="col.showType == 'button'">
+              <el-button v-if="col.show ? col.show(scope.row) : true" 
+                :type="col.btnStyle ? col.btnStyle : 'primary'" 
+                :icon="col.icon"
+                :loading="col.loading"
+                v-html="formatter(scope,col)" 
+                @click.stop.prevent="callback(col, scope.row)">
+              </el-button>
+            </template>
+
             <template v-else-if="col.showType == 'buttons'">
-              <el-button v-for="button in col.buttons" type="primary" :key="button.text" v-html="formatter(scope,button)" @click="callback(button, scope.row)"></el-button>
+              <el-button-group>
+                <template v-for="button in col.buttons">
+                  <el-button v-if="button.show ? button.show(scope.row) : true" :type="button.btnStyle ? button.btnStyle : 'primary'"  :key="button.text" v-html="formatter(scope,button)" @click="callback(button, scope.row)"></el-button>
+                </template>
+              </el-button-group>
             </template>
             <span v-else v-html="formatter(scope,col)"></span>
           </template>
@@ -102,7 +119,7 @@ import FilterColumn from './components/FilterHeaderColumn'
 import HeaderSort from './components/HeaderSort'
 import PagerBar from '@/portal/components/Pager'
 import { http } from '@/portal/utils/http'
-import { formatDate } from '@/portal/utils/index'
+import { formatDate, isNull } from '@/portal/utils/index'
 import { generateHeader } from '@/portal/utils/i18n'
 
 export default {
@@ -114,13 +131,17 @@ export default {
       queryData: {}, // 查询条件存储
       tableData: [],// 表格数据
       sortData: {},
-      sortField: '',
-      sortType: '',
+      sortField: '',//这个是表头用的
+      sortType: '',//这个是表头用的
+      __sortField: '',//这个是视图用的
+      __sortType: '',//这个是视图用的
       dataCount: 0,
       queryTotal: -1,
       viewSize: this.pageSize,
       viewIndex: this.pageIndex,
-      innerHeader:[]
+      innerHeader:[],
+      currentRow: null,
+      __filters:[]
     }
   },
   beforeCreate() {
@@ -192,7 +213,7 @@ export default {
     cellclick: { // 单元格事件
       type: Function,
       default: (row, column, cell, event) => {
-        console.log('default: ' + row + '---' + column + '---' + cell)
+        // console.log('default: ' + row + '---' + column + '---' + cell)
       }
     },
     currentChange: { // 选中行改变事件
@@ -242,9 +263,38 @@ export default {
       default: function () {
         return true
       }
+    },
+    treeProps:{
+      type: Object,
+      default: function () {
+        return {}
+      }
+    },
+    // 行数据的 Key，值须唯一
+    rowKey:{
+      type: String,
+      default: null
+    },
+    // 加载子节点数据的函数
+    load:{
+      type: Function,
+      default: function () {
+        return null
+      }
+    },
+    // 返回数据处理
+    formatSearchData:{
+      type: Function 
+    },
+    expandAll: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
+    changeLoading(loading){
+      this.loading = loadings
+    },
     generateHeader,
      callback(col, row){
       if(col.callback){
@@ -252,9 +302,9 @@ export default {
       }
     },
     getParam() {
-      let param = Object.assign({}, this.queryData, this.postQueryData)
+      let param = Object.assign({},this.preQueryData, this.queryData, this.postQueryData)
       let _this = this
-      // debugger
+ 
       Object.keys(param).forEach(function (key) {
         _this.tableHeader.forEach(function (v, k) {
           if (v.prop === key && v.filter) {
@@ -271,11 +321,18 @@ export default {
         })
       })
 
-      if (this.sortField && this.sortField.length > 0) {
-        let orderFields = {}
-        orderFields[this.sortField] = this.sortType
-        param.orderFields = orderFields
+      let orderFields = {}
+      if(this.__sortField){
+        orderFields[this.__sortField] = this.__sortType
       }
+
+      if (this.sortField && this.sortField.length > 0) {
+        orderFields[this.sortField] = this.sortType
+      }
+
+      if(0 < Object.keys(orderFields).length)
+        param['orderFields'] = orderFields
+
       if (this.pageEnabled) {
         param.__page = this.viewIndex
         param.__pagesize = this.viewSize
@@ -289,22 +346,53 @@ export default {
     formatParam(param = {}) {
       let newParam = {}
 
-      for(let k in param) {
-        let ks = k.split('.'),
-            len = ks.length
+      for(let key in param) {
+        let arr = key.split('.'),
+            len = arr.length,
+            orderVal = null
+
+        // 排序处理
+        // if (key == 'orderFields') {
+        //   let orderFields = param[key]
+        //   for(let orderKey in orderFields) {            
+        //     let orderArr = orderKey.split('.')
+        //     if (orderArr.length > 1) {
+        //       orderVal = orderFields[orderKey]
+        //       orderArr.unshift('orderFields')
+        //       arr = orderArr
+        //       len = arr.length
+        //     }            
+        //     break
+        //   }          
+        // }
+
+        // 值转换
+        if (Array.isArray(param[key])) {
+          param[key] = param[key].join(',')
+        }
 
         if (len > 1) {
-          if ( ! newParam[ks[0]]) newParam[ks[0]] = {}
-          if ( ! newParam[ks[0]][ks[1]]) newParam[ks[0]][ks[1]] = {}
+          if ( ! newParam[arr[0]]) newParam[arr[0]] = {}
+          if ( ! newParam[arr[0]][arr[1]]) newParam[arr[0]][arr[1]] = {}
 
-          if (len == 2) {
-            newParam[ks[0]][ks[1]] = param[k]
-          } else {
-            if ( ! newParam[ks[0]][ks[1]][ks[2]]) newParam[ks[0]][ks[1]][ks[2]] = {}
-            newParam[ks[0]][ks[1]][ks[2]] = param[k]
+          if (len >= 2){
+            let n = newParam[arr[0]][arr[1]]
+            if (! n) newParam[arr[0]][arr[1]] = {}
+            if (len == 2) newParam[arr[0]][arr[1]] = param[key]
           }
+          
+          if (len >= 3){
+            let n = newParam[arr[0]][arr[1]][arr[2]]
+            if (! n) newParam[arr[0]][arr[1]][arr[2]] = {}
+            if (len == 3) newParam[arr[0]][arr[1]][arr[2]] = param[key]
+          }          
+          if (len >=4){
+            let n = newParam[arr[0]][arr[1]][arr[2]][arr[3]]
+            if (! n) newParam[arr[0]][arr[1]][arr[2]][arr[3]] = {}
+            if (len == 4) newParam[arr[0]][arr[1]][arr[2]][arr[3]] = orderVal ? orderVal:param[key]
+          }          
         } else {
-            newParam[k] = param[k]
+            newParam[key] = param[key]
         }
       }
 
@@ -326,6 +414,11 @@ export default {
 
       let params = Object.assign({}, this.preQueryData, param)
 
+      if(this.__filters && this.__filters.length > 0){
+        params['__filters'] = this.__filters
+      }
+        
+
       http({
         url: this.url,
         method: 'post',
@@ -335,6 +428,10 @@ export default {
         if (null == data) {
           _this.dataCount = 0;
         } else {
+          if (this.formatSearchData) {  // 数据处理
+            data = this.formatSearchData(data)
+          }
+
           _this.tableData = data
           _this.dataCount = data.length
         }
@@ -392,6 +489,11 @@ export default {
         data: queryParam
       }).then(data => {
         _this.loading = false
+        
+        if (this.formatSearchData) {  // 数据处理
+          data = this.formatSearchData(data)
+        }
+
         if (null == data || 0 == data.length) {
           _this.dataCount = 0;
         } else {
@@ -409,23 +511,33 @@ export default {
         console.log(err)
         _this.loading = false
       })
+
+      this.$emit('afterQuery');  // afterQuery 事件
     },
     formatter(scope, col) {
+      let icon = ''
+      let text = ''
       if (col.hasOwnProperty('formattor')) {
-        return col.formattor(col.prop ? this.getPropData(scope.row, col) : col.label, scope.row)
+        text = col.formattor(col.prop ? this.getPropData(scope.row, col) : col.label, scope.row)
       } else if(col.options){
         if(undefined == col.optionMap){
-          return ''
-        }
-
-        if(col.key)
-          return col.optionMap[scope.row[col.key]]
+          text= ''
+        }else if(col.key)
+          text = col.optionMap[scope.row[col.key]]
         else{
-          return col.optionMap[this.getPropData(scope.row, col)]
+          text = col.optionMap[this.getPropData(scope.row, col)]
         }
       }else{
-        return col.prop ? this.getPropData(scope.row, col) : col.label
+        text = col.prop ? this.getPropData(scope.row, col) : col.label
       }
+
+      if(col.icon){
+        icon = '<i class="'+col.icon+'"></i>'
+      }
+      if(! isNull(text))
+        return icon + '<span>' +text + '</span>'
+      else 
+        return icon
     },
     // 获取属性对应的值
     getPropData (data, col) {
@@ -434,6 +546,7 @@ export default {
 
       for (let item of props) {
         if (typeof data == 'object') {
+          
           propData = propData[item]
         } else {
           return propData
@@ -450,7 +563,7 @@ export default {
     // 获取默认查询条件
     getDefaultQueryData() {
       let queryData = Object.assign({}, this.postQueryData)
-
+      
       for (let con of this.tableHeader) {
 
         var conField = con.prop + "Cond"
@@ -473,8 +586,8 @@ export default {
         } else {
           queryData[conField] = "eq"
         }
-      }
-
+      } 
+      
       return queryData
     },
     // 设置查询条件
@@ -485,22 +598,49 @@ export default {
       } else {
         this.queryData = Object.assign({}, params, defaultQueryData)
       }
+    },
+    rowClick(row, column, event) {
+      if (! this.checkbox) return  // 非多选不执行以下操作
+      
+      // 排除禁止选择
+      let el = event.currentTarget.querySelector("input")
+      if (el.hasAttribute("disabled")) return
+
+      this.$refs.tableGrid.clearSelection()
+      
+      // 双击时会出现不是预期的结果
+      // if (this.currentRow == row) {        
+      //   this.currentRow = null
+      //   this.$refs.tableGrid.setCurrentRow()
+      // } else {
+      //   this.currentRow = row
+      //   this.$refs.tableGrid.toggleRowSelection(row)
+      // }
+
+      this.$refs.tableGrid.toggleRowSelection(row)
     }
   },
   watch:{
     tableHeader:{
       immediate:true,
-      handler:function(e){
+      handler:function(n, o){
         this.innerHeader = []
-        this.$forceUpdate()
-      }
+        
+        //this.$forceUpdate()
+        //debugger
+      },
+      deep:true
     }
+  },
+  computed:{
+   /* innerHeader(){
+      return JSON.parse(JSON.stringify(this.tableHeader))
+    }*/
   },
   beforeUpdate(){
     let defaultQueryData = this.getDefaultQueryData()
-
     this.queryData = Object.assign({}, defaultQueryData, this.queryData)
-    this.innerHeader = this.tableHeader
+    
 
     if(undefined == this.optionMap){
       this['headerMap'] = {}
@@ -520,6 +660,9 @@ export default {
         this['headerMap'][col.prop] = col
       })
     }
+  },
+  updated(){
+    this.innerHeader = this.tableHeader
   }
 }
 </script>

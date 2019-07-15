@@ -19,7 +19,7 @@
       style="flex-grow: 1"
     >
       <el-table-column v-if="checkbox" type="selection"/>
-      <el-table-column type="index" align="center" fixed></el-table-column>
+      <el-table-column type="index" align="center" fixed v-if="showIndex"></el-table-column>
       <template v-for="(col, key) in innerHeader">
         <el-table-column
           v-if="!col.hidden"
@@ -71,7 +71,7 @@
               <span @click="triggerSelect(scope.row.____index, col.prop)" style="padding-left:7px;z-index:9999;position:relative" v-if="col.type == 'select' && col.formattor" v-html="col.formattor(scope.row[col.prop])"></span>
               <el-select
                   v-model="scope.row[col.prop]"
-                  v-if="col.type == 'select'"
+                  v-if="col.type == 'select' || (col.getType && col.getType(scope.row)== 'select')"
                   :style="'left:' + scope.row[col.prop + 'width'] + 'px'"
                   @change="dropChange(scope.$index, scope.row, col)" size="mini"
                   placeholder=""
@@ -79,32 +79,38 @@
                   >
                 <template v-if="col.hasOwnProperty('formattor')">
                   <template v-if="col.hasOwnProperty('optionKey')">
-                    <el-option v-for="o in col.options[col.optionKey]" :key="o.value" :value="o.value"><span v-html="col.formattor(o.value)"></span></el-option>
+                    <el-option 
+                      v-for="o in col.options[col.optionKey]" 
+                      :disabled="'N'==o.enable || (col.show ? col.hide(scope.row, o) : false)" 
+                      :key="o.value" :value="o.value">
+                      <span v-html="col.formattor(o.value)"></span>
+                    </el-option>
                   </template>
                   <template v-else>
-                    <el-option v-for="o in col.options[col.prop]" :key="o.value" :value="o.value"><span v-html="col.formattor(o.value)"></span></el-option>
+                    <el-option v-for="o in col.options[col.prop]" :disabled="'N'==o.enable || (col.hide ? col.hide(scope.row, o) : false)" :key="o.value" :value="o.value"><span v-html="col.formattor(o.value)"></span></el-option>
                   </template>
                 </template>
                 <template v-else>
                   <template v-if="col.hasOwnProperty('optionKey')">
-                    <el-option v-for="o in col.options[col.optionKey]" :key="o.value" :value="o.value" :label="o.label">{{o.label}}</el-option>
+                    <el-option v-for="o in col.options[col.optionKey]" :disabled="'N'==o.enable || (col.hide ? col.hide(scope.row, o) : false)" :key="o.value" :value="o.value" :label="o.label">{{o.label}}</el-option>
                   </template>
                   <template v-else>
-                     <el-option v-for="o in col.options[col.prop]" :key="o.value" :value="o.value" :label="o.label">{{o.label}}</el-option>
+                     <el-option v-for="o in col.options[col.prop]" :disabled="'N'==o.enable || (col.hide ? col.hide(scope.row, o) : false)" :key="o.value" :value="o.value" :label="o.label">{{o.label}}</el-option>
                  </template>
                 </template>
               </el-select>
-              <el-time-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" placeholder="" v-else-if="col.type == 'time'" :value-format="col.valueFormat" :format="col.format"></el-time-picker>
-              <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="date" placeholder="" v-else-if="col.type == 'date'" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
-              <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="datetime" placeholder="" v-else-if="col.type == 'datetime'" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
-              <el-switch @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" v-else-if="col.type == 'switch'" :inactive-value="col.switchValues.inactive" :active-value="col.switchValues.active"></el-switch>
-              <input @change="scope.row['___editted'] = true;callback(col, scope.row)" style="width:100%" v-model="scope.row[col.prop]" :precision="col.precision" :step="col.step" :max="col.max" :min="col.min" v-else-if="col.type == 'number'" size="mini" type="number"/>
-              <span v-else-if="col.type == 'dialog'">
+              <el-checkbox v-else-if="col.type == 'checkbox' || (col.getType && col.getType(scope.row)== 'checkbox')" @change="scope.row['___editted'] = true;" v-model="scope.row[col.prop]" :true-label="col.Y?col.Y:'Y'" :false-label="col.N?col.N:'N'"></el-checkbox>
+              <el-time-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" placeholder="" v-else-if="col.type == 'time' || (col.getType && col.getType(scope.row)== 'time')" :value-format="col.valueFormat" :format="col.format"></el-time-picker>
+              <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="date" placeholder="" v-else-if="col.type == 'date' || (col.getType && col.getType(scope.row)== 'date')" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
+              <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="datetime" placeholder="" v-else-if="col.type == 'datetime' || (col.getType && col.getType(scope.row)== 'datetime')" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
+              <el-switch @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" v-else-if="col.type == 'switch' || (col.getType && col.getType(scope.row)== 'switch')" :inactive-value="col.switchValues.inactive" :active-value="col.switchValues.active"></el-switch>
+              <input @change="scope.row['___editted'] = true;callback(col, scope.row)" style="width:100%" v-model="scope.row[col.prop]" :precision="col.precision" :step="col.step" :max="col.max" :min="col.min" v-else-if="col.type == 'number' || (col.getType && col.getType(scope.row)== 'number')" size="mini" type="number"/>
+              <span v-else-if="col.type == 'dialog' || (col.getType && col.getType(scope.row)=='dialog')">
                 <a v-if="col.showType == 'href'" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></a>
                  <el-button v-if="col.showType == 'button'" type="primary" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></el-button>
                 <span v-else v-html="formatter(scope,col)" @click="callback(col, scope.row)"></span>
               </span>
-              <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="textarea" placeholder="" v-else-if="col.type == 'textarea'" :autosize="true"></el-date-picker>
+              <el-input @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="textarea" placeholder="" v-else-if="col.type == 'textarea' || (col.getType && col.getType(scope.row)== 'textarea')" :autosize="true"></el-input>
               <el-input v-model="scope.row[col.prop]" @change="scope.row['___editted'] = true;callback(col, scope.row)" v-else style="width:98%"/>
             </template>
             <template v-else-if="col.showType == 'href'">
@@ -160,6 +166,12 @@ export default {
     }
   },
   props: {
+    showIndex:{
+      type: Boolean,
+      default: function () {
+        return true
+      }
+    },
     autoQuery: {
       type: Boolean,
       default: function () {
@@ -535,33 +547,7 @@ export default {
         data
       }).then(data => {
         this.loading = false
-        if (null != data) {
-          let index = 0
-          for(let d of data){
-            d['____index'] = index++
-            d['___editting'] = false
-
-            // for(let prop in d){
-            //   if(this.headerMap[prop].options){
-            //     d[prop + 'Label'] = ''
-            //   }
-
-            // }
-          }
-
-          if(this.initData){
-            this.tableData = this.initData(data)
-            this.innerData = this.initData(data)
-          }else{
-            this.tableData = data
-            this.innerData = data
-          }
-
-          this.currentProp = null
-          this.current = null
-          this.selected = []
-          this.deletes = []
-        }
+        this.setData(data)
       }).catch(err => {
         this.loading = false
       })
@@ -625,7 +611,7 @@ export default {
 
       return ''
     },
-    add(){
+    add(obj){
       if(null != this.current && !this.multiCommit){
         if((this.current.___editted || this.current.___add)){
           return this.$message.error(this.$t('common.editBeforeSave'))
@@ -633,6 +619,8 @@ export default {
         this.current.___editting = false
       }
       let row = this.makeNewRow()
+      if(obj)
+        row = Object.assign(row, obj)
       this.tableData.splice(0, 0, row)
       this.$refs.table.setCurrentRow(this.tableData[0])
     },
@@ -719,6 +707,35 @@ export default {
     },
     checkChange(selection){
       this.selected = selection
+    },
+    setData(data){
+      if (null != data) {
+          let index = 0
+          for(let d of data){
+            d['____index'] = index++
+            d['___editting'] = d['___editting'] ? true : false
+
+            // for(let prop in d){
+            //   if(this.headerMap[prop].options){
+            //     d[prop + 'Label'] = ''
+            //   }
+
+            // }
+          }
+
+          if(this.initData){
+            this.tableData = this.initData(data)
+            this.innerData = this.initData(data)
+          }else{
+            this.tableData = data
+            this.innerData = data
+          }
+
+          this.currentProp = null
+          this.current = null
+          this.selected = []
+          this.deletes = []
+        }
     },
     getEditted(){
       let updates = []
