@@ -3,7 +3,7 @@ import app from '@/portal/appConfig'
 export function getLayout(defaultHeaders, gridId, page, tableData, pageSize, showFilterBar, component){
     let headers = []
     http({
-        url: '/admin/layout/get',
+        url: '/isc-admin/layout/get',
         method: 'post',
         data:{application:app.APP_NAME, pageName:page, gridId:gridId}
     }).then(data => {
@@ -14,7 +14,7 @@ export function getLayout(defaultHeaders, gridId, page, tableData, pageSize, sho
                 }
 
                 if(!o.hasOwnProperty('fixed')){
-                    o['fixed'] = ''
+                    o['fixed'] = false
                 }
             })
 

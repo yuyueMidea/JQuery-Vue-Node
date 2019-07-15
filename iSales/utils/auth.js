@@ -3,7 +3,7 @@ import storage from './storage'
 import _import from './import'
 import Layout from '@/portal/views/layout/Layout'
 import AppMain from '@/portal/views/layout/components/AppMain'
-
+import http from './http'
 
 
 const TokenName = appConfig.TOKEN_NAME
@@ -40,6 +40,30 @@ export function removeProfile() {
 }
 
 /**
+ * 往profile的__infos添加数据，如果存在key则覆盖
+ * @param {*} info 对象
+ */
+export function getSetProfile(info){
+  let p = storage.getStorage(ProfileName)
+  let infos = p.__infos ? p.__infos : {}
+  return new Promise((resolve, reject) => {
+    info = Object.assign(infos, info ? info : {})
+    return http({
+      url: '/isc-auth/user/getSetProfile',
+      method: 'post',
+      data: {__infos:info}
+    }).then(data => {
+      storage.setStorage(ProfileName, data)
+      resolve(data)
+    }).catch(err => {
+      // 登录失败后的操作，todo
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+/**
  * 根据用户菜单返回路由列表
  */
 export function formatRoutes(menus) {
@@ -72,7 +96,7 @@ export function formatRoutes(menus) {
     let path =  !isLast || null == menu.url || '' == menu.url ?　(Math.random()+""+new Date().getTime()).substring(2): menu.url
     let m = {
       path,
-      meta: { title: menu.name, icon: null == menu.icon ? '' : menu.icon,id:menu.menuId, code:menu.code || path},
+      meta: { title: menu.localName || menu.name, icon: null == menu.icon ? '' : menu.icon,id:menu.menuId, code:menu.code || path},
       children: children,
       hidden:false,
       name: menu.name
@@ -101,7 +125,7 @@ export function formatRoutes(menus) {
 
     }
 
-    titles[url][menu.url] = menu.name
+    titles[url][menu.url] = menu.localName || menu.name
 
     //要去重
     if(isLast && urls.indexOf(menu.url) < 0){
@@ -110,7 +134,7 @@ export function formatRoutes(menus) {
         // name: 'm' + menu.url,  // name 须唯一
         name: menu.url,  // name 须唯一
         component: isLast ? _import(url) : AppMain,
-        meta: { title: menu.name, icon: null == menu.icon ? '' : menu.icon, titles:titles[url],id:menu.menuId, code:menu.code || menu.url},
+        meta: { title: menu.localName || menu.name, icon: null == menu.icon ? '' : menu.icon, titles:titles[url],id:menu.menuId, code:menu.code || menu.url},
         query
       }
       ret.routes[0].children.push(rout)

@@ -3,7 +3,7 @@
  * @LastEditors: tim
  * @Description: 常用操作
  * @Date: 2019-03-12 20:53:38
- * @LastEditTime: 2019-03-20 10:52:24
+ * @LastEditTime: 2019-06-28 10:37:30
  */
 
 /**
@@ -23,4 +23,13 @@ export function closest(el, selector) {
     }
   }
   return isFind ? el : null;
+}
+
+/**
+ * 简单复制对象
+ * @param obj 原对象
+ * @returns {any} 新对象
+ */
+export function copyObject(obj) {
+  return JSON.parse(JSON.stringify(obj))
 }

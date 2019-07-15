@@ -96,6 +96,32 @@ export function formatDate(date, fmt) {
   return fmt;
 }
 
+/**
+ * 计算两个日期(年月日) 的时间缀差值
+ * @param {*} sDate 开始时间
+ * @param {*} eDate 结果时间
+ */
+export function diffDayTime(sDate, eDate) {
+  let nowTime = getDayTime()  // 当前日期时间缀
+
+  sDate = getDayTime(sDate)
+  eDate = getDayTime(eDate)
+  return eDate-sDate
+}
+/**
+ * 返回日期（ 年月日） 的时间缀
+ * @param {*} date 
+ */
+export function getDayTime(date) {
+  let d = new Date()
+  if (date && typeof date == 'object') {
+    d = date
+  } else if(date) {
+    d = new Date(date)
+  }
+  return new Date(d.toDateString()).getTime()
+}
+
 // url地址转化
 export function getQueryObject(url) {
   url = url == null ? window.location.href : url
@@ -294,14 +320,14 @@ export function debounce(func, wait, immediate) {
  * Has a lot of edge cases bug
  * If you want to use a perfect deep copy, use lodash's _.cloneDeep
  */
-export function deepClone(source) {
+export function copyObject(source) {
   if (!source && typeof source !== 'object') {
     throw new Error('error arguments', 'shallowClone')
   }
   const targetObj = source.constructor === Array ? [] : {}
   Object.keys(source).forEach(keys => {
     if (source[keys] && typeof source[keys] === 'object') {
-      targetObj[keys] = deepClone(source[keys])
+      targetObj[keys] = copyObject(source[keys])
     } else {
       targetObj[keys] = source[keys]
     }
