@@ -1,7 +1,4 @@
 ## 1.创建局部指令
-**`111`**
-
-
         var app = new Vue({
             el: '#app',
             data: {    
@@ -22,3 +19,16 @@
                 }
             }
         })
+
+## 2.全局指令
+        Vue.directive('dir2', {
+            inserted(el) {
+                console.log(el);
+            }
+        })
+        
+## 3.指令的使用
+        <div id="app">
+            <div v-dir1></div>
+            <div v-dir2></div>
+        </div>
