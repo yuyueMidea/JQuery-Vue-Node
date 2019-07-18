@@ -1,10 +1,11 @@
-## vue.js中created()与activated()的个人使用理解
+**vue.js中created()与activated()的个人使用理解**
 
 created()：在创建vue对象时，当html渲染之前就触发；但是注意，全局vue.js不强制刷新或者重启时只创建一次，也就是说，created()只会触发一次；
 
 activated()：在vue对象存活的情况下，进入当前存在activated()函数的页面时，一进入页面就触发；可用于初始化页面数据等
 
-// 挂载在vue原型上的属性一般在属性名前加 $ 符号
+**挂载在vue原型上的属性一般在属性名前加 $ 符号**
+
 Vue.prototype.$mideaMessage = mideaMessage // 挂载消息统一处理方法
 
 Vue.prototype.$pageLoading = loading      // 加载动画loading
@@ -13,8 +14,10 @@ Vue.prototype.$loadLocals = loadLocals    // 语言加载方法
 
 Vue.prototype.$getLovValues = getLovValues
 
-## 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
-## 需要为已有对象赋予多个新属性，比如使用 Object.assign()
+**可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性**
+
+**需要为已有对象赋予多个新属性，比如使用 Object.assign()**
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -25,7 +28,7 @@ var app = new Vue({
 
 })
 
-// 可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性
+**可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性**
 
 app.$set(app.obj,'age',27);
 
@@ -35,14 +38,16 @@ app.obj=Object.assign({},app.obj,{
 	yyyy:2019,mm:5,date:4
 })
 
-## // 父组件改变props，子组件如果直接使用props，会触发子组件更新
+**父组件改变props，子组件如果直接使用props，会触发子组件更新**
     // 父组件改变props，子组件如果将props放进data中再使用，不会触发子组件更新
     // 父组件改变props，子组件如果将props放进computed中再使用，会触发子组件更新
     // 子组件改变props，父组件会更新，但其他子组件不会更新，故共享的属性需要放到父组件去改变
     
-## 1.简要介绍Vuex原理
+**1.简要介绍Vuex原理**
+
 Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中的数据时，必须通过Mutation进行，Mutation同时提供了订阅者模式供外部插件调用获取State数据的更新。而当所有异步操作(常见于调用后端接口异步获取更新数据)或批量的同步操作需要走Action，但Action也是无法直接修改State的，还是需要通过Mutation来修改State的数据。最后，根据State的变化，渲染到视图上。
-2.简要介绍各模块在流程中的功能：
+
+**2.简要介绍各模块在流程中的功能：**
 
 Vue Components：Vue组件。HTML页面上，负责接收用户操作等交互行为，执行dispatch方法触发对应action进行回应。
 dispatch：操作行为触发方法，是唯一能执行action的方法。
