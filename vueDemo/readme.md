@@ -5,10 +5,10 @@
 
 **挂载在vue原型上的属性一般在属性名前加 $ 符号**
 
-	Vue.prototype.$mideaMessage = mideaMessage // 挂载消息统一处理方法
-	Vue.prototype.$pageLoading = loading      // 加载动画loading
-	Vue.prototype.$loadLocals = loadLocals    // 语言加载方法
-	Vue.prototype.$getLovValues = getLovValues
+- [x] Vue.prototype.$mideaMessage = mideaMessage // 挂载消息统一处理方法
+- [x] Vue.prototype.$pageLoading = loading      // 加载动画loading
+- [x] Vue.prototype.$loadLocals = loadLocals    // 语言加载方法
+- [x] Vue.prototype.$getLovValues = getLovValues
 
 **可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性**
 
@@ -40,7 +40,7 @@ app.obj=Object.assign({},app.obj,{
     
 **1.简要介绍Vuex原理**
 
-	Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中的数据时，必须通过Mutation进行，Mutation同时提供了订阅者模式供外部插件调用获取State数据的更新。而当所有异步操作(常见于调用后端接口异步获取更新数据)或批量的同步操作需要走Action，但Action也是无法直接修改State的，还是需要通过Mutation来修改State的数据。最后，根据State的变化，渲染到视图上。
+- [x] Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中的数据时，必须通过Mutation进行，Mutation同时提供了订阅者模式供外部插件调用获取State数据的更新。而当所有异步操作(常见于调用后端接口异步获取更新数据)或批量的同步操作需要走Action，但Action也是无法直接修改State的，还是需要通过Mutation来修改State的数据。最后，根据State的变化，渲染到视图上。
 
 **2.简要介绍各模块在流程中的功能：**
 
