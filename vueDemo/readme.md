@@ -44,7 +44,7 @@ app.obj=Object.assign({},app.obj,{
 
 **2.简要介绍各模块在流程中的功能：**
 
-	Vue Components：Vue组件。HTML页面上，负责接收用户操作等交互行为，执行dispatch方法触发对应action进行回应。
+- [x] Vue Components：Vue组件。HTML页面上，负责接收用户操作等交互行为，执行dispatch方法触发对应action进行回应。
 	dispatch：操作行为触发方法，是唯一能执行action的方法。
 	actions：操作行为处理模块,由组件中的$store.dispatch('action 名称', data1)来触发。然后由commit()来触发mutation的调用 , 间接更新 state。负责处理Vue Components接收到的所有交互行为。包含同步/异步操作，支持多个同名方法，按照注册的顺序依次触发。向后台API请求的操作就在这个模块中进行，包括触发其他action以及提交mutation的操作。该模块提供了Promise的封装，以支持action的链式触发。
 	commit：状态改变提交操作方法。对mutation进行提交，是唯一能执行mutation的方法。
@@ -55,7 +55,7 @@ app.obj=Object.assign({},app.obj,{
 ## 父子组件通信
 `常见使用场景可以分为三类：`
 
-	父子通信：
+- [x] 父子通信：
 	父向子传递数据是通过 props，子向父是通过 events（$emit）；通过父链 / 子链也可以通信（$parent / $children）；ref 也可以访问组件实例；provide / inject API；$attrs/$listeners
 	兄弟通信：
 	Bus；Vuex
