@@ -12,10 +12,11 @@
 
 **可以使用 Vue.set(object, propertyName, value) 方法向嵌套对象添加响应式属性**
 **Vue 中怎么自定义过滤器**
-	Vue.filter('reverse', function (value) {
-	  return value.split('').reverse().join('')
-	})
-	<span v-text="message | reverse"></span>
+
+		Vue.filter('reverse', function (value) {
+		  return value.split('').reverse().join('')
+		})
+		<span v-text="message | reverse"></span>
 	
 **需要为已有对象赋予多个新属性，比如使用 Object.assign()**
 
