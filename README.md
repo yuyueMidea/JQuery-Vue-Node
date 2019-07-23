@@ -1,5 +1,7 @@
 ## [前端小密圈](http://qdxmq.com/)
 
+> **<a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg" alt="996.icu" /></a>**
+
 > **博客签名：若批评无自由，则赞美无意义。**
 
 > **博客目的：风起于青萍之末，浪成于微澜之间。**
