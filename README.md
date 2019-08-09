@@ -15,21 +15,6 @@
 </p>
 
 
-## 翻译:
-
-* [English](../README.md)
-* [Español](../translations/README-es.md)
-* [Français](../translations/README-fr.md)
-* [Português do Brasil](../translations/README-pt_BR.md)
-* [中文版](../translations/README-cn.md)
-* [日本語](../translations/README-ja.md)
-* [한국어](../translations/README-ko.md)
-* [Turkish](../translations/README-tr.md)
-* [Greek](../translations/README-gr.md)
-* [Magyar](../translations/README-hu.md)
-* [Polish](../translations/README-pl.md)
-* [Русский](translations/README-ru.md)
-
 ## 什么是正则表达式?
 
 > 正则表达式是一组由字母和符号组成的特殊文本, 它可以用来从文本中找出满足你想要的格式的句子.
