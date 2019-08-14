@@ -1,6 +1,6 @@
 ## Nuxt.js 是一个基于 Vue.js 的通用应用框架。
 
-
+``
 |-- .nuxt                            // Nuxt自动生成，临时的用于编辑的文件，build
 |-- assets                           // 用于组织未编译的静态资源入LESS、SASS 或 JavaScript
 |-- components                       // 用于自己编写的Vue组件，比如滚动组件，日历组件，分页组件
@@ -17,3 +17,4 @@
 |-- package-lock.json                // npm自动生成，用于帮助package的统一性设置的，yarn也有相同的操作
 |-- package-lock.json                // npm自动生成，用于帮助package的统一性设置的，yarn也有相同的操作
 |-- package.json                     // npm包管理配置文件
+``
