@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-14 11:00:16
- * @LastEditTime: 2019-08-14 13:31:37
+ * @LastEditTime: 2019-08-17 17:14:20
  * @LastEditors: Please set LastEditors
  */
 import Vuex from 'vuex'
@@ -15,7 +15,9 @@ const createStore = () => {
       list:[
           {text:'今天休息，学习英语',done: false},
           {text:'今天吃鸡，',done: true},
-      ]
+      ],
+      openedTagNavList:[],
+		  NavList:[],
     }),
     mutations: {
       increment (state) {
@@ -33,7 +35,19 @@ const createStore = () => {
       },
       togole(state, todo) {
           todo.done =!todo.done
-      }
+      },
+      //打开的菜单list
+      addNavList(state,val){
+        state.openedTagNavList.push(val);
+      },
+      removeTagNav(state,val){
+        var index = state.openedTagNavList.indexOf(val);
+        state.openedTagNavList.splice(index,1);
+      },
+      //设置所有的菜单list
+      setAllNavList(state,val){
+        state.NavList.push(val);
+      },
     }
   })
 }
