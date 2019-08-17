@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 17:18:50
- * @LastEditTime: 2019-08-14 14:42:16
+ * @LastEditTime: 2019-08-17 17:22:34
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -15,13 +15,17 @@
 					
 				</div>
 				<div class="side-nav-left">
-          <ul class="el-menu">
-						<nuxt-link v-for="(item,key) in getNavList" :key="key" :to="item.path" tag="li" class="el-menu-item" :class="isActive(item.path)?'active-menu':''"  :title="item.name">{{item.name}}</nuxt-link>
+          			<ul class="el-menu">
+						<nuxt-link v-for="(item,key) in getNavList" :key="key" :to="item.path" tag="li" class="el-menu-item" :class="isActive(item.path)?'active-menu':''"  :title="item.name" ><div @click="setMenu(item)">{{item.name}}</div></nuxt-link>
 					</ul>
 				</div>
 				<div class="sys-content-left">
 					<div class="tag-nav">
-						<p>1111111111</p>
+						<p>
+							<nuxt-link v-for="(item,key) in tagNavList" :key="key" :to="item" :class="isActive(item)?'active-tagNav':''">
+								{{item}}<span class='el-icon-close' @click.prevent.stop="closeTheTag(item, key)"></span>
+							</nuxt-link>
+						</p>
 					</div>
 					<div class="sys-page">
 						<keep-alive>
@@ -40,7 +44,20 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
+
 export default {
+	computed:{
+		...mapState({
+			// getNavList: state => state.NavList,			// 获取该用户的菜单列表
+			tagNavList: state => state.openedTagNavList
+		})
+	},
+	mounted(){
+		this.getNavList.map(v=>{
+			this.$store.commit("setAllNavList", {path:v.path, name:v.name});
+		})
+	},
   data(){
     return{
       getNavList:[
@@ -53,9 +70,27 @@ export default {
     }
   },
   methods:{
-    isActive(tag){
-				return this.$route.path ==tag;
-		},
+	setMenu(to) {
+		// debugger
+		if(this.$store.state.openedTagNavList.indexOf(to.path) ==-1){
+			this.$store.commit("addNavList", to.path);
+		}
+	},
+	isActive(tag){
+			return this.$route.path ==tag;
+	},
+	closeTheTag(item, key){
+		// 当关闭当前页面的Tag时，则自动加载前一个Tag所属的页面
+		// 如果没有前一个Tag，则加载默认页面
+		if(this.$store.state.openedTagNavList.indexOf(item) !==-1){
+			this.$store.commit("removeTagNav", item);
+		}
+		if(key){
+			this.$router.push(this.tagNavList[key-1])
+		} else {
+			this.$router.push(this.defaultPage)
+		}
+	}
   },
   created(){
     
@@ -106,8 +141,8 @@ ul,ol{
 	height: 56px;
 	line-height: 56px;
 	font-size: 14px;
+	padding:0;
 	color: #303133;
-	padding: 0 20px;
 	list-style: none;
 	cursor: pointer;
 	position: relative;
@@ -115,9 +150,12 @@ ul,ol{
 	box-sizing: border-box;
 	white-space: nowrap;
 }
+.side-nav-left .el-menu .el-menu-item >div{
+	padding: 0 20px;width:100%;
+}
 .side-nav-left .el-menu .el-menu-item:hover{
 	cursor: pointer;color: #303133;
-	background: #52bab561;
+	background: #52bab561; border-left: 6px solid #3c8dbc;
 }
 .sys-content-left{
 	position: absolute; top:60px; left:200px;bottom: 0; right:0;
@@ -171,7 +209,7 @@ ul,ol{
 }
 .side-nav-left .el-menu .active-menu{
 	color: #303133;
-	background: #52bab561;
+	background: #52bab561;border-left: 6px solid #3c8dbc;
 }
 
 .sys-content-left .tag-nav .active-tagNav{
