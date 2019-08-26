@@ -1,8 +1,8 @@
 /*
  * @Description: In User Settings Edit
- * @Author: your name
+ * @Author: yuyue
  * @Date: 2019-08-14 11:00:16
- * @LastEditTime: 2019-08-17 17:14:20
+ * @LastEditTime: 2019-08-26 11:10:45
  * @LastEditors: Please set LastEditors
  */
 import Vuex from 'vuex'
@@ -17,11 +17,15 @@ const createStore = () => {
           {text:'今天吃鸡，',done: true},
       ],
       openedTagNavList:[],
-		  NavList:[],
+      NavList:[],
+      data3:''
     }),
     mutations: {
       increment (state) {
         state.counter++
+      },
+      PARAMS_VALUE(state,data){
+        state.data3 =data;
       },
       add(state,text) {
           state.list.push({
