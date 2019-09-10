@@ -1,3 +1,10 @@
+/*
+ * @Author: tim
+ * @Date: 2019-07-24 18:45:46
+ * @LastEditors: tim
+ * @LastEditTime: 2019-08-12 18:07:54
+ * @Description: 
+ */
 import {
   mapState
 } from 'vuex'
@@ -47,6 +54,42 @@ export const tabTodoWatch = {
         if (name == this.$options.name && typeof this[methods] == 'function') {
           this[methods](params)
         } 
+      }
+    }
+  }
+}
+// 设置 state.params.__data 值
+export const pageParamsMixin = {
+  methods: {    
+    __setParams(data) {
+      this.$store.commit('PARAMS_VALUE', data)
+    },   
+  },
+}
+// 监听 state.params.__data 值
+export const pageParamsWatch = {
+  computed: {
+    ...mapState({
+      __data: state => state.params.__data
+    })
+  },
+  methods: {
+    __clearParams() {
+      this.$store.commit('PARAMS_VALUE', null)
+    },
+  },
+  watch: {
+    __data: function (data) {
+      if (data) {
+        let {
+          name,
+          methods,
+          params
+        } = data
+        console.log('page options:', this.$options.name, name)
+        if (name == this.$options.name && typeof this[methods] == 'function') {
+          this[methods](params)
+        }
       }
     }
   }

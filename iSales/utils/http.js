@@ -2,11 +2,10 @@ import vm from '@/main'
 import axios from 'axios'
 // import { Message } from 'element-ui'
 import appConfig from '@/portal/appConfig'
-import store from '@/portal/store'
 import { getToken } from '@/portal/utils/auth'
-import { logout } from '@/portal/api/login'
 
 let loadInstance  // 页面加载效果
+let uniqueKeyMsg = ''
 
 const hideLoading = function () {
   loadInstance && loadInstance.close()
@@ -25,7 +24,7 @@ const instance = axios.create({
   // 后面数组中的函数必须返回一个字符串，或 ArrayBuffer，或 Stream
   transformRequest: [function (data) {
     // Do whatever you want to transform the data
-    /* 
+    /*
       // 不需要设置Request Body的language和APP_Name
       // var storeGetters = store.getters
       // if (data) {
@@ -52,7 +51,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     // Do something before request is sent
-    if (!process.env.ENABLE_SSO && (store.getters.token || getToken())) {
+    if (!process.env.ENABLE_SSO) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
       config.headers['isc-token'] = getToken()
     }
@@ -83,18 +82,32 @@ instance.interceptors.response.use(
     // debugger
     switch (res.resultCode) {
       case 'ISC-000':
-       return res.data
+        return res.data
       case 'ISC-912':
         return vm.$store.dispatch('logOut').then(() => {
           location.reload()// In order to re-instantiate the vue-router object to avoid bugs
         })
-      case 'ISC-999': // 程序报错，显示more信息       
+      case 'ISC-998':
+        if (uniqueKeyMsg && uniqueKeyMsg.length > 0) {
+          vm.$mideaMessage({
+            type: 'error',
+            message: uniqueKeyMsg,
+          })
+          uniqueKeyMsg = null
+        } else {
+          vm.$mideaMessage({
+            msgCode: res.resultCode,
+            message: res.resultMsg
+          })
+        }
+        return Promise.reject(res)
+      case 'ISC-999': // 程序报错，显示more信息
       default:
         vm.$mideaMessage({
           msgCode: res.resultCode,
           message: res.resultMsg
         })
-        return Promise.reject('error')
+        return Promise.reject(res)
     }
   },
   error => {
@@ -110,50 +123,22 @@ instance.interceptors.response.use(
   }
 )
 
-export const http = function (options = { loading: false }) {
+export const http = function (options = { loading: false, uniqueKeyMsg: '' }) {
   // 显示页面加载效果
   if (options.loading === true && !loadInstance) {
     loadInstance = vm.$pageLoading.open()
   }
- /* let index = options.url.indexOf('/') == 0 ? 1 : 0
-  if (process.env.ENV_CONFIG == 'dev') {
-    let paths = options.url.split('/')
-
-    let app = paths[index]
-    if (process.env.WHITE_LIST && process.env.WHITE_LIST.length > 0 && process.env.WHITE_LIST.indexOf(app) == -1) {
-      paths[index] += '-' + process.env.FLAG
-      let base = process.env.BASE_API
-      if (base.indexOf('web') > -1) {
-        base = base.substr(0, base.indexOf('web'))
-      }
-      options['baseURL'] = base
-    } else {
-      let base = process.env.BASE_API
-      if (app.indexOf('isc-') == 0 && base.indexOf('web') > -1) {
-        base = base.substr(0, base.indexOf('web'))
-      }
-      options['baseURL'] = base
-    }
-
-    options.url = paths.join('/')
-
-  } else {
-    if (index == 1) {
-      options.url = process.env.BASE_API + options.url
-    } else {
-      options.url = process.env.BASE_API + "/" + options.url
-    }
-  }*/
+  uniqueKeyMsg = options.uniqueKeyMsg
 
   //获取服务的位置
   let index = options.url.indexOf('/') == 0 ? 1 : 0
   let paths = options.url.split('/')
-  //在DEBUG_LIST里边或不是isc开头的要加后缀  
-  if(process.env.ENV_CONFIG == 'dev'  
-    &&((process.env.DEBUG_LIST && process.env.DEBUG_LIST.indexOf(paths[index]) > -1)
-        || (paths[index].indexOf('isc-') != 0)) && process.env.FLAG){
-          
-      paths[index] = paths[index] + '-' + process.env.FLAG
+  //在DEBUG_LIST里边或不是isc开头的要加后缀
+  if (process.env.ENV_CONFIG == 'dev'
+    && ((process.env.DEBUG_LIST && process.env.DEBUG_LIST.indexOf(paths[index]) > -1)
+      || (paths[index].indexOf('isc-') != 0)) && process.env.FLAG) {
+
+    paths[index] = paths[index] + '-' + process.env.FLAG
   }
   options.url = paths.join('/')
 
@@ -163,10 +148,10 @@ export const http = function (options = { loading: false }) {
     options.loading && (delete options.loading)
   } catch (err) { }
 
-  if(!options.method){
-    options.method='post'
+  if (!options.method) {
+    options.method = 'post'
   }
-  
+
   return instance(options)
 }
 

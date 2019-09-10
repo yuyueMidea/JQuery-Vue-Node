@@ -42,7 +42,7 @@ export default {
    * @param {*} key
    */
   getStorage(key) {
-  
+
     const value = storage.getItem(key) || ''
 
     try {
@@ -61,7 +61,7 @@ export default {
   /**
    * 获取当前语言
    */
-  getLanguage() {
+  getCurrentLanguage() {
     let lang = this.getStorage('language')
     if (!lang) {
       lang = 'zh'
@@ -73,7 +73,7 @@ export default {
    * 设置当前语言
    * @param {Sting} language
    */
-  setLanguage(language) {
+  setCurrentLanguage(language) {
     this.setStorage('language', language)
   }
 }

@@ -3,7 +3,7 @@ import {getProfile} from './auth'
 export function getButtons (menuId, component, key){
     let userId = getProfile().__userId
     http({
-        url:'/auth/resource/listPermission',
+        url:'/isc-auth/resource/listPermission',
         method:'post',
         data:{menuId, userId}
     }).then(data=>{

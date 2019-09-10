@@ -5,9 +5,12 @@ import Layout from '@/portal/views/layout/Layout'
 import AppMain from '@/portal/views/layout/components/AppMain'
 import http from './http'
 
-
 const TokenName = appConfig.TOKEN_NAME
 const ProfileName = appConfig.PROFILE_NAME
+const LanguageName = appConfig.LANGUAGE_NAME
+const PositionName = appConfig.POSITION_NAME
+const MenuName = appConfig.MENU_NAME
+const ResourceName = appConfig.RESOURCE_NAME
 
 function getRedirectPath(path, level) {
   // let redirectPath = path.split('/', level)
@@ -39,21 +42,65 @@ export function removeProfile() {
   return storage.removeStorage(ProfileName)
 }
 
+export function setLanguage(language) {
+  return storage.setStorage(LanguageName, language)
+}
+
+export function getLanguage() {
+  return storage.getStorage(LanguageName)
+}
+
+export function removeLanguage() {
+  return storage.removeStorage(LanguageName)
+}
+
+export function setPosition(position) {
+  return storage.setStorage(PositionName, position)
+}
+
+export function getPosition() {
+  return storage.getStorage(PositionName)
+}
+
+export function removePosition() {
+  return storage.removeStorage(PositionName)
+}
+
+export function setMenu(menu) {
+  return storage.setStorage(MenuName, menu)
+}
+
+export function getMenu() {
+  return storage.getStorage(MenuName)
+}
+
+export function removeMenu() {
+  return storage.removeStorage(MenuName)
+}
+
+export function setResource(resource) {
+  return storage.setStorage(ResourceName, resource)
+}
+
+export function getResource() {
+  return storage.getStorage(ResourceName)
+}
+
+export function removeResource() {
+  return storage.removeStorage(ResourceName)
+}
+
 /**
  * 往profile的__infos添加数据，如果存在key则覆盖
- * @param {*} info 对象
  */
-export function getSetProfile(info){
-  let p = storage.getStorage(ProfileName)
-  let infos = p.__infos ? p.__infos : {}
+export function getSetProfile(){
   return new Promise((resolve, reject) => {
-    info = Object.assign(infos, info ? info : {})
     return http({
       url: '/isc-auth/user/getSetProfile',
       method: 'post',
-      data: {__infos:info}
+      data: {}
     }).then(data => {
-      storage.setStorage(ProfileName, data)
+      setUserSession(data)
       resolve(data)
     }).catch(err => {
       // 登录失败后的操作，todo
@@ -61,6 +108,16 @@ export function getSetProfile(info){
       reject(err)
     })
   })
+}
+
+export function setUserSession(data){
+  setToken(data.profile.__token)
+  setProfile(data.profile)
+  setLanguage(data.locales)
+  setPosition(data.positions)
+  setMenu(data.menus)
+  setResource(data.resources)
+  storage.setCurrentLanguage(data.profile.__language)
 }
 
 /**
@@ -87,16 +144,21 @@ export function formatRoutes(menus) {
 
   function makeRoutes(menu){
     let children = [];
-    let isLast = menu.subMenus.length == 0;//是否最后一层
+    let isLast = menu.subMenus ? menu.subMenus.length === 0 : true;//是否最后一层
 
     if(!isLast){
       menu.subMenus.forEach(m => children.push(makeRoutes(m)));
     }
 
+    let menuName = menu['localName_' + storage.getCurrentLanguage()]
+    if(!menuName){
+      menuName = menu.name
+    }
+
     let path =  !isLast || null == menu.url || '' == menu.url ?　(Math.random()+""+new Date().getTime()).substring(2): menu.url
     let m = {
       path,
-      meta: { title: menu.localName || menu.name, icon: null == menu.icon ? '' : menu.icon,id:menu.menuId, code:menu.code || path},
+      meta: { title: menuName, icon: null == menu.icon ? '' : menu.icon,id:menu.menuId, code:menu.code || path},
       children: children,
       hidden:false,
       name: menu.name
@@ -125,7 +187,7 @@ export function formatRoutes(menus) {
 
     }
 
-    titles[url][menu.url] = menu.localName || menu.name
+    titles[url][menu.url] = menuName
 
     //要去重
     if(isLast && urls.indexOf(menu.url) < 0){
@@ -134,7 +196,7 @@ export function formatRoutes(menus) {
         // name: 'm' + menu.url,  // name 须唯一
         name: menu.url,  // name 须唯一
         component: isLast ? _import(url) : AppMain,
-        meta: { title: menu.localName || menu.name, icon: null == menu.icon ? '' : menu.icon, titles:titles[url],id:menu.menuId, code:menu.code || menu.url},
+        meta: { title: menuName, icon: null == menu.icon ? '' : menu.icon, titles:titles[url],id:menu.menuId, code:menu.code || menu.url},
         query
       }
       ret.routes[0].children.push(rout)

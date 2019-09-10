@@ -1,3 +1,18 @@
+// object判断
+export const isObject = (data) => {
+  return Object.prototype.toString.call(data) == '[object Object]'
+}
+
+// array判断
+export const isArray = (data) => {
+  return Object.prototype.toString.call(data) == '[object Array]'
+}
+
+// undefined 判断
+export const isUndefined = (data) => {
+  return data === null || data === undefined
+}
+
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null
@@ -8,7 +23,7 @@ export function parseTime(time, cFormat) {
     date = time
   } else {
     if (('' + time).length === 10) time = parseInt(time) * 1000
-    date = new Date(time)
+    date = new Date(time.replace(/-/g, '/'))
   }
   const formatObj = {
     y: date.getFullYear(),
@@ -72,7 +87,7 @@ export function formatDate(date, fmt) {
 
   if (typeof date == 'string') {
     try {
-      date = new Date(date)
+      date = new Date(date.replace(/-/g, '/'))
     } catch(e) {
       console.log(e)
     }
@@ -117,7 +132,7 @@ export function getDayTime(date) {
   if (date && typeof date == 'object') {
     d = date
   } else if(date) {
-    d = new Date(date)
+    d = new Date(date.replace(/-/g, '/'))
   }
   return new Date(d.toDateString()).getTime()
 }
