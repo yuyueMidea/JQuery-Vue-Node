@@ -1,0 +1,75 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-19 14:42:44
+ * @LastEditTime: 2019-09-19 16:53:48
+ * @LastEditors: Please set LastEditors
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <title>vue-render-demo(使用render方法的情况下)</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>vue-render-demo(使用render方法的情况下)</p>
+    <child :level='1'>hello-vue</child>
+    <child :level='2'>hello-vue2</child>
+    <child :level='3'>hello-vue333</child>
+    创建20个段落
+    <paragraph></paragraph>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+var getChildrenTextContent = function (children) {
+  return children.map(function (node) {
+    return node.children
+      ? getChildrenTextContent(node.children)
+      : node.text
+  }).join('')
+}
+
+Vue.component('child',{
+    render: function(createElement) {
+        console.log(this.$slots)
+        // 创建 kebab-case 风格的 ID
+    var headingId = getChildrenTextContent(this.$slots.default).toLowerCase().replace(/\W+/g, '-').replace(/(^-|-$)/g, '')
+        // debugger
+        return createElement(
+            'h'+ this.level,
+            [
+                createElement('a', {
+                attrs: {
+                    name: headingId,
+                    href: '#' + headingId
+                }
+                }, this.$slots.default)
+            ]
+        )
+    },
+    props:{
+        level:{
+            type:Number,
+            required: true
+        }
+    },
+})
+Vue.component('paragraph',{
+    render(h) {
+        return h(
+            'div',
+            Array.apply(null, {length: 20}).map(function(){
+                return h('p','this is a para!')
+            })
+        )
+    }
+})
+
+new Vue({
+    el:'#app'
+})
+</script>
