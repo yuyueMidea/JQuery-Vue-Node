@@ -1,0 +1,65 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-19 14:42:44
+ * @LastEditTime: 2019-09-19 17:15:32
+ * @LastEditors: Please set LastEditors
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <title>vue-render-demo(使用render方法的情况下)</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>vue-render-demo(使用render方法的情况下)</p>
+    <child :level='1'>hello-vue</child>
+    <!-- <child :level='2'>hello-vue2</child>
+    <child :level='3'>hello-vue333</child> -->
+    <tag1>wwwww</tag1>
+</div>
+</body>
+</html>
+<!-- <script type="text/x-template" id="jsTemplate">
+<div>
+    <h1 v-if="level==1"><slot></slot></h1>
+    <h2 v-if="level==2"><slot></slot></h2>
+    <h3 v-if="level==3"><slot></slot></h3>
+    <h4 v-if="level==4"><slot></slot></h4>
+    <h5 v-if="level==5"><slot></slot></h5>
+    <h6 v-if="level==6"><slot></slot></h6>
+</div>
+</script> -->
+
+<script type="text/javascript">
+Vue.component('child',{
+    render: function(createElement) {
+        console.log(this.$slots)
+        return createElement(
+            'h'+ this.level,
+            this.$slots.default,
+        )
+    },
+    props:{
+        level:{
+            type:Number,
+            required: true
+        }
+    },
+})
+Vue.component('tag1',{
+    props:['message'],
+    render: function(h){
+        debugger
+        return h('div',
+            this.$slots.default[0].text=122121
+        )
+    }
+})
+
+new Vue({
+    el:'#app'
+})
+</script>
