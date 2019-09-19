@@ -1,0 +1,46 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-19 14:42:44
+ * @LastEditTime: 2019-09-19 15:07:54
+ * @LastEditors: Please set LastEditors
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <title>vue-render-demo(非使用render方法的情况下)</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <p>vue-render-demo(非使用render方法的情况下)</p>
+    <child :level='3'>hello-vue</child>
+</div>
+</body>
+</html>
+<script type="text/x-template" id="jsTemplate">
+<div>
+    <h1 v-if="level==1"><slot></slot></h1>
+    <h2 v-if="level==2"><slot></slot></h2>
+    <h3 v-if="level==3"><slot></slot></h3>
+    <h4 v-if="level==4"><slot></slot></h4>
+    <h5 v-if="level==5"><slot></slot></h5>
+    <h6 v-if="level==6"><slot></slot></h6>
+</div>
+</script>
+
+<script type="text/javascript">
+Vue.component('child',{
+    template:'#jsTemplate',
+    props:{
+        level:{
+            type:Number,
+            required: true
+        }
+    }
+})
+new Vue({
+    el:'#app'
+})
+</script>
