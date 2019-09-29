@@ -2,12 +2,20 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-19 14:42:44
- * @LastEditTime: 2019-09-19 17:15:32
+ * @LastEditTime: 2019-09-24 20:53:55
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+    .active{
+        color: red;font-weight: 800;
+    }
+    .blog-post{
+        border: 1px solid #ccc;padding:3px;
+    }
+    </style>
    
     <title>vue-render-demo(使用render方法的情况下)</title>
     <script src="vue.js"></script>
@@ -19,24 +27,78 @@
     <!-- <child :level='2'>hello-vue2</child>
     <child :level='3'>hello-vue333</child> -->
     <tag1>wwwww</tag1>
+    <input type="radio" id="one" v-model="picked" value="one"><label for="one">one</label>
+    <input type="radio" id="two" v-model="picked" value="two"><label for="two">two</label><br>
+    <span>Picked: {{ picked }}</span>
+    <p style="white-space: pre-line">{{txtMsg}}</p>
+    <input v-model.lazy="txtMsg" >
+    <textarea v-model="txtMsg"></textarea>
+    <input v-model.number="age" type="number">
+    <input
+      v-model="newTodoText"
+      id="new-todo"
+      placeholder="E.g. Feed the cat"
+    >
+    <button @click="addNew">Add</button>
+    <ol style="border: 1px solid #ccc">
+        <todo-item v-for="(item,index) in groceryList" :key="item.id" :todo="item.text" @remove="groceryList.splice(index,1)"></todo-item>
+    </ol>
+    <button-counter></button-counter>
+    <button-counter></button-counter>
+    <button-counter></button-counter>
+    <para></para>
+    <ul>
+        <li v-for="(value,name,i) in object">
+            {{i}}---{{ name }}: {{ value }}
+        </li>
+    </ul>
+    <ul>
+        <li v-for="n in evenNumbers">{{ n }}</li>
+    </ul>
+    <div>
+        <span v-for="n in 11" :key="n" v-if="n%2==0">{{n}}--</span>
+    </div>
+    <hr>
+    <blog-post title="Blogging with Vue"></blog-post><hr>
+    <blog-post v-for="(item,index) in posts" :key="index" :title="item.title" :id="item.id" :content="item.content"></blog-post>
+    <alert-box>yuyuyuyu</alert-box>
+    <alert-box>
+        Something bad happened.
+      </alert-box>
+    
+    <ul>
+        <template v-for="n in even(numbers)">
+            <li>{{n}}</li><hr>
+        </template>
+    </ul>
+
+    <p v-once>{{ foo.split('').reverse().join('') }}</p>
+    <p v-html="message"></p>
+    <p>{{foo}}重复3次---{{repeat3}}</p>
+    <p :title="foo" v-on:click="handle" :class="{active:isActive}">{{Date().toLocaleString()}}</p>
+  <!-- 这里的 `foo` 不会更新！ -->
+  <button v-on:click="change">Change it</button>
+  <div :style="{fontSize: fontX+'px'}" >112333</div>
+    <template v-if="isActive">
+        <h1>Title</h1>
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+    </template>
+    <template v-else>
+        <p>this is else1</p>
+        <p>this is else2</p>
+    </template>
+    <input v-on:keyup.enter="doThis">
+
 </div>
 </body>
 </html>
-<!-- <script type="text/x-template" id="jsTemplate">
-<div>
-    <h1 v-if="level==1"><slot></slot></h1>
-    <h2 v-if="level==2"><slot></slot></h2>
-    <h3 v-if="level==3"><slot></slot></h3>
-    <h4 v-if="level==4"><slot></slot></h4>
-    <h5 v-if="level==5"><slot></slot></h5>
-    <h6 v-if="level==6"><slot></slot></h6>
-</div>
-</script> -->
+
 
 <script type="text/javascript">
 Vue.component('child',{
     render: function(createElement) {
-        console.log(this.$slots)
+        // console.log(this.$slots)
         return createElement(
             'h'+ this.level,
             this.$slots.default,
@@ -52,14 +114,112 @@ Vue.component('child',{
 Vue.component('tag1',{
     props:['message'],
     render: function(h){
-        debugger
         return h('div',
             this.$slots.default[0].text=122121
         )
     }
 })
 
-new Vue({
-    el:'#app'
+Vue.component('todo-item',{
+    props:['todo'],
+    template:'<li>{{todo}}---<button @click="$emit(\'remove\')" >删除</button></li>'
+})
+
+Vue.component('para',{
+    template:'<p>这首一个文本</p>'
+})
+Vue.component('blog-post', {
+  props: ['title','id','content'],
+  template: '<div class="blog-post"><h3>{{ title }}---<span>{{id}}</span></h3><div v-html="content"></div></div>'
+})
+Vue.component('button-counter',{
+    data(){
+        return{
+            count: 0
+        }
+    },
+    created() {
+        console.log('created--button')
+    },
+    template:'<button @click="count++">你点击了{{count}}次</button>'
+})
+Vue.component('alert-box',{
+    template:'<div style="background:pink;color:red;"><strong>Error!</strong><slot></slot></div>'
+})
+var vdata = {
+         txtMsg:'',
+         picked: 'one',
+         age:'',
+        groceryList: [
+            { id: 1, text: '蔬菜' },
+            { id: 2, text: '奶酪' },
+            { id: 3, text: '火腿' },
+            { id: 4, text: '随便其它什么人吃的东西' }
+        ],
+        posts: [
+            { id: 1, title: 'My journey with Vue',content:'这是第一段文本，正的非官方大哥是的发送到发送到法国恢复' },
+            { id: 2, title: 'Blogging with Vue',content:'这是第二段文本，的发送到发生地方都是' },
+            { id: 3, title: 'Why Vue is so fun',content:'这是第三段文本，是的范德萨范德萨发生大幅度复' }
+        ],
+        object: {
+            title: 'How to do lists in Vue',
+            author: 'Jane Doe',
+            publishedAt: '2016-04-10'
+        },
+        foo: 'bar',
+        message: "这里可以包含html标签,<hr/>这是换行这是<b>加粗</b>字体",
+        someAttr:'title',
+        isActive: false,
+        fontX:12,
+        numbers: [ 1, 2, 3, 4, 5 ],
+        newTodoText:'',
+        nextTodoId: 5
+    }
+    // Object.freeze(vdata)
+    
+var vm = new Vue({
+    el:'#app',
+    data: vdata,
+    created() {
+        console.log('created--')
+    },
+    computed: {
+        repeat3(){
+            return this.foo.repeat(3)
+        },
+        evenNumbers(){
+            return this.numbers.filter(v=>v%2==0);
+        },
+        
+    },
+    methods: {
+        change(){
+            // this.foo+='-1';
+            // this.isActive =! this.isActive;
+            // this.fontX +=2;
+            // this.object.name='yuyueee';
+            // this.groceryList[3]={id:11,text:'what--'};
+            // Vue.set(this.groceryList,3,{id:11,text:'what--'});
+            
+            // debugger
+        },
+        handle(){
+            alert(11)
+        },
+        even(num){
+            return num.filter(v=>v%2==1);
+        },
+        addNew(){
+            this.groceryList.push({
+                    id: this.nextTodoId++,
+                    text: this.newTodoText
+            });
+            this.newTodoText ='';
+            debugger
+        },
+       doThis(){
+           alert(1122)
+       }
+    },
 })
 </script>
