@@ -3,6 +3,7 @@ import axios from 'axios'
 // import { Message } from 'element-ui'
 import appConfig from '@/portal/appConfig'
 import { getToken } from '@/portal/utils/auth'
+import storage from '@/portal/utils/storage'
 
 let loadInstance  // 页面加载效果
 let uniqueKeyMsg = ''
@@ -85,7 +86,7 @@ instance.interceptors.response.use(
         return res.data
       case 'ISC-912':
         return vm.$store.dispatch('logOut').then(() => {
-          location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+          // location.reload()// In order to re-instantiate the vue-router object to avoid bugs
         })
       case 'ISC-998':
         if (uniqueKeyMsg && uniqueKeyMsg.length > 0) {
@@ -112,14 +113,20 @@ instance.interceptors.response.use(
   },
   error => {
     hideLoading()
-
-    console.log(error) // for debug
-    vm.$mideaMessage({
-      dangerouslyUseHTMLString: true,
-      message: error.message,
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    let ssologout = storage.getStorage("isc-logout-flag")
+    console.log("logout flag:"+ssologout)// for debug
+    if (error.message == 'Network Error' && ssologout == 'Y') {
+      storage.removeStorage("isc-logout-flag")
+      window.location = process.env.HOME_URL
+    } else {
+      console.log(error) // for debug
+      vm.$mideaMessage({
+        dangerouslyUseHTMLString: true,
+        message: error.message,
+        duration: 5 * 1000
+      })
+      return Promise.reject(error)
+    }
   }
 )
 
@@ -134,10 +141,7 @@ export const http = function (options = { loading: false, uniqueKeyMsg: '' }) {
   let index = options.url.indexOf('/') == 0 ? 1 : 0
   let paths = options.url.split('/')
   //在DEBUG_LIST里边或不是isc开头的要加后缀
-  if (process.env.ENV_CONFIG == 'dev'
-    && ((process.env.DEBUG_LIST && process.env.DEBUG_LIST.indexOf(paths[index]) > -1)
-      || (paths[index].indexOf('isc-') != 0)) && process.env.FLAG) {
-
+  if (process.env.ENV_CONFIG == 'dev' && process.env.DEBUG_LIST && process.env.DEBUG_LIST.indexOf(paths[index]) > -1 && process.env.FLAG) {
     paths[index] = paths[index] + '-' + process.env.FLAG
   }
   options.url = paths.join('/')

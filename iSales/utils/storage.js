@@ -75,5 +75,11 @@ export default {
    */
   setCurrentLanguage(language) {
     this.setStorage('language', language)
+  },
+  /**
+   * 清空当前语言
+   */
+  removeCurrentLanguage() {
+    this.removeStorage('language')
   }
 }

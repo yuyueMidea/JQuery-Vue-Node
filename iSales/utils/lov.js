@@ -6,7 +6,7 @@ export function getLovValues(types, app) {
         let lovs = {}
 
         if (types.length > 0) {
-            debugger
+            // debugger
             let profile = getProfile()
             let lang =  profile.__language
             app = app ? app : profile.__app

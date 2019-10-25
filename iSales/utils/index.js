@@ -393,22 +393,22 @@ export function toNumber(val, type="float", defaultVal) {
     return isNull(defaultVal) ? '':defaultVal
   }
 
-  val = val.toString()
-
-  switch (type) {
-    case 'float':
-      val = val.replace(/[^\d\.]/g, "")
-      break
-
-    default:
-      val = val.replace(/\D/g, "")
-  }
+  val = val.toString().replace(/[^\d\.]/g, "")
 
   if (isNull(val)) {
-    return isNull(defaultVal) ? '':defaultVal
-  } else {
-    return val
-  }  
+    return isNull(defaultVal) ? '' : defaultVal
+  }
+
+  switch (type) {
+    case 'float':  
+      val = parseFloat(val)
+      break
+
+    default: 
+      val = parseInt(val)
+  }
+
+  return val
 }
 
 /**

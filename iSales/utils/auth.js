@@ -4,6 +4,7 @@ import _import from './import'
 import Layout from '@/portal/views/layout/Layout'
 import AppMain from '@/portal/views/layout/components/AppMain'
 import http from './http'
+import i18n from '@/portal/lang' // Internationalization
 
 const TokenName = appConfig.TOKEN_NAME
 const ProfileName = appConfig.PROFILE_NAME
@@ -93,6 +94,20 @@ export function removeResource() {
 /**
  * 往profile的__infos添加数据，如果存在key则覆盖
  */
+export function getSetInfos(infos){
+  http({
+    url: '/isc-auth/login/updateProfile',
+    method: 'post',
+    data: {
+      __infos: infos
+    }
+  }).then(data => {
+    const profile = getProfile()
+    profile.__infos = data.__infos
+    setProfile(profile)
+  })
+}
+
 export function getSetProfile(){
   return new Promise((resolve, reject) => {
     return http({
@@ -118,6 +133,7 @@ export function setUserSession(data){
   setMenu(data.menus)
   setResource(data.resources)
   storage.setCurrentLanguage(data.profile.__language)
+  i18n.locale = data.profile.__language
 }
 
 /**
