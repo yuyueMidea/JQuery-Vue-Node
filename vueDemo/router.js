@@ -1,27 +1,44 @@
+/*
+ * @Author: your name
+ * @Date: 2019-03-14 16:05:44
+ * @LastEditTime: 2019-11-04 16:48:19
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vueCounter\src\router.js
+ */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 //
-import store from "./store.js"  // 引入store 对象
+import store from "./store"  // 引入store 对象
 //定义组件 引入组件
-import Home from './components/Home.vue';
-import Login from './components/Login.vue';
-// import Index from './components/Index.vue';
-import Info from './components/Info.vue';
-import Display from "./components/Display.vue";
-import Increment from "./components/Increment.vue";
-import Transfer from "./components/Transfer.vue";
-import Test from "./components/Test.vue";
-//
+// import Home from './components/Home.vue';
+// // import Login from './components/Login.vue';
+// // const Login = ()=>import('./components/Login.vue')
+// // import Index from './components/Index.vue';
+// import Info from './components/Info.vue';
+// import Display from "./components/Display.vue";
+// import Increment from "./components/Increment.vue";
+// import Test from "./components/Test.vue";
+// import Example from "./components/Example1.vue";
+// import Menu1 from './components/Menu1'
+// import ImgShow from './components/ImgShow'
+// //
+// // import * as m1 from './menu.json'
+// console.log('tag--m1---', m1)
+
 const staticRoute = [
-	{path: '/info',component: Info,name:'首页'},
-	{path: '/display',component: Display,name:'多语言展示'},
-	{path: '/increment',component: Increment,name:'新闻接口'},
-	{path: '/home',component: Home,name:'获取唐朝古诗词'},
-  {path: '/transfer',component: Transfer,name:'穿梭框'},
-  {path: '/test',component: Test,name:'测试'},
-	{path: '/login',component: Login},
-	{path: '/*', redirect: '/login'}
+	{path: '/info',component: ()=>import('./components/Info'),name:'首页'},
+	{path: '/display',component: ()=>import('./components/Display'),name:'按钮赋权'},
+	{path: '/increment',component: ()=>import('./components/Increment'),name:'新闻接口'},
+	{path: '/home',component: ()=>import('./components/Home'),name:'获取唐朝古诗词'},
+  	{path: '/test',component: ()=>import('./components/Test'),name:'测试'},
+  	{path: '/example',component: ()=>import('./components/Example1'),name:'案例'},
+  	{path: '/menu',component: ()=>import('./components/Menu1'),name:'菜单'},
+	{path: '/login',component: ()=>import('./components/Login')},
+	{path: '/imgShow',component: ()=>import('./components/ImgShow'), name:'图片展示'},
+	
+	{path: '/*', redirect: '/info'}
 ]
 //
 const router = new VueRouter({
@@ -30,7 +47,6 @@ const router = new VueRouter({
 });
 //
 (function initRoute(router){
-	debugger
 	router.options.routes.map(v=>{
 		if((v.path !=='/*' && v.path !=='/login') ){
 			store.commit("setAllNavList", {path:v.path, name:v.name});
@@ -51,8 +67,7 @@ router.beforeEach((to, from, next) => {
 	}else{
 		//'当前已经登录状态'
 		if(store.state.isLogin){
-			// debugger
-			if(store.state.openedTagNavList.indexOf(to.path) ==-1){
+			if(store.state.tagsView.openedTagNavList.indexOf(to.path) ==-1){
 				store.commit("addNavList", to.path);
 			}
 			next();
