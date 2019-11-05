@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-03-14 14:03:09
- * @LastEditTime: 2019-11-04 15:17:23
+ * @LastEditTime: 2019-11-05 10:17:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vueCounter\src\main.js
@@ -28,13 +28,6 @@ import App from './App.vue'
 
 import store from "./store"  // 引入store 对象
 
-
-
-import './drag.js'
-import './buttonAuth.js'
-import './inputFormat.js'
-import './demo.js'
-
 import message from "./message.js"  // 引入message---消息提示-- 对象
 Vue.prototype.$msg = message
 
@@ -43,20 +36,19 @@ import axios from './axios'
 // 注册组件到Vue
 Vue.prototype.$axios = axios
 
-Vue.filter('capitalize', function (value) {
-  if (!value) return ''
-  value = value.toString()
-  return value.charAt(0).toUpperCase() + value.slice(1)
-})
-Vue.filter('rev', function(val){
-  return val.split('').reverse().join('');
-})
+import * as filters from './filters.js'
+Object.keys(filters).forEach(v => {
+  Vue.filter(v, filters[v])
+});
+//
+import * as directives from './directives.js'
+Object.keys(directives).forEach(v => {
+  Vue.directive(v, directives[v])
+});
 //
 import loadingInstance from './loading'
 Vue.prototype.loading = loadingInstance
-//------loadingInstance
-// import vcolorpicker from 'vcolorpicker'
-// Vue.use(vcolorpicker)
+//
 Vue.component('bPost',{
   props:['post'],
   template:`<div class="the_bpost">
@@ -86,16 +78,7 @@ Vue.component('my-component-name', {
     <h2>{{propTitle}}</h2>
   </div>`
 })
-// 注册一个全局自定义指令 `v-focus`
-Vue.directive('focus',{
-  // 当被绑定的元素插入到 DOM 中时……
-  inserted(el, bind) {
-    el.focus()
-  }
-})
-Vue.directive('bgColor', function(el, bind){
-  el.style.background =bind.value
-})
+
 import './SmartList.js'
 
 const vm =new Vue({
