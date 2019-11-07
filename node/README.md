@@ -5,6 +5,6 @@
   
   **3、nodejs创建服务器--静态文件托管、get、post路由、`ejs`模板引擎**
   
-  **4、`nodejs`连接`MongoDB`数据库，增删查改**
+  **4、`nodejs`连接`MongoDB`数据库(MySql数据库)，增删查改**
   
   **5、`express`中间件，静态文件托管，实现搭建一个商品管理系统、模块化**
