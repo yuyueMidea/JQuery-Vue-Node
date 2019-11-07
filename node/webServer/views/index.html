@@ -1,0 +1,34 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>仓库列表</title>
+    <style type="text/css">
+    .list{list-style: none;}
+.list li{
+    float: left; margin: 5px; width: 300px; 
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="caption">仓库列表</h2>
+        <ul class="list">
+            <% for(let i=0;i<inventorylist.length;i++){ 
+                let book = inventorylist[i];  
+            %>
+                <li>
+                
+                        <p class="title"><%=book.inventory_code%></p>
+                        <p class="title"><%=book.inventory_name%></p>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+</body>
+</html>
