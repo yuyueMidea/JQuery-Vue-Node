@@ -12,15 +12,15 @@ var express=require('express');
 var router = express.Router();  
 var login=require('./admin/login.js');
 var citys=require('./admin/citys.js');
-var user=require('./admin/user.js');
+var items=require('./admin/items.js');
 
 router.use(function(req,res,next){
-    // console.log('tag---', req.url)
+    console.log('tag---', req.url)
     next()
 })
 
 router.use('/login',login);
 router.use('/citys',citys);
-router.use('/user',user);
+router.use('/items',items);
 
 module.exports = router;   

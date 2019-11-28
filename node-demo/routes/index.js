@@ -18,8 +18,8 @@ router.get('/',function(req,res){
 })
 
 var citys=require('./admin/citys.js');
-var user=require('./admin/user.js');
+var items=require('./admin/items.js');
 router.get('/citys',citys);
-router.get('/user',user);
+router.get('/items',items);
 
 module.exports = router;   /*暴露这个 router模块*/
