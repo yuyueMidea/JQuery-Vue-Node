@@ -15,9 +15,14 @@ var multiparty = require('multiparty');  /*图片上传模块  即可以获取fo
 var  fs=require('fs');
 
 router.get('/',async(req,res)=>{
-    console.log('->>--->>>',req.session)
     const itemlist = await DB('SELECT * FROM city LIMIT 0,15');
-    // 渲染首页模板并把movies数据传过去
+    res.render('admin/citys/index',{
+        list: itemlist
+    });
+})
+router.get('/findByPage',async(req,res)=>{
+    var  page=req.query.p;
+    const itemlist = await DB('SELECT * FROM city LIMIT '+ (page-1) *15 +',15');
     res.render('admin/citys/index',{
         list: itemlist
     });
