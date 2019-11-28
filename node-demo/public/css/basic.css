@@ -22,3 +22,12 @@ input[type=file]{
  display: inline !important;
 
 }
+.the_item td img{
+	width: 80px; height: 60px;
+}
+.the_item td{
+	border-right: 1px solid #ccc;
+}
+.the_item .operationTD{
+	width: 155px
+}
