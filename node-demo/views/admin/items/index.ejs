@@ -33,10 +33,11 @@
                         </div>
                     </form>
                     <ul class="pagination">
-                        <li><a href="/admin/items/findByPage?p=1">1</a></li>
-                        <li><a href="/admin/items/findByPage?p=2">2</a></li>
-                        <li><a href="/admin/items/findByPage?p=3">3</a></li>
-                        <li><a href="/admin/items/findByPage?p=4">4</a></li>
+                        <% for(var i=1;i<5;i++){%>
+                            <li>
+                                <a href="/admin/items/findByPage?p=<%=i%>"><%=i%></a>
+                            </li>
+                        <%}%>
                     </ul>
                 </div>
             </div>
@@ -44,7 +45,7 @@
                 列表展示
             -->
             <div class="table-responsive">
-                    <table class="table table-striped the_item">
+                    <table class="table table-bordered the_item">
                             <thead>
                             <tr>
                                 <th>编码</th>
