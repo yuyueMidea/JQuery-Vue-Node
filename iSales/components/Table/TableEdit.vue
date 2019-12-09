@@ -11,7 +11,7 @@
       @selection-change="checkChange"
       :data="tableData"
       v-loading="loading"
-      element-loading-text="拼命加载中"
+      :element-loading-text="$t('common.loading')"
       element-loading-spinner="el-icon-loading"
       element-loading-background="rgba(0, 0, 0, 0.3)"
       height="100%"
@@ -37,6 +37,7 @@
             <template v-if="showFilterBar">
               <el-row style="display:block;">
                 <span style="text-align:center">{{ generateHeader(col.label) }}</span>
+                <el-checkbox v-if="col.checkAllIsDisPlay" :indeterminate="col.isIndeterminate" v-model="col.checkAll" @change="handleCheckAllChange(col)"/>
                 <header-sort
                   v-if="col.sortable"
                   :columnName="col.prop"
@@ -72,16 +73,16 @@
               <el-select
                   v-model="scope.row[col.prop]"
                   v-if="col.type == 'select' || (col.getType && col.getType(scope.row)== 'select')"
-                  :style="'left:' + scope.row[col.prop + 'width'] + 'px'"
+                  :style="'left:' + scope.row[col.prop + 'width'] + 'px;width:98%'"
                   @change="dropChange(scope.$index, scope.row, col)" size="mini"
                   placeholder=""
                   :id="col.prop + scope.row.____index"
                   >
                 <template v-if="col.hasOwnProperty('formattor')">
                   <template v-if="col.hasOwnProperty('optionKey')">
-                    <el-option 
-                      v-for="o in col.options[col.optionKey]" 
-                      :disabled="'N'==o.enable || (col.show ? col.hide(scope.row, o) : false)" 
+                    <el-option
+                      v-for="o in col.options[col.optionKey]"
+                      :disabled="'N'==o.enable || (col.show ? col.hide(scope.row, o) : false)"
                       :key="o.value" :value="o.value">
                       <span v-html="col.formattor(o.value)"></span>
                     </el-option>
@@ -99,12 +100,12 @@
                  </template>
                 </template>
               </el-select>
-              <el-checkbox v-else-if="col.type == 'checkbox' || (col.getType && col.getType(scope.row)== 'checkbox')" @change="scope.row['___editted'] = true;" v-model="scope.row[col.prop]" :true-label="col.Y?col.Y:'Y'" :false-label="col.N?col.N:'N'"></el-checkbox>
+              <el-checkbox v-else-if="col.type == 'checkbox' || (col.getType && col.getType(scope.row)== 'checkbox')" @change="scope.row['___editted'] = true; handleCheckedChange(col);" v-model="scope.row[col.prop]" :true-label="col.Y?col.Y:'Y'" :false-label="col.N?col.N:'N'"></el-checkbox>
               <el-time-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" placeholder="" v-else-if="col.type == 'time' || (col.getType && col.getType(scope.row)== 'time')" :value-format="col.valueFormat" :format="col.format"></el-time-picker>
               <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="date" placeholder="" v-else-if="col.type == 'date' || (col.getType && col.getType(scope.row)== 'date')" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
               <el-date-picker @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" type="datetime" placeholder="" v-else-if="col.type == 'datetime' || (col.getType && col.getType(scope.row)== 'datetime')" :value-format="col.valueFormat" :format="col.format"></el-date-picker>
               <el-switch @change="scope.row['___editted'] = true;callback(col, scope.row)" v-model="scope.row[col.prop]" v-else-if="col.type == 'switch' || (col.getType && col.getType(scope.row)== 'switch')" :inactive-value="col.switchValues.inactive" :active-value="col.switchValues.active"></el-switch>
-              <input @change="scope.row['___editted'] = true;callback(col, scope.row)" style="width:100%" v-model="scope.row[col.prop]" :precision="col.precision" :step="col.step" :max="col.max" :min="col.min" v-else-if="col.type == 'number' || (col.getType && col.getType(scope.row)== 'number')" size="mini" type="number"/>
+              <el-input-number @change="scope.row['___editted'] = true;callback(col, scope.row)" style="width:100%" v-model="scope.row[col.prop]" :precision="col.precision" :step="col.step" :max="col.max" :min="col.min" step-strictly v-else-if="col.type == 'number' || (col.getType && col.getType(scope.row)== 'number')" size="mini" controls-position="right"/>
               <span v-else-if="col.type == 'dialog' || (col.getType && col.getType(scope.row)=='dialog')">
                 <a v-if="col.showType == 'href'" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></a>
                  <el-button v-if="col.showType == 'button'" type="primary" v-html="formatter(scope,col)" @click="callback(col, scope.row)"></el-button>
@@ -415,7 +416,7 @@ export default {
       }else{
         this.func()
       }
-      
+
    },
   func(){
         let indexes = []//直接删除的数据(新增但未保存的数据可以直接删除)
@@ -750,22 +751,32 @@ export default {
       })
 
       return {updates, adds, deletes}
+    },
+    handleCheckAllChange(val) {
+      this.tableData.forEach(o => {
+        if(typeof(o[val.prop]) === 'boolean') {
+          o[val.prop] = val.checkAll
+        } else if(typeof(o[val.prop]) === 'string') {
+          o[val.prop] = val.checkAll === true ? 'Y' : 'N'
+        }
+      })
+      val.isIndeterminate = false
+    },
+    handleCheckedChange(val) {
+      val.isIndeterminate = false
+      this.tableData.forEach(o => {
+        if (o[val.prop] !== 'Y' && o[val.prop] !== 'Yes' &&
+          o[val.prop] !== true && o[val.prop] !== 'true') {
+          val.isIndeterminate = true
+        }
+      })
+
+      if (!val.isIndeterminate) {
+        val.checkAll = true
+      }
     }
   },
   watch:{
-    tableHeader:{
-      immediate:true,
-      handler:function(e){
-        this.innerHeader = []
-        this.$forceUpdate()
-      }
-    },
-    tableData:{
-      immediate:true,
-      handler:function(e){
-        this.innerHeader = []
-      }
-    },
     innerData:{
       immediate:true,
       handler(e){
@@ -807,6 +818,7 @@ export default {
         }
       }
     }
+
     this.innerHeader = this.tableHeader
 
     if(undefined == this.optionMap){
@@ -818,7 +830,6 @@ export default {
         }
 
         if(col.options && undefined != col.options[key]){
-
             col['optionMap'] = {}
             col.options[key].forEach(option =>{
                 col['optionMap'][option.value] = !col.showLabel && option.label ? option.label : option.value
@@ -866,3 +877,4 @@ export default {
   position: relative;
 }
 </style>
+

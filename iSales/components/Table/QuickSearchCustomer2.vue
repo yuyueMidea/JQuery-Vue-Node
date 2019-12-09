@@ -2,32 +2,12 @@
   <div class="the_quick_search">
     <el-row style="padding: 0;">
       <el-col :span="24" style="position: relative;padding: 0;">
-        <el-autocomplete
-          v-if="autocomplete"
-          v-model="inputName"
-          clearable
-          showSelect
-          :trigger-on-focus="false"
-          :fetch-suggestions="querySearchAsync"
-          :placeholder="placeholder"
-          popper-class="autocomplete-qs-select"
-          @select="inputSelect"
-          @clear="getSelectData(null)"
-          class="the_quick_select"
-        >
-          <template slot-scope="{ item }">
-            <el-row type="flex" class="select-row">
-              <el-col class="border" :style="getColWidth(field.width)" :title="item[field.name]" :key="k" v-for="(field, k) of showfields">{{item[field.name]}}</el-col>
-            </el-row>
-          </template>
-        </el-autocomplete>
-
         <el-select
-          v-else
           ref="quickSelectSelect"
           class="the_quick_select"
           :disabled="disabled"
           v-model="inputName"
+	        maxlength="4"
           clearable
           filterable
           reserve-keyword
@@ -42,25 +22,29 @@
           @change="getSelectData"
           @clear="clearOptions"
           @focus="focus"
-          @visible-change="visibleChange">
+          @blur="addStar"
+        >
           <el-option
             class="option-item"
             value=""
             disabled
             v-if="selectGridData.length>0"
           >
-            <el-row type="flex" class="select-row">
-              <el-col class="border" :style="getColWidth(item.width)" :title="item.label"  :key="key" v-for="(item,key) of showfields">{{ item.label }}</el-col>
+            <el-row type="flex">
+              <el-col class="border-right" :span="12" :title="labelObj[0]">{{ labelObj[0] }}</el-col>
+              <el-col :span="12" :title="labelObj[1]">{{ labelObj[1] }}</el-col>
             </el-row>
           </el-option>
           <el-option
             class="option-item"
             v-for="(item, key) in selectGridData"
             :key="key"
+            :label="item[resetObj[0]]"
             :value="item"
           >
-            <el-row type="flex" class="select-row">
-              <el-col class="border" :style="getColWidth(field.width)" :title="item[field.name]" :key="k" v-for="(field, k) of showfields">{{ item[field.name] }}</el-col>
+            <el-row type="flex">
+              <el-col class="border-right" :span="12" :title="item[resetObj[0]]">{{ item[resetObj[0]] }}</el-col>
+              <el-col :span="12" :title="item[resetObj[1]]">{{ item[resetObj[1]] }}</el-col>
             </el-row>
           </el-option>
         </el-select>
@@ -80,14 +64,15 @@
       :title="$t('components.quickSearch.title')"
       :visible.sync="dialogTableVisible"
       :close-on-click-modal="false"
-      append-to-body>
+      append-to-body
+    >
       <el-row style="margin-bottom: 5px;">
         <el-col :span="12">
           <span>{{$t('common.searchResult')}}</span>
         </el-col>
         <el-col class="text-right" :span="12">
           <el-button type="primary" @click="query('enter')">{{$t('common.search')}}</el-button>
-          <el-button type="primary" @click="reset('form')">{{$t('common.reset')}}</el-button>
+          <el-button type="primary" @click="reset()">{{$t('common.reset')}}</el-button>
           <el-button type="primary" @click="closeDialog">{{$t('common.ok')}}</el-button>
         </el-col>
       </el-row>
@@ -120,13 +105,13 @@
               <template slot="header" slot-scope="scope">
                 <div style="display: block">{{col.label}}</div>
                 <div style="display: block;padding-bottom: 5px;">
-                  <el-input
+		    <el-input 
+		    id="tttttttt"
                     clearable
                     v-model="form[col.name]"
                     v-if="col.name.toLowerCase() in trnasformSqlObj"
                     placeholder
                     @keyup.native.enter="query('enter')"
-                    :disabled="!! isDisable(col.name)"
                   />
                 </div>
               </template>
@@ -167,6 +152,448 @@ export default {
       default: ""
     }
   },
+  data() {
+    return {
+      loading: false,
+      tableHeader: [], // 表头数据
+      filterQueryArr: [], //查询条件过滤
+      isSizeChanged: false,
+      dataCount: 0,
+      queryTotal: -1, // 共几条 -1就是问号
+      viewIndex: 1,
+      viewSize: 10,
+      queryParam: {
+        __page: 1,
+        __pagesize: 10
+      },
+      labelObj: [],
+      resetObj: [],
+      currentRow: "",
+      form: {},
+      queryForm: {},
+      formLabelWidth: "120px",
+      dialogTableVisible: false,
+      gridData: [],
+      //select下拉data区域
+      inputName: "",
+      idColumn: '',   // 文本框取值字段,来自数据库配置项
+      selectClass: '',  // 下拉样式
+      selectVisible: false,
+      showSelect: false,
+      selectGridData: [],
+      multipleSelection: [], //多选表格的行数据
+      trnasformSqlObj: {}, //用来转换前端查询字段转换----
+      initState: false, // 组件初始化未打开的状态
+      isConditionChanged: false,   // 查询条件改变状态
+    };
+  },
+
+  methods: {
+    checkChange(val) {
+      this.multipleSelection = val;
+      // this.dispatchChange();
+    },
+    dispatchChange() {
+      if (!!this.elFormItem) {
+        this.elFormItem.$emit("el.form.change");
+      }
+    },
+    addStar(val,scope){
+      if (this.allowInput ) {
+        let inputName = this.inputName||"";
+      
+        if(inputName.length<3)
+        {
+          var starCount= 3-this.inputName.length;
+          var stars="";
+          for(var i=0;i<starCount;i++){
+                  stars+="*"
+
+          }
+          inputName = inputName+stars;
+          this.inputName = inputName;
+          this.scopeData['fdCode'] =  inputName;
+        }
+      }
+
+    },
+    async remoteMethod(queryStr) {
+      if (this.allowInput ) {
+       var input=this.$el.firstElementChild.firstElementChild.firstElementChild.firstElementChild.firstElementChild
+        input.maxLength=3;
+        //允许录入的情况下直接赋值-不要再做请求数据
+        this.selectClass = 'qs-select-none';
+        this.getSelectData(queryStr);
+        return;
+      }
+
+      this.loading = true;  // 加载状态
+
+      this.selectClass = this.popperClass;
+
+      if (queryStr) {
+        this.showSelect = true;
+
+        await this.getConfigration();
+        await this.query('', queryStr);
+
+        // 自动选择
+        if (this.selectGridData.length == 1 ) {
+          this.getSelectData(this.selectGridData[0]);
+          this.$refs.quickSelectSelect.blur();
+        }
+      } else {
+        this.selectGridData = [];
+      }
+      this.loading = false;  // 加载状态
+    },
+    getSelectData(row = {}) {
+      //获取选中的值并且赋值
+      this.setValue(row);
+      this.$forceUpdate();
+      this.$emit("close-quicksearch", row, this.scopeData);
+      // this.dispatchChange();
+      this.$nextTick().then(() => {
+        this.isConditionChanged = false
+      });
+    },
+    getLineData(row = {}) {
+      //双击选中行数据
+      this.setValue(row);
+      this.$emit("close-quicksearch", row, this.scopeData);
+      // this.dispatchChange();
+      this.$nextTick().then(() => {
+        this.isConditionChanged = false
+      });
+      this.dialogTableVisible = false;
+      this.selectVisible = false;
+    },
+    clearOptions() {
+      //清空下拉选的值--------
+      this.selectGridData = [];
+      // this.dispatchChange();
+    },
+    closeSelect(isClose) {
+    },
+    async openDialog(type) {
+      //添加前置事件---
+      this.$emit("before-open", true);
+      // 非自动查询下，如果绑定的查询条件有变化，清空列表数据
+      if (! this.autoQuery) {
+        if ( this.forceRefresh || this.isConditionChanged ){
+          this.reset();
+        }
+      }
+      this.showSelect = false;
+      this.selectVisible = false;
+      await this.getConfigration();
+      if (this.autoQuery || type=='autoQuery') { // 自动查询
+        this.formData && Object.assign(this.form, this.formData)
+        await this.query();
+        // 非点击事件，如果只有一条数据，则自动设值
+        if (type=='autoQuery' && this.gridData.length == 1) {
+          this.getLineData(this.gridData[0]);
+          return;
+        }
+      }
+      this.dialogTableVisible = true;
+    },
+    closeDialog() {
+      if (this.multiSelect) {
+        this.$emit("close-quicksearch", this.multipleSelection, this.scopeData);
+      } else {
+        if (!this.currentRow) {
+          this.$mideaMessage({
+            type: "error",
+            message: this.$t("common.selectRequired")
+          });
+          return;
+        }
+        this.setValue(this.currentRow);
+        this.$emit("close-quicksearch", this.currentRow, this.scopeData);
+      }
+      this.dialogTableVisible = false;
+      // this.dispatchChange();
+    },
+    handleCurrentChange(val) {
+      this.currentRow = val;
+    },
+    pageQuery(opr, size) {
+      // 查询数据的方法
+      let allCount = Math.ceil(this.queryTotal / this.viewSize); //总页数---作为判断依据
+      if (opr == "prev" && this.queryParam.__page == 1) return;
+      if (opr == "next" && this.queryParam.__page == allCount) return;
+
+      switch (opr) {
+        case "prev":
+          this.queryParam.__page -= 1;
+          break;
+        case "next":
+          this.queryParam.__page += 1;
+          break;
+        default:
+          this.viewSize = size;
+          this.viewIndex = 1;
+          this.queryParam.__pagesize = size;
+          this.queryParam.__page = 1;
+      }
+      this.isSizeChanged = true;
+
+      this.query(opr);
+    },
+    pageCount() {
+      // 查询共几条的方法
+    },
+    setCache(key, data) {
+      sessionStorage.setItem(
+        getProfile().__language + "_QS_" + key,
+        JSON.stringify(data)
+      );
+    },
+    getCache(key) {
+      var data = sessionStorage.getItem(getProfile().__language + "_QS_" + key);
+      return data ? JSON.parse(data) : null;
+    },
+    getConfigration() {
+      if (this.getCache(this.name)) {
+        let data = this.getCache(this.name);
+        this.tableHeader = data.colModel.slice(0);
+        this.filterQueryArr = Object.values(data.queryData.defCols);
+        this.trnasformSqlObj = {};
+        for (let i in data.queryData.defCols) {
+          if (i != "_id_column") {
+            let lowerCase = i
+              .replace(/t./g, "")
+              .replace(/_/g, "")
+              .toLowerCase();
+            this.trnasformSqlObj[lowerCase] = i;
+          }
+        }
+
+        this.tableHeader.forEach(v => {
+          this.$set(this.form, v.name, '');
+          this.resetObj.push(v.name);
+          this.labelObj.push(v.label);
+        });
+
+        this.idColumn = this.showKey || data.idColumn;
+        return Promise.resolve();
+      }
+
+      return http({
+        //获取配置项---展示在页面上的字段
+        url: "/isales-main/mstQuicksearchConfig/getConfig",
+        method: "post",
+        loading: true,
+        data: { name: this.name }
+      })
+        .then(data => {
+          this.tableHeader = data.colModel.slice(0);
+          this.filterQueryArr = Object.values(data.queryData.defCols);
+          this.trnasformSqlObj = {};
+          for (let i in data.queryData.defCols) {
+            if (i != "_id_column") {
+              let lowerCase = i
+                .replace(/t./g, "")
+                .replace(/_/g, "")
+                .toLowerCase();
+              this.trnasformSqlObj[lowerCase] = i;
+            }
+          }
+          this.tableHeader.forEach(v => {
+            this.$set(this.form, v.name, '');
+            this.resetObj.push(v.name);
+            this.labelObj.push(v.label);
+          });
+          this.idColumn = this.showKey || data.gridData.idColumn;
+
+          //设置缓存数据----去除缓存数据
+          this.setCache(this.name, {
+            colModel: data.colModel,
+            queryData: data.queryData,
+            idColumn: data.gridData.idColumn
+          });
+          // this.query();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 搜索表单参数
+    setQueryParams(otherParams) {
+      // debugger
+      for (let i in this.form) {
+        if (!(i.includes("_") || i.includes(".")) && this.form[i]) {
+          let upperCase = this.trnasformSqlObj[i.toLowerCase()];
+          if (upperCase) this.queryForm[upperCase] = this.form[i];
+        }
+      }
+      otherParams && Object.assign(this.queryForm, otherParams)
+    },
+    query(opr, queryStr) {
+      this.initState = true;
+      this.isConditionChanged = false;
+      this.queryForm = {};
+      if (opr == "enter") {
+        //来自于enter事件，先清空form绑定的值，再重新赋值
+        this.setQueryParams()
+        this.queryParam.__page = 1;  // 重置为1
+        this.viewIndex = 1;
+      } else {
+        //下拉查询条件过滤条件----//展开下拉选择
+        if (this.showSelect && this.filterQueryArr && this.filterQueryArr[0]) {
+          this.queryForm[this.filterQueryArr[0].name] = queryStr;
+          this.queryParam.__page = 1;  // 重置为1
+        } else {
+          this.setQueryParams()
+        }
+      }
+      if (this.preQueryData) {
+        //添加前置查询条件
+        this.queryForm = Object.assign({}, this.preQueryData, this.queryForm);
+      }
+      let formData = JSON.stringify({
+        query: JSON.stringify(this.queryForm),
+        extendQuery: JSON.stringify(this.setExtendQueryData())
+      });
+      //
+      let selectURL = "/isales-main/mstQuicksearchConfig/queryByFormCondition";
+
+      //是否是下拉查询
+      if (this.showSelect) {
+        selectURL = "/isales-main/mstQuicksearchConfig/quickSearchQuery";
+        formData = JSON.stringify({
+          key: this.name,
+          value: queryStr,
+          isSetValue: JSON.stringify(this.isSetValue),
+          extendQuery: JSON.stringify(this.setExtendQueryData())
+        });
+      }
+      let paramData = Object.assign({}, { params: formData }, this.queryParam);
+
+      return http({
+        //获取数据---展示在table页面上的数据
+        url: selectURL,
+        method: "post",
+        loading: this.showSelect ? false:true,
+        data: paramData
+      })
+        .then(data => {
+          if (this.showSelect) {
+            this.selectGridData = data.slice(0);
+            if (data.length === 0) {
+              this.inputName = "";
+              this.setValue();
+              this.$emit("close-quicksearch", null, this.scopeData);
+            }
+            return;
+          } else {
+            this.gridData = data.data.slice(0);
+          }
+          //设置显示总条数
+          this.queryTotal = data.pagecount;
+          this.dataCount = this.gridData.length;
+          if (opr) {
+            //改变相应的页码展示数
+            switch (opr) {
+              case "":
+                this.viewIndex = 1;
+                break;
+              case "prev":
+                this.viewIndex -= 1;
+                break;
+              case "next":
+                this.viewIndex += 1;
+                break;
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 重置
+    reset() {
+      this.form = {};
+      this.gridData = [];
+      this.selectGridData = [];
+      this.labelObj = [];
+      this.resetObj = [];
+      this.viewIndex = 1;
+      this.dataCount = 0;
+      this.queryTotal = -1;
+    },
+    // 空值默认显示值
+    setNullValue(value, defaultValue = "") {
+      return isNull(value) ? defaultValue : value;
+    },
+    // 获取行上对应属性的值
+    getPropValue(row, key) {
+      return isObject(row) ? (row[key] || null) : row
+    },
+    // 设置属性值
+    setValue(row = {}) {
+      row = row ? row:{};
+
+      try {
+        if (this.scopeData) {
+          [this.displayKey, this.valueKey].forEach((item, index) => {
+            if (isArray(item)) {
+              let [key, mapKey] = item;
+
+              if (key && mapKey) {
+                this.scopeData[mapKey] = this.setNullValue(this.getPropValue(row, key));
+              } else if (key) {
+                this.scopeData[key] = this.setNullValue(this.getPropValue(row, key));
+              }
+            } else if (item) {
+              this.scopeData[item] = this.setNullValue(this.getPropValue(row, item));
+            }
+          });
+
+          // map 值
+          if (isArray(this.mapValue)) {
+            for (let item of this.mapValue) {
+              let [key, mapKey] = trim(item).split(",");
+              if (key && mapKey) {
+                this.scopeData[mapKey] = this.setNullValue(this.getPropValue(row, key));
+              } else if (key) {
+                this.scopeData[key] = this.setNullValue(this.getPropValue(row, key));
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      // debugger
+      // 设置选择后的显示值
+      this.inputName = isObject(row) ? (row[this.idColumn] || null) : row
+    },
+    // 设置 ExtendQuery
+    setExtendQueryData() {
+      let params = {
+        _quickKey: this.name,
+        entityId: 10,
+        createdBy: getProfile().__userName
+      };
+      //如果传入companySort--就加上作为查询条件
+      if(this.companySort){
+        params.companySort = this.companySort;
+      }
+      let data = {};
+      for (let i in this.extendQueryData) {
+        data[i] = this.setNullValue(this.extendQueryData[i], '').toString();
+      }
+      return Object.assign({}, data, params);
+    },
+    // 焦点事件
+    focus() {
+      // this.isConditionChanged && this.clearOptions()
+      this.clearOptions()
+    }
+  },
+
   props: {
     name: {
       // 父页面传值--->配置项
@@ -270,12 +697,6 @@ export default {
       type: Object,
       default: null
     },
-    enableFormItem: {
-      type: Array,
-      default: function() {
-        return []
-      }
-    },
     // 打开弹层是否自动查询
     autoQuery: {
       type: Boolean,
@@ -295,528 +716,6 @@ export default {
     popperClass: {
       type: String,
       default: ''
-    },
-    // 指定显示下拉列表显示字段
-    selectFields: {
-      type: Array,
-      default: function() {
-        return []
-      }
-    },
-    // 是否为 input 远程搜索
-    autocomplete: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      timeout: null,
-      loading: false,
-      tableHeader: [], // 表头数据
-      filterQueryArr: [], //查询条件过滤
-      isSizeChanged: false,
-      dataCount: 0,
-      queryTotal: -1, // 共几条 -1就是问号
-      viewIndex: 1,
-      viewSize: 10,
-      queryParam: {
-        __page: 1,
-        __pagesize: 10
-      },
-      labelObj: [],
-      resetObj: [],
-      qsFields: [],
-      currentRow: "",
-      form: {},
-      queryForm: {},
-      formLabelWidth: "120px",
-      dialogTableVisible: false,
-      gridData: [],
-      //select下拉data区域
-      inputName: "",
-      idColumn: '',   // 文本框取值字段,来自数据库配置项
-      showfields: [],     // 下拉显示字段
-      selectClass: '',  // 下拉样式
-      selectVisible: false,
-      showSelect: false,
-      selectGridData: [],
-      multipleSelection: [], //多选表格的行数据
-      trnasformSqlObj: {}, //用来转换前端查询字段转换----
-      initState: false, // 组件初始化未打开的状态
-      isConditionChanged: false,   // 查询条件改变状态
-    };
-  },
-
-  methods: {
-    checkChange(val) {
-      this.multipleSelection = val;
-      // this.dispatchChange();
-    },
-    dispatchChange() {
-      if (!!this.elFormItem) {
-        this.elFormItem.$emit("el.form.change");
-      }
-    },
-    // 下拉列宽度
-    getColWidth(width) {
-      return width ? {'width':width+'px'}:{}
-    },
-    async remoteMethod(queryStr) {
-      if (this.allowInput ) {
-        //允许录入的情况下直接赋值-不要再做请求数据
-        this.selectClass = 'qs-select-none';
-        this.getSelectData(queryStr);
-        return;
-      }
-
-      this.loading = true;  // 加载状态
-
-      this.selectClass = this.popperClass;
-
-      if (queryStr) {
-        this.showSelect = true;
-
-        await this.getConfigration();
-        await this.query('', queryStr);
-
-        // 自动选择
-        if (this.selectGridData.length == 1 ) {
-          this.getSelectData(this.selectGridData[0]);
-          this.$refs.quickSelectSelect.blur();
-        }
-      } else {
-        this.selectGridData = [];
-      }
-      this.loading = false;  // 加载状态
-    },
-    getSelectData(row = {}) {
-      //获取选中的值并且赋值
-      this.setValue(row);
-      this.$forceUpdate();
-      this.$emit("close-quicksearch", row, this.scopeData);
-      // this.dispatchChange();
-      this.$nextTick().then(() => {
-        this.isConditionChanged = false
-      });
-    },
-    getLineData(row = {}) {
-      //双击选中行数据
-      this.setValue(row);
-      this.$emit("close-quicksearch", row, this.scopeData);
-      // this.dispatchChange();
-      this.$nextTick().then(() => {
-        this.isConditionChanged = false
-      });
-      this.dialogTableVisible = false;
-      this.selectVisible = false;
-    },
-    clearOptions() {
-      //清空下拉选的值--------
-      this.selectGridData = [];
-      // this.dispatchChange();
-    },
-    closeSelect(isClose) {
-    },
-    async openDialog(type) {
-      //添加前置事件---
-      this.$emit("before-open", true);
-      // 非自动查询下，如果绑定的查询条件有变化，清空列表数据
-      // if (! this.autoQuery) {
-      //   if ( this.forceRefresh || this.isConditionChanged ){
-      //     this.reset();
-      //   }
-      // }
-      this.reset();
-      this.showSelect = false;
-      this.selectVisible = false;
-      await this.getConfigration();
-
-      this.formData && Object.assign(this.form, this.formData)  // 设定的form表单信息
-
-      if (this.autoQuery || type=='autoQuery') { // 自动查询
-        await this.query();
-        // 非点击事件，如果只有一条数据，则自动设值
-        if (type=='autoQuery' && this.gridData.length == 1) {
-          this.getLineData(this.gridData[0]);
-          return;
-        }
-      }
-      this.dialogTableVisible = true;
-
-      type !='click' && this.$emit('query-callback', this.gridData)    // 下拉查询后触发
-    },
-    closeDialog() {
-      if (this.multiSelect) {
-        this.$emit("close-quicksearch", this.multipleSelection, this.scopeData);
-      } else {
-        if (!this.currentRow) {
-          this.$mideaMessage({
-            type: "error",
-            message: this.$t("common.selectRequired")
-          });
-          return;
-        }
-        this.setValue(this.currentRow);
-        this.$emit("close-quicksearch", this.currentRow, this.scopeData);
-      }
-      this.dialogTableVisible = false;
-      // this.dispatchChange();
-    },
-    handleCurrentChange(val) {
-      this.currentRow = val;
-    },
-    pageQuery(opr, size) {
-      // 查询数据的方法
-      let allCount = Math.ceil(this.queryTotal / this.viewSize); //总页数---作为判断依据
-      if (opr == "prev" && this.queryParam.__page == 1) return;
-      if (opr == "next" && this.queryParam.__page == allCount) return;
-
-      switch (opr) {
-        case "prev":
-          this.queryParam.__page -= 1;
-          break;
-        case "next":
-          this.queryParam.__page += 1;
-          break;
-        default:
-          this.viewSize = size;
-          this.viewIndex = 1;
-          this.queryParam.__pagesize = size;
-          this.queryParam.__page = 1;
-      }
-      this.isSizeChanged = true;
-
-      this.query(opr);
-    },
-    pageCount() {
-      // 查询共几条的方法
-      this.query('getCount');
-    },
-    setCache(key, data) {
-      sessionStorage.setItem(
-        getProfile().__language + "_QS_" + key,
-        JSON.stringify(data)
-      );
-    },
-    getCache(key) {
-      var data = sessionStorage.getItem(getProfile().__language + "_QS_" + key);
-      return data ? JSON.parse(data) : null;
-    },
-    getConfigration() {
-      if (this.getCache(this.name)) {
-        let data = this.getCache(this.name);
-        this.tableHeader = data.colModel.slice(0);
-        this.filterQueryArr = Object.values(data.queryData.defCols);
-        this.trnasformSqlObj = {};
-        for (let i in data.queryData.defCols) {
-          if (i != "_id_column") {
-            let lowerCase = i
-              .replace(/t./g, "")
-              .replace(/_/g, "")
-              .toLowerCase();
-            this.trnasformSqlObj[lowerCase] = i;
-          }
-        }
-        this.tableHeader.forEach(v => {
-          this.$set(this.form, v.name, '');
-          let { name, label ,width} = v
-          this.qsFields.push({name, label,width})
-          // this.resetObj.push(v.name);
-          // this.labelObj.push(v.label);
-        });
-
-        this.idColumn = this.showKey || data.idColumn;
-        this.setFields();
-        return Promise.resolve();
-      }
-
-      return http({
-        //获取配置项---展示在页面上的字段
-        url: "/isales-main/mstQuicksearchConfig/getConfig",
-        method: "post",
-        loading: true,
-        data: { name: this.name }
-      })
-        .then(data => {
-          this.tableHeader = data.colModel.slice(0);
-          this.filterQueryArr = Object.values(data.queryData.defCols);
-          this.trnasformSqlObj = {};
-          for (let i in data.queryData.defCols) {
-            if (i != "_id_column") {
-              let lowerCase = i
-                .replace(/t./g, "")
-                .replace(/_/g, "")
-                .toLowerCase();
-              this.trnasformSqlObj[lowerCase] = i;
-            }
-          }
-          this.tableHeader.forEach(v => {
-            this.$set(this.form, v.name, '');
-            let { name, label } = v
-            this.qsFields.push({name, label})
-            // this.resetObj.push(v.name);
-            // this.labelObj.push(v.label);
-          });
-          this.idColumn = this.showKey || data.gridData.idColumn;
-          this.setFields();
-
-          //设置缓存数据----去除缓存数据
-          this.setCache(this.name, {
-            colModel: data.colModel,
-            queryData: data.queryData,
-            idColumn: data.gridData.idColumn
-          });
-          // this.query();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 设置下拉显示字段
-    setFields() {
-      this.showfields = []
-      if (this.selectFields.length > 0) {
-        for(let name of this.selectFields) {
-          let item = this.qsFields.find(v => v.name == name)
-          let label = item ? item.label:''
-          let width = item ? item.width:''
-          this.showfields.push({
-            name, label, width
-          })
-        }
-      } else {
-        this.showfields = this.qsFields.slice(0, 2)
-      }
-    },
-    // 搜索表单参数
-    setQueryParams(otherParams) {
-      // debugger
-      for (let i in this.form) {
-        if (!(i.includes("_") || i.includes(".")) && this.form[i]) {
-          let upperCase = this.trnasformSqlObj[i.toLowerCase()];
-          if (upperCase) this.queryForm[upperCase] = this.form[i];
-        }
-      }
-      otherParams && Object.assign(this.queryForm, otherParams)
-    },
-    query(opr, queryStr) {
-      let selectURL = "/isales-main/mstQuicksearchConfig/queryByFormCondition";
-
-      this.initState = true;
-      this.isConditionChanged = false;
-      this.queryForm = {};
-      if (opr == "enter") {
-        //来自于enter事件，先清空form绑定的值，再重新赋值
-        this.setQueryParams()
-        this.queryTotal = -1;
-        this.queryParam.__page = 1;  // 重置为1
-        this.viewIndex = 1;
-      } else {
-        if (opr == 'getCount') {  // 查总数
-          selectURL = "/isales-main/mstQuicksearchConfig/getCount";
-          this.setQueryParams()
-        } else if (this.showSelect && this.filterQueryArr && this.filterQueryArr[0]) {
-          //下拉查询条件过滤条件----//展开下拉选择
-          selectURL = "/isales-main/mstQuicksearchConfig/quickSearchQuery";
-          this.queryForm[this.filterQueryArr[0].name] = queryStr;
-          this.queryParam.__page = 1;  // 重置为1
-        } else {
-          this.setQueryParams()
-        }
-      }
-      if (this.preQueryData) {
-        //添加前置查询条件
-        this.queryForm = Object.assign({}, this.preQueryData, this.queryForm);
-      }
-      let formData = JSON.stringify({
-        query: JSON.stringify(this.queryForm),
-        extendQuery: JSON.stringify(this.setExtendQueryData())
-      });
-
-      //是否是下拉查询
-      if (this.showSelect) {
-        formData = JSON.stringify({
-          key: this.name,
-          value: queryStr,
-          isSetValue: JSON.stringify(this.isSetValue),
-          extendQuery: JSON.stringify(this.setExtendQueryData())
-        });
-      }
-      let paramData = Object.assign({}, { params: formData }, this.queryParam);
-
-      return http({
-        //获取数据---展示在table页面上的数据
-        url: selectURL,
-        method: "post",
-        loading: this.showSelect ? false:true,
-        data: paramData
-      })
-        .then(data => {
-          if (this.showSelect) {
-            this.selectGridData = data.slice(0);
-            if (data.length === 0 && !this.autocomplete) {
-              this.inputName = "";
-              this.setValue();
-              this.$emit("close-quicksearch", null, this.scopeData);
-            }
-            return;
-          } else if(opr == 'getCount') { // 总数
-            this.queryTotal = data;
-            return;
-          }else {
-            this.gridData = data.data.slice(0);
-          }
-          //设置显示总条数
-          // this.queryTotal = data.pagecount;
-          this.dataCount = this.gridData.length;
-          if (opr) {
-            //改变相应的页码展示数
-            switch (opr) {
-              case "":
-                this.viewIndex = 1;
-                break;
-              case "prev":
-                this.viewIndex -= 1;
-                break;
-              case "next":
-                this.viewIndex += 1;
-                break;
-            }
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 重置
-    reset(type) {
-      this.form = {};
-
-      if (type != 'form') {
-        this.gridData = [];
-        this.selectGridData = [];
-        this.labelObj = [];
-        this.fields = [];
-        this.resetObj = [];
-        this.viewIndex = 1;
-        this.dataCount = 0;
-        this.queryTotal = -1;
-      }
-
-      // Object.assign(this.form, this.formData);
-    },
-    // 空值默认显示值
-    setNullValue(value, defaultValue = "") {
-      return isNull(value) ? defaultValue : value;
-    },
-    // 获取行上对应属性的值
-    getPropValue(row, key) {
-      return isObject(row) ? (row[key] || null) : row
-    },
-    // 设置属性值
-    setValue(row = {}) {
-      row = row ? row:{};
-
-      try {
-        if (this.scopeData) {
-          [this.displayKey, this.valueKey].forEach((item, index) => {
-            if (isArray(item)) {
-              let [key, mapKey] = item;
-              const value = this.setNullValue(this.getPropValue(row, key));
-              if (key && mapKey) {
-                this.$set(this.scopeData,mapKey,value)
-                //this.scopeData[mapKey] = this.setNullValue(this.getPropValue(row, key));
-              } else if (key) {
-                this.$set(this.scopeData,key,value)
-                //this.scopeData[key] = this.setNullValue(this.getPropValue(row, key));
-              }
-            } else if (item) {
-              const value = this.setNullValue(this.getPropValue(row, item));
-              this.$set(this.scopeData,item,value)
-              //this.scopeData[item] = this.setNullValue(this.getPropValue(row, item));
-            }
-          });
-
-          // map 值
-          if (isArray(this.mapValue)) {
-            for (let item of this.mapValue) {
-              let [key, mapKey] = trim(item).split(",");
-              if (key && mapKey) {
-                const value = this.setNullValue(this.getPropValue(row, key));
-                this.$set(this.scopeData,mapKey,value)
-                //this.scopeData[mapKey] = this.setNullValue(this.getPropValue(row, key));
-              } else if (key) {
-                const value = this.setNullValue(this.getPropValue(row, key));
-                this.$set(this.scopeData,key,value)
-                //this.scopeData[key] = this.setNullValue(this.getPropValue(row, key));
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      // debugger
-      // 设置选择后的显示值
-      this.inputName = isObject(row) ? (row[this.idColumn] || null) : row
-    },
-    // 设置 ExtendQuery
-    setExtendQueryData() {
-      let params = {
-        _quickKey: this.name,
-        entityId: 10,
-        createdBy: getProfile().__userName
-      };
-      //如果传入companySort--就加上作为查询条件
-      if(this.companySort){
-        params.companySort = this.companySort;
-      }
-      let data = {};
-      for (let i in this.extendQueryData) {
-        data[i] = this.setNullValue(this.extendQueryData[i], '').toString();
-      }
-      return Object.assign({}, data, params);
-    },
-    // 焦点事件
-    focus() {
-      // this.isConditionChanged && this.clearOptions()
-      this.clearOptions()
-    },
-    visibleChange(val) {
-      if (val) {
-        let $quickSelectSelect = this.$refs.quickSelectSelect
-        $quickSelectSelect.selectedLabel = $quickSelectSelect.currentPlaceholder
-      }
-    },
-    // 禁用判断
-    isDisable(colName) {
-      return this.formData && this.formData.hasOwnProperty(colName) && ! this.enableFormItem.includes(colName)
-    },
-    // input 远程搜索
-    async querySearchAsync(query, cb) {
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        this.$emit("update:showInput", query)
-        if (query) {
-          this.showSelect = true;
-          this.selectGridData = [];          
-          Promise.all([this.getConfigration(), this.query('', query)]).then(() => {
-            let head = { isHead: true }
-            for(let filed of this.showfields) {
-              head[filed.name] = filed.label
-            }
-            this.selectGridData.unshift(head)
-            cb(this.selectGridData)
-          })
-        }
-      }, 1000);
-    },
-    // input 远程搜索 下拉选择
-    inputSelect(item) {
-      if (! item.isHead) {
-        this.getSelectData(item)
-      }
     }
   },
   watch: {
@@ -847,8 +746,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 .the_quick_search /deep/ {
-  white-space: normal;
   position: relative;
   .el-input-group__append {
     padding-right: 8px;
@@ -881,11 +780,6 @@ export default {
   }
 }
 .the_quick_search_dialog /deep/{
-  .el-dialog__headerbtn {
-    padding: 10px;
-    top: 10px;
-    right: 10px;
-  }
   .el-table th div {
     line-height: 16px;
     padding-bottom: 0 !important;
@@ -914,13 +808,8 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .select-row {
-    .border{
-      border-right: 1px solid #ddd;
-      &:last-child {
-        border-right: none;
-      }
-    }
+  .border-right{
+    border-right: 1px solid #ddd;
   }
   &.el-select-dropdown__item.is-disabled {  /*受portal样式的影响，重新定义 */
     display: inherit;
