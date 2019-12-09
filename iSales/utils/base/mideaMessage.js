@@ -17,8 +17,8 @@ let instances = []  // 消息实例列表
 
 /**
  * 通用消息处理
- * @param {*} options 
- * @param {*} messageType 
+ * @param {*} options
+ * @param {*} messageType
  */
 const mideaMessage = function (options = { msgCode: null }, messageType = 'message') {
   // debugger
@@ -27,7 +27,7 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
     msgCode = options.msgCode,   // 消息代号
     defaultMsg = this.$t('mideaMessage.defaultErrorInfo'),   // 默认信息
     duration = 3000         // 自动消失时间
-    
+
   const defaultOptions = {
     // global
     customClass:'custom-message',
@@ -60,13 +60,28 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
       }
       // 隐藏遮罩层
       if (instances.length == 0) {
-        store.dispatch('setPageMask', false)        
+        store.dispatch('setPageMask', false)
       }
     }
 
     // 页面回调
     if (typeof onCloseFn == 'function') {
       onCloseFn(instance)
+    }
+  }
+
+  // MessageBox 关闭前的回调
+  if (messageType === 'messagebox') {
+    const beforeCloseFn = options.beforeClose
+
+    // 设置关闭回调方法
+    options.beforeClose = function(action, instance, done) {
+      // 页面回调
+      if (typeof beforeCloseFn === 'function') {
+        beforeCloseFn.call(this, action, instance, done)
+      } else {
+        done()
+      }
     }
   }
 
@@ -78,7 +93,7 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
   }
 
   // 显示遮罩层 mask
-  const showMask = function() {    
+  const showMask = function() {
     if (options.duration == 0) {
       store.dispatch('setPageMask', true)
     }
@@ -88,19 +103,19 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
   // 显示信息框
   const showMessage = function(options) {
     // 默认显示文字
-    if (! options.message)      
-      options.message = defaultMsg  
+    if (! options.message)
+      options.message = defaultMsg
 
-    // 非弹框的success类型默认自动隐藏  
-    if (messageType != 'messagebox' && options.type == 'success' && options.duration == 0) 
+    // 非弹框的success类型默认自动隐藏
+    if (messageType != 'messagebox' && options.type == 'success' && options.duration == 0)
       options.duration = duration
-   
+
     // 构造消息内容
     const h = this.$createElement
-    if (msgCode == 'ISC-999') { // 显示更多 
+    if (msgCode == 'ISC-999') { // 显示更多
       const showMoreText = this.$t('mideaMessage.showMoreText')
 
-      options.duration = 0 
+      options.duration = 0
       options.message = h('div', { class:'message-box' }, [
         h('p', { class:'title' }, [
           h('span', { class:'code' }, "ISC-999："),
@@ -112,12 +127,15 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
         h('el-scrollbar', { style:{display:'none'}, props:{native:false, noresize:false, wrapClass:'scroll-message'} }, options.message)
       ])
     } else {
-      options.message = h('div', { class:'message-box' }, [
+      // messagebox 拖曳指令
+      const directives = messageType === 'messagebox' ? [{ name: 'dialog-drag', value: { moveHeader: '.title', moveBox: '.custom-message' }}] : []
+
+      options.message = h('div', { class:'message-box', directives }, [
         h('p', { class:'title' }, [
           h('span', { class:'code' }, options.msgCode ? (options.msgCode+'：'):''),
           h('span', null, options.message)
         ])
-      ]) 
+      ])
     }
 
     // 兼容处理
@@ -126,7 +144,7 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
     }
     switch (messageType) {
       case 'message': // 消息提示
-        showMask()      
+        showMask()
         instance = Message(options)
         addInstances(instance)
         break;
@@ -137,7 +155,6 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
         showMask()
         instance = Notification(options)
         addInstances(instance)
-        
     }
   }
 
@@ -160,18 +177,18 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
       i++
       return replace
     })
-    
+
     return newStr
   }
-  
+
   // ISC-999 信息直接显示
   if (msgCode == 'ISC-999') {
-    showMessage.call(this, options)    
+    showMessage.call(this, options)
     return
   }
 
-  if (msgCode) modules = msgCode.split('-')[0] 
-  
+  if (msgCode) modules = msgCode.split('-')[0]
+
   if (modules) {
     this.$store.dispatch('getModuleMessage', {
       modules,
@@ -181,17 +198,18 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
       //   options.message = '{"errorCode":"ISC-912","errorMsg":"Invalid Token:8787ef4f-ac41-4e4a-bf78-3197d9ec2a03","params":"this is a format test., Invalid Token"}'
       //   msg = '%s %s:8787ef4f-ac41-4e4a-bf78-3197d9ec2a03'
       // }
-      if (msg) {        
+      if (msg) {
         let formatMsg = options.message   // 用于格式化信息处理
 
+        // options.message = msg
         options.message = msg.msgContent
-        
+
         try {
           formatMsg = JSON.parse(formatMsg)
           if (Object.prototype.toString.call(formatMsg) == '[object Object]') {
             let formatParams = formatMsg.params   // 格式化信息值
             options.message = formatStr(options.message, formatParams)
-          }        
+          }
         } catch (e) {}
 
         msg.type && (options.type = msg.type)
@@ -201,9 +219,9 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
         } else {
           options.duration = duration
         }
-      } else { 
-        // messageType = 'Notification' 
-        // options.duration = duration      
+      } else {
+        // messageType = 'Notification'
+        // options.duration = duration
         if (Object.prototype.toString.call(options.message) == '[object Object]') {
           options.message = options.message.errorMsg
         } else {
@@ -211,8 +229,8 @@ const mideaMessage = function (options = { msgCode: null }, messageType = 'messa
             let parseMsg = JSON.parse(options.message)
             options.message = parseMsg.errorMsg
           } catch (e) {}
-        } 
-      }      
+        }
+      }
       showMessage.call(this, options)
     })
   } else {
