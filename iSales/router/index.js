@@ -35,9 +35,9 @@ export const constantRouterMap = [
     children: [
       {
         path: '/home',
-        component: () => import('@/app/views/dashboard/index'),
+        component: () => import('@/portal/views/homepage/index'),
         name: 'Home',
-        meta: { title: 'Home', icon: 'dashboard' }
+        meta: { title: 'Home', icon: 'home' }
       }
     ]    
   }, 
@@ -45,7 +45,19 @@ export const constantRouterMap = [
     path: '/login',
     component: () => import('@/portal/views/login/index'),
     hidden: true
-  },  
+  },
+  {
+    name: 'notice',
+    path: '/notice/view',
+    component: () => import('@/portal/components/NoticeView'),
+    hidden: true
+  },
+  {
+    name: 'messageDetail',
+    path: '/message/detail',
+    component: () => import('@/portal/views/site_message/message_detail'),
+    hidden: true
+  }, 
   {
     path: '/404',
     component: () => import('@/portal/views/errorPage/404'),
@@ -73,7 +85,7 @@ export const constantRouterMap = [
         component: () => import('@/portal/views/demo/message'), 
         name: 'demoMessage', 
         meta: { title: '提示消息', icon: 'dashboard', noCache: true } 
-      }, 
+      },
       { 
         path: 'autoheight', 
         component: () => import('@/portal/views/demo/autoheight'), 
