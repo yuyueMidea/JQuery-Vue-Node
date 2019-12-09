@@ -1,15 +1,15 @@
 <template>
-  <el-row class="filter-header" style="display:flex;align-items:center;" width="100%" v-if="col.filter">
-    <el-dropdown
-      trigger="click"
-      :hide-on-click="true"
-      style=""
-      @command="handleCommand"
-    >
+  <el-row
+    class="filter-header"
+    style="display:flex;align-items:center;"
+    width="100%"
+    v-if="col.filter"
+  >
+    <el-dropdown trigger="click" :hide-on-click="true" style @command="handleCommand">
       <span class="el-dropdown-link">{{symbols[queryData[col.prop + "Cond"]]}}</span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item
-          v-for="con in conditions[col.filter.type]"
+          v-for="con in mergeCondition(col.filter)"
           :key="con"
           :command="composeValue(con,col)"
         >{{symbols[con] + shownames[con]}}</el-dropdown-item>
@@ -22,7 +22,6 @@
       :clearable="col.filter.clearable"
       :disabled="col.filter.disabled"
       size="mini"
-      placeholder="输入关键字搜索"
       style="padding:0px;flex:1;"
       @keyup.enter.native="onQuery"
     />
@@ -36,12 +35,11 @@
       :precision="col.filter.precision"
       size="mini"
       :disabled="col.filter.disabled"
-      placeholder="输入关键字搜索"
       controls-position="right"
       style="padding:0px;flex:1;"
       @keyup.enter.native="onQuery"
     />
-   <el-select
+    <el-select
       v-model="queryData[col.prop]"
       v-else-if="col.filter.type == 'select'"
       :clearable="col.filter.clearable"
@@ -49,104 +47,82 @@
       :disabled="col.filter.disabled"
       :collapse-tags="col.filter.collapsetags"
       size="mini"
-      placeholder="请选择"
       style="padding:0px;flex:1;"
-      @change="onQuery"
+      placeholder
+      @keyup.enter.native="onQuery"
+      @change="query(col.filter.changeQuery)"
     >
-     <template v-if="col.filter.hasOwnProperty('optionKey')">
       <el-option
-        v-for="item in col.filter.options[col.filter.optionKey]"
-        :key="item.value + '.' + Math.random()"
-        :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
-      ></el-option>
-      </template>
-      <template v-else-if="(col.filter.options instanceof Array)">
-         <el-option
         v-for="item in col.filter.options"
         :key="item.value + '.' + Math.random()"
         :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
+        :label="item.label"
       ></el-option>
-      </template>
-      <template v-else>
-         <el-option
-        v-for="item in col.filter.options[col.prop]"
-        :key="item.value + '.' + Math.random()"
-        :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
-      ></el-option>
-      </template>
     </el-select>
     <el-select
       v-model="queryData[col.prop]"
       v-else-if="col.filter.type == 'multiselect'"
-      multiple 
+      multiple
       :clearable="col.filter.clearable"
       :filterable="col.filter.filterable"
       :disabled="col.filter.disabled"
       :collapse-tags="col.filter.collapsetags"
       :multiple-limit="col.filter.multiplelimit"
       size="mini"
-      placeholder="请选择"
       style="padding:0px;flex:1;"
-      @change="onQuery"
+      placeholder
+      @keyup.enter.native="onQuery"
+      @change="query(col.filter.changeQuery)"
     >
-      <template v-if="col.filter.hasOwnProperty('optionKey')">
       <el-option
-        v-for="item in col.filter.options[col.filter.optionKey]"
-        :key="item.value + '.' + Math.random()"
-        :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
-      ></el-option>
-      </template>
-      <template v-else-if="(col.filter.options instanceof Array)">
-         <el-option
         v-for="item in col.filter.options"
         :key="item.value + '.' + Math.random()"
         :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
+        :label="item.label"
       ></el-option>
-      </template>
-      <template v-else>
-         <el-option
-        v-for="item in col.filter.options[col.prop]"
-        :key="item.value + '.' + Math.random()"
-        :value="item.value"
-        :label="col.filter.showValue ? item.value : item.label"
-      ></el-option>
-      </template>
     </el-select>
     <el-date-picker
       v-else-if="col.filter.type == 'date'"
       v-model="queryData[col.prop]"
       type="daterange"
       range-separator="~"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
       size="mini"
       :disabled="col.filter.disabled"
       :editable="col.filter.editable"
       :clearable="col.filter.clearable"
-      @change="onQuery"
+      @keydown.enter.native="onQuery"
+      @change="query(col.filter.changeQuery)"
+      :value-format="dateFormat"
+      :format="dateFormat"
     ></el-date-picker>
     <el-date-picker
       v-else-if="col.filter.type == 'datetime'"
       v-model="queryData[col.prop]"
       type="datetimerange"
       range-separator="~"
-      start-placeholder="开始时间"
-      end-placeholder="结束时间"
       size="mini"
       :disabled="col.filter.disabled"
       :editable="col.filter.editable"
       :clearable="col.filter.clearable"
-      @change="onQuery"
+      @keydown.enter.native="onQuery"
+      @change="query(col.filter.changeQuery)"
+      :value-format="dateFormat + ' ' + timeFormat"
+      :format="dateFormat + ' ' + timeFormat"
+      :default-time="['00:00:00', '23:59:59']"
     ></el-date-picker>
-    <el-input v-else :disabled="true" v-model="queryData[col.prop]" size="mini"/>
+    <template v-else-if="col.filter.type == 'component'">
+      <component
+        :is="col.filter.component"
+        v-bind="componentBind(col.filter.bind)"
+        v-on="componentEvent(col.filter.event || null)"
+      ></component>
+    </template>
+    <el-input v-else :disabled="true" v-model="queryData[col.prop]" size="mini" />
   </el-row>
 </template>
 <script>
+import { getProfile } from '@/portal/utils/auth'
+
 export default {
   name: 'FilterHeaderColumn',
   data: function () {
@@ -184,7 +160,9 @@ export default {
         "ge": this.$t('components.condition.ge'),
         "lt": this.$t('components.condition.lt'),
         "le": this.$t('components.condition.le')
-      }
+      },
+      dateFormat: getProfile().__dateFormat,
+      timeFormat: getProfile().__timeFormat
     }
   },
   beforeCreate() {
@@ -208,6 +186,14 @@ export default {
     },
   },
   methods: {
+    query(changeQuery) {
+      // debugger
+      if (this.$root.TABLE_VIEW_CHANGE_QUERY === false)
+        return
+
+      if (changeQuery === undefined || changeQuery === null || changeQuery === true)
+        this.onQuery()
+    },
     composeValue(symbol, col) {
       let o = { "symbol": symbol, "col": col }
       return o;
@@ -216,14 +202,39 @@ export default {
       if (this.queryData[command.col.prop] && (command.col.type == 'number' || this.queryData[command.col.prop].length > 0)) {
         this.onQuery()
       }
+    },
+    // 绑定属性
+    componentBind(bind) {
+      if (typeof bind == 'function') {
+        return bind(this)
+      } else {
+        return bind
+      }
+    },
+    // 绑定事件
+    componentEvent(event) {
+      if (typeof event == 'function') {
+        return event(this)
+      }
+    }
+  },
+  computed: {
+    mergeCondition(f) {
+      return function (f) {
+        if (f.conditions && !(f.type === 'date' || f.type === 'datetime' || f.type === 'multiselect')) { // 日期、时间、多选框的比较符固定，不可定制
+          return this.conditions[f.type].filter(function (v) { return f.conditions.indexOf(v) > -1 }) // 自定义比较符需要合法性过滤
+        } else {
+          return this.conditions[f.type]
+        }
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-	.filter-header /deep/ {
-    .el-input--suffix .el-input__inner {
-		  padding:0 5px;
-		}
+.filter-header /deep/ {
+  .el-input--suffix .el-input__inner {
+    padding: 0 5px;
   }
+}
 </style>
