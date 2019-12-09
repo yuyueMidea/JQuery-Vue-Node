@@ -1,7 +1,21 @@
-import { loginByUsername, getMenu, logout, getUserInfo } from '@/portal/api/login'
-import { getToken, setToken, setProfile, getProfile, removeToken, removeProfile } from '@/portal/utils/auth'
+import { loginByUsername, getUserInfo } from '@/portal/api/login'
+import {
+  getToken,
+  getProfile,
+  removeToken,
+  removeProfile,
+  getMenu,
+  removeMenu,
+  removeResource,
+  removeNaResource,
+  removeLanguage,
+  removePosition,
+  setUserSession
+} from '@/portal/utils/auth'
 import * as types from '../mutaion-types'
 import appConfig from '@/portal/appConfig'
+import store from '@/portal/store'
+import storage from '@/portal/utils/storage'
 
 const user = {
   state: {
@@ -36,12 +50,12 @@ const user = {
     // 用户名登录
     loginByUsername({ commit }, userInfo) {
       userInfo.username = userInfo.username.trim()
+      userInfo.app = appConfig.APP_NAME // 应用名称
+      var storeGetters = store.getters
+      userInfo.language = storeGetters.language // 当前语言
       return new Promise((resolve, reject) => {
         loginByUsername(userInfo).then(data => {
-          commit(types.SET_TOKEN, data.__token)
-          commit(types.SET_USER_INFO, data)
-          setToken(data.__token)
-          setProfile(data)
+          setUserSession(data)
           resolve()
         }).catch(error => {
           reject(error)
@@ -52,7 +66,7 @@ const user = {
     // 获取用户信息
     getUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(data => {          
+        getUserInfo(state.token).then(data => {
           if (data && data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit(types.SET_ROLES, data.roles)
           } else {
@@ -68,11 +82,11 @@ const user = {
     // 登出
     logOut({ commit, dispatch, state }) {
       const ENABLE_SSO = process.env.ENABLE_SSO
-      
+
       if (ENABLE_SSO === true) {  // 退出单点登录
-        const LOGOUT_URL = process.env.LOGOUT_URL
         dispatch('fedLogOut')
-        window.location.herf = LOGOUT_URL  // 直接跳转      
+        storage.setStorage("isc-logout-flag", 'Y')
+        window.location = process.env.LOGOUT_URL // 直接跳转
       } else {
         // return new Promise((resolve, reject) => {
         //   logout().then(() => {
@@ -81,7 +95,8 @@ const user = {
         //     reject(error)
         //   })
         // })
-        return dispatch('fedLogOut')
+        dispatch('fedLogOut')
+        location.reload()
       }
     },
 
@@ -93,24 +108,20 @@ const user = {
         commit(types.SET_ROLES, [])
         removeToken()
         removeProfile()
+        removeLanguage()
+        removePosition()
+        removeMenu()
+        removeResource()
+        removeNaResource()
+        storage.removeCurrentLanguage()
         resolve()
+        storage.removeStorage("isc-logout-flag")
       })
     },
 
     // 获取菜单
     getMenu({ commit, state }, params) {
-      return new Promise((resolve, reject) => {
-        const params = {
-          'application': appConfig.APP_NAME,
-          'language': 'cn'
-        }
-        getMenu(params).then(data => {
-          commit(types.SET_MENU, data)
-          resolve(data)
-        }).catch(error => {
-          reject(error)
-        })
-      })
+      return getMenu()
     }
 
     // 动态修改权限
@@ -119,7 +130,7 @@ const user = {
         commit(types.SET_TOKEN, role)
         setToken(role)
         getUserInfo(role).then(data => {
-          commit(types.SET_ROLES, data.roles)         
+          commit(types.SET_ROLES, data.roles)
           dispatch('generateRoutes', data) // 动态修改权限后 重绘侧边菜单
           resolve()
         })

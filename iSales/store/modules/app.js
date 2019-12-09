@@ -9,7 +9,7 @@ const app = {
       withoutAnimation: false
     },
     device: 'desktop',
-    language: storage.getLanguage(),
+    language: storage.getCurrentLanguage(),
     localeLanguage: [],
     size: storage.getCookie('size') || 'medium',
     pageMask: false
@@ -34,7 +34,6 @@ const app = {
     },
     [types.SET_LANGUAGE]: (state, language) => {
       state.language = language
-      storage.setLanguage(language)
     },
     [types.SET_SIZE]: (state, size) => {
       state.size = size

@@ -19,7 +19,6 @@ const permission = {
   },
   actions: {
     generateRoutes({ commit }, addRouters) {
-      const homePage  = config.homePage
       return new Promise(resolve => {
         const unFound = { path: '*', redirect: '/404', hidden: true } // 跳转到404页面，须放在路由最后面  
         let accessedRouters = [].concat(addRouters.routes)
