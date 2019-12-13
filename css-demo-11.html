@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css-demo-11</title>
+	<style type="text/css">
+/* 半圆 */
+.half-circle{
+    height: 50px; width: 100px;
+    border-radius: 50px 50px 0 0;
+    background: pink
+}
+/* 扇形 */
+.sector{
+    border-radius: 100px 0 0;
+    background: lightblue; height: 100px; width: 100px;
+}
+/* 三角 */
+.triangle{
+    width: 0px;
+    height: 0px;
+    background: none;
+    border: 50px solid red;
+    border-color: red transparent transparent transparent;
+}
+/* 梯形 */
+.ladder{
+    width: 50px;
+    height: 0px;
+    background: none;
+    border: 50px solid red;
+    border-color: red transparent transparent transparent;
+}
+
+
+
+	</style>
+</head>
+<body>
+<div style="border: 1px solid #ccc;padding: 11px">
+		<div class="half-circle"></div>
+		<div class="sector"></div>
+		<div class="triangle"></div>
+		<div class="ladder"></div>
+</div>
+
+</body>
+</html>
